@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Bonita and Beyond]]></title>
   <link href="http://pozil.github.io/atom.xml" rel="self"/>
   <link href="http://pozil.github.io/"/>
-  <updated>2014-09-26T16:17:46+02:00</updated>
+  <updated>2014-09-30T09:50:16+02:00</updated>
   <id>http://pozil.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Philippe Ozil]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Preface: Who Am I and What Is This Blog About]]></title>
+    <link href="http://pozil.github.io/blog/2014/09/29/preface-who-am-i-and-what-is-this-blog-about/"/>
+    <updated>2014-09-29T22:02:55+02:00</updated>
+    <id>http://pozil.github.io/blog/2014/09/29/preface-who-am-i-and-what-is-this-blog-about</id>
+    <content type="html"><![CDATA[<p>First of all, welcome to my blog.</p>
+
+<p>My name is Philippe Ozil, I have been a Consultant for Bonitasoft since 2010 and I have been involved in 80+ customer projects.
+Starting from 2014, I have moved to the position of Technical Evangelist still for Bonitasoft.</p>
+
+<p>I am opening this blog to share my experience about working with Bonita BPM, extending it and integrating it with third party technologies.</p>
+
+<p>Enjoy your reading and I hope you will find this content useful.</p>
+]]></content>
+  </entry>
   
 </feed>
