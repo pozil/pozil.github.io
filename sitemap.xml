@@ -3,6 +3,14 @@
   
   
   <url>
+    <loc>http://pozil.github.io/blog/2014/09/30/integrating-angularjs-with-bonita-bpm/</loc>
+    
+    <lastmod>2014-09-30T11:48:07+02:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://pozil.github.io/blog/2014/09/29/preface-who-am-i-and-what-is-this-blog-about/</loc>
     
     <lastmod>2014-09-29T22:02:55+02:00</lastmod>
@@ -13,14 +21,14 @@
   
   <url>
     <loc>http://pozil.github.io/blog/archives/</loc>
-    <lastmod>2014-09-30T09:50:16+02:00</lastmod>
+    <lastmod>2014-10-01T16:41:04+02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://pozil.github.io/</loc>
-    <lastmod>2014-09-30T09:50:16+02:00</lastmod>
+    <lastmod>2014-10-01T16:41:04+02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

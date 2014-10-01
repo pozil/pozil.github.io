@@ -1,0 +1,20 @@
+p	{text-align:justify;}
+b	{font-weight: bold;}
+
+.entry-content ul, .entry-content ol	{margin-left:40px;}
+
+div.grey-container	{border:1px solid #bfbfbf; border-radius:5px; background-color:#f2f2f2; padding:5px 15px; margin-bottom:20px;}
+.small-bottom-margin	{margin-bottom:5px;}
+.smaller-text		{font-size:smaller;}
+
+.floating-right {float:right; margin-left:20px;}
+
+table.pro-cons	{margin:10px auto 20px auto; width:650px;}
+table.pro-cons th, table.pro-cons td	{border:1px solid grey; padding:5px;}
+table.pro-cons th	{text-align:center; font-weight:bold;}
+table.pro-cons td	{font-size:smaller;}
+table.pro-cons tr:first-child>th:first-child	{border-width:0;}	/* Upper left cell is hidden */
+table.pro-cons tr:first-child>th:first-child	{width:20%;}
+table.pro-cons tr:first-child>th:nth-child(2), table.pro-cons tr:first-child>th:nth-child(3)	{width:40%; background-color:#E9E9E9;}
+table.pro-cons tr:nth-child(2) th, table.pro-cons tr:nth-child(2) td		{background-color:#C0F6D2;}	/* Pros */
+table.pro-cons tr:nth-child(3) th, table.pro-cons tr:nth-child(3) td		{background-color:#F6C0C0;}	/* Cons */
