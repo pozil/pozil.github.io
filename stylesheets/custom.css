@@ -1,3 +1,9 @@
+body>header	{
+	background-image: url('../images/header_bg.png');
+	background-repeat: no-repeat;
+	background-color: #0F0F0F;
+}
+
 p	{text-align:justify;}
 b	{font-weight: bold;}
 
