@@ -7,6 +7,8 @@ body>header	{
 p	{text-align:justify;}
 b	{font-weight: bold;}
 
+a.external:before	{width:20px; height:16px; background:url('../images/external-link.svg') no-repeat center left; display:inline-block; content:'';}
+
 .entry-content ul, .entry-content ol	{margin-left:40px;}
 
 div.grey-container	{border:1px solid #bfbfbf; border-radius:5px; background-color:#f2f2f2; padding:5px 15px; margin-bottom:20px;}
