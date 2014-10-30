@@ -7,6 +7,8 @@ body>header	{
 p	{text-align:justify;}
 b	{font-weight: bold;}
 
+p.blog-subtitle	{margin-top:-25px; vertical-align:top;}
+
 a.external:before	{width:20px; height:16px; background:url('../images/external-link.svg') no-repeat center left; display:inline-block; content:'';}
 
 .entry-content ul, .entry-content ol	{margin-left:40px;}

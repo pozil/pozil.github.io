@@ -4,7 +4,7 @@
   <title><![CDATA[Bonita and Beyond]]></title>
   <link href="http://pozil.github.io/atom.xml" rel="self"/>
   <link href="http://pozil.github.io/"/>
-  <updated>2014-10-22T10:57:07+02:00</updated>
+  <updated>2014-10-30T11:05:27+01:00</updated>
   <id>http://pozil.github.io/</id>
   <author>
     <name><![CDATA[Philippe Ozil]]></name>
@@ -12,6 +12,147 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Integrating a Connected Object With Bonita BPM via MQTT]]></title>
+    <link href="http://pozil.github.io/blog/2014/10/29/integrating-a-connected-object-with-bonita/"/>
+    <updated>2014-10-29T14:27:58+01:00</updated>
+    <id>http://pozil.github.io/blog/2014/10/29/integrating-a-connected-object-with-bonita</id>
+    <content type="html"><![CDATA[<div class="grey-container" style="vertical-align:top;" id="angular_webinars">Live from <a href="https://www.eclipsecon.org/europe2014/" target="_blank" style="white-space:normal; word-wrap:normal;">
+<span title="EclispeCon Europe 2014" style="background:rgba(242, 147, 30, 0.9) url('https://www.eclipsecon.org/europe2014/sites/all/themes/eclipsecon_base/2014/eceurope2014/logo.png') 4px 0px/460px 100%; display:inline-block; width:464px; height:80px; border-radius:15px;"></span>
+</a></div>
+
+
+
+
+<h3>The concept</h3>
+
+
+<p>This week, we are at EclipseCon and after spending some time around our booth, we discussed with our neighbours
+<a href="http://www.bitreactive.com/" target="_blank" class="external">Bitreactive</a> about the possibility to create a joint technical demo.</p>
+
+<p>I ended exploring the world of IoT and connected objects in order to put in place this technical demo.
+I wanted to couple Bonita with the connected object from Bitreactive booth: a photo booth composed of a Raspberry Pi and a camera.</p>
+
+<div style="text-align:center;"><span class='caption-wrapper'><img class='caption' src='http://pozil.github.io/images/2014-10-29-integrating-a-connected-object-with-bonita/bitreactive_booth.jpg' width='' height='' title='Bitreactive 'photo booth''><span class='caption-text'>Bitreactive &#8216;photo booth&#8217;</span></span></div>
+
+
+
+
+<div class="floating-right">
+    <img src="http://pozil.github.io/images/2014-10-29-integrating-a-connected-object-with-bonita/mqtt-logo.png" alt="MQTT"/> 
+    <img src="http://www.eclipse.org/paho/images/paho_logo_400.png" alt="paho" style="height:74px;"/>
+</div>
+
+
+<p>In order to implement this demo I used the <a href="http://mqtt.org/" target="_blank" class="external">MQTT</a> protocol provided through the <a href="http://www.eclipse.org/paho/" target="_blank" class="external">paho</a> Java library to communicate with the device.</p>
+
+<p class="small-bottom-margin">The goal of the demo was to integrate the photo booth device into a Bonita process representing a visa application.
+Here is how this process works:</p>
+
+
+<ol>
+    <li>the applicant provides his personal details and attaches his picture taken at the photo booth</li>
+    <li>the visa official review the application details and decides to grant or refuse the application</li>
+</ol>
+
+
+
+
+<h3>MQTT proof of concept via a Bonita connector</h3>
+
+
+<p>Before I actually started to work on the visa application process I made sure that I could easily connect with MQTT via paho from a simple Java application and from a Bonita connector.</p>
+
+<p class="small-bottom-margin">I ended up implementing a generic Bonita MQTT connector that could publish messages to a remote broker.
+I have shared this connector with the community here:</p>
+
+
+<ul>
+    <li><a href="https://github.com/pozil/bonita-mqtt-publish-connector" target="_blank" class="external">GitHub Project</a></li>
+    <li><a href="http://community.bonitasoft.com/project/mqtt-publish-connector" target="_blank" class="external">Bonita Community Project</a></li>
+</ul>
+
+
+
+
+<h3>Implementing the MQTT subscriber</h3>
+
+
+<p>Once I was familiar with the MQTT paho client I stared to work on the &lsquo;image receiver&rsquo; program.</p>
+
+<p class="small-bottom-margin">This Java program does the following:</p>
+
+
+<ol>
+    <li>subscribe to the photo booth MQTT topic</li>
+    <li>get a message for each picture taken</li>
+    <li>extract the image from it and place them in a directory in the Bonita server</li>
+</ol>
+
+
+<p>All of these operations can be summarized with the following Java code extract:</p>
+
+<figure class='code'><figcaption><span>MQTT subscribe code sample</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// Configure MQTT client</span>
+</span><span class='line'><span class="n">MqttClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MqttClient</span><span class="o">(</span><span class="n">BROKER_URL</span><span class="o">,</span> <span class="n">CLIENT_ID</span><span class="o">,</span> <span class="k">new</span> <span class="nf">MemoryPersistence</span><span class="o">());</span>
+</span><span class='line'><span class="n">MqttConnectOptions</span> <span class="n">options</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MqttConnectOptions</span><span class="o">();</span>
+</span><span class='line'><span class="n">options</span><span class="o">.</span><span class="na">setCleanSession</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Connect client to broker</span>
+</span><span class='line'><span class="n">client</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">options</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Register a custom callback to process incoming messages</span>
+</span><span class='line'><span class="n">client</span><span class="o">.</span><span class="na">setCallback</span><span class="o">(</span><span class="k">new</span> <span class="nf">IncomingMessageCallback</span><span class="o">());</span>
+</span><span class='line'><span class="c1">// Subscribe to image topic</span>
+</span><span class='line'><span class="n">client</span><span class="o">.</span><span class="na">subscribe</span><span class="o">(</span><span class="n">TOPIC</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Later disconnect client</span>
+</span><span class='line'><span class="n">client</span><span class="o">.</span><span class="na">disconnect</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3>Implementing the Bonita process</h3>
+
+
+<p>Once the incoming images were stored within the Bonita server, I implemented a Bonita process with forms showing up the images.</p>
+
+<div style="text-align:center;"><span class='caption-wrapper'><img class='caption' src='http://pozil.github.io/images/2014-10-29-integrating-a-connected-object-with-bonita/visa_application.png' width='' height='' title='Visa application process - New application form'><span class='caption-text'>Visa application process - New application form</span></span></div>
+
+
+
+
+<div style="text-align:center;"><span class='caption-wrapper'><img class='caption' src='http://pozil.github.io/images/2014-10-29-integrating-a-connected-object-with-bonita/visa_application_review.png' width='' height='' title='Visa application process - Application review form'><span class='caption-text'>Visa application process - Application review form</span></span></div>
+
+
+
+
+<h3>Resources</h3>
+
+
+<ul>
+    <li><a href="https://github.com/pozil/bonita-mqtt-publish-connector" target="_blank" class="external">GitHub Project</a></li>
+    <li><a href="http://community.bonitasoft.com/project/mqtt-publish-connector" target="_blank" class="external">Bonita Community Project</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Integrating AngularJS With Bonita BPM]]></title>
