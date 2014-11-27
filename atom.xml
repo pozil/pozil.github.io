@@ -4,7 +4,7 @@
   <title><![CDATA[Bonita and Beyond]]></title>
   <link href="http://pozil.github.io/atom.xml" rel="self"/>
   <link href="http://pozil.github.io/"/>
-  <updated>2014-10-30T11:05:27+01:00</updated>
+  <updated>2014-11-27T09:16:27+01:00</updated>
   <id>http://pozil.github.io/</id>
   <author>
     <name><![CDATA[Philippe Ozil]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[BPM of Things]]></title>
+    <link href="http://pozil.github.io/blog/2014/11/06/bpm-of-things/"/>
+    <updated>2014-11-06T10:35:13+01:00</updated>
+    <id>http://pozil.github.io/blog/2014/11/06/bpm-of-things</id>
+    <content type="html"><![CDATA[<div class="floating-right">
+    <img src="http://www.ow2.org/xwiki/bin/download/OW2con-2014/WebHome/OW2con14-date-4-6.png" alt="OW2con'14"/>    
+</div>
+
+
+
+
+<p class="blog-subtitle">IoT and Processes: a New Market Opportunity?</p>
+
+
+
+
+<p>This post is related to a talk I gave at OW2con&#8217;14 in Paris.<br/>
+The recording and slides can be viewed <a href="https://www.youtube.com/watch?v=gn4Vo8PzHpM" target="_blank" class="external">here</a></p>
+
+
+
+
+<h3>Talk abstract</h3>
+
+
+<p>Internet of Things will generate a lot of data and a lot of possible interactions.
+How can you manage that, create alerts and drive your connected things?
+We will show how to do that with a BPMS, and finish the presentation with the demonstration of 
+connected objects running through a process.</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Integrating a Connected Object With Bonita BPM via MQTT]]></title>
