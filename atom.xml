@@ -4,7 +4,7 @@
   <title><![CDATA[Bonita and Beyond]]></title>
   <link href="http://pozil.github.io/atom.xml" rel="self"/>
   <link href="http://pozil.github.io/"/>
-  <updated>2014-11-27T09:18:24+01:00</updated>
+  <updated>2014-11-27T11:15:56+01:00</updated>
   <id>http://pozil.github.io/</id>
   <author>
     <name><![CDATA[Philippe Ozil]]></name>
@@ -12,6 +12,109 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Integrating MongoDB With Bonita]]></title>
+    <link href="http://pozil.github.io/blog/2014/11/20/integrating-mongodb-with-bonita/"/>
+    <updated>2014-11-20T09:40:41+01:00</updated>
+    <id>http://pozil.github.io/blog/2014/11/20/integrating-mongodb-with-bonita</id>
+    <content type="html"><![CDATA[<div id="mongodb_webinars" class="grey-container" style="float: left; width: 550px;">
+    <div class="small-bottom-margin"><b>Note:</b> part of this content is also accessible as an ongoing series of webinars:</div>
+    <ul class="small-bottom-margin">
+        <li><a href="http://www.bonitasoft.com/for-you-to-read/videos/bonita-bpm-angularjs-ideal-combination-your-process" target="_blank" class="external">English version</a> - <span class="smaller-text">20<sup>th</sup> of November 2014, presented by myself</span></li>
+        <li>French version - To be annouced.</li>
+        <li>Spanish version - To be announced.</li>
+    </ul>
+</div>
+
+
+<div class="floating-right">
+    <img src="http://pozil.github.io/images/2014-11-20-integrating-mongodb-with-bonita/bonita_bpm_with_mongodb.png" alt="Bonita BPM + MongoDB"/>  
+</div>
+
+
+
+
+<h3 style="clear:both;">About the talk</h3>
+
+
+<p>In this talk, I presented NoSQL databases in general and MongoDB more in depth.
+I then gave an overview of the pro and cons of using NoSQL databases vs traditional RDBMS 
+illustrated with some good and bad uses cases.
+I concluded by providing an example of an integration of MongoDB with Bonita BPM.</p>
+
+
+
+
+<h3>Implementing the Bonita connectors for MongoDB</h3>
+
+
+<p>For the need of the webinar I wanted to a least one MongoDB connector with the community.
+A previous version of such a connector already existed but it lacked flexibility in its connection 
+configuration and query definition.</p>
+
+
+<p class="small-bottom-margin">In order to compensate for this, I implemented two connectors with:</p>
+
+
+<ul>
+    <li>A distinct connection mode: direct connection or pooled datasource</li>
+    <li>Full text queries supporting server-side JS code</li>
+</ul>
+
+
+
+
+<p>This later point proved extremly useful when I built a sample &#8220;Mongo Store&#8221; set of processes to demonstrate the use of the connectors.<br/>
+With this capability, I could write the following query in Groovy including a JS function that would be executed on the MongoDB server side:</p>
+
+
+
+
+<figure class='code'><figcaption><span>Generating an id, inserting a document and returning its id</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">StringBuffer</span> <span class="n">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="s">&quot;function () {\n&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">query</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;var id = ObjectId();\n&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">query</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;db.productTypes.insert({_id : id, name : \&quot;&quot;</span><span class="o">+</span> <span class="n">productTypeName</span> <span class="o">+</span><span class="s">&quot;\&quot;});\n&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">query</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;return id;&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">query</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;}&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3>Implementing a JNDI datasource for MongoDB</h3>
+
+
+<p>While implementing these connectors, I discovered - with utmost disarray - that MongoDB did not provide a 
+JNDI datasource implementation. It relies instead on a built-in pooling mechanism provided by the MongoDB client.</p>
+
+
+
+
+<p>Being used to configure large Java applications, I must say that connection pooling and JNDI datasources 
+are quite mandatory for performance as well as maintainability.<br/>
+In consequence, I implemented a generic implementation of a JNDI datasource for MongoDB.</p>
+
+
+
+
+<h3>Resources</h3>
+
+
+<ul>
+    <li><a href="#mongodb_webinars">Webinar videos</a> (listed at the top of this post)</li>
+    <li><a href="https://github.com/pozil/mongodb-jndi-datasource" target="_blank" class="external">MongoDB JNDI Datasource</a></li>
+    <li><a href="https://github.com/pozil/bonita-mongodb-connectors" target="_blank" class="external">MongoDB Connectors for Bonita BPM</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[BPM of Things]]></title>
@@ -194,7 +297,7 @@ I have shared this connector with the community here:</p>
     <updated>2014-09-30T11:48:07+02:00</updated>
     <id>http://pozil.github.io/blog/2014/09/30/integrating-angularjs-with-bonita-bpm</id>
     <content type="html"><![CDATA[<div class="grey-container" id="angular_webinars">
-    <div class="small-bottom-margin"><b>Note:</b> part of this content is also accessible as a ongoing series of webinars:</div>
+    <div class="small-bottom-margin"><b>Note:</b> part of this content is also accessible as an ongoing series of webinars:</div>
     <ul class="small-bottom-margin">
         <li><a href="http://fr.bonitasoft.com/ressources/videos/angularjs-bonita-bpm-le-couple-ideal-pour-vos-processus" target="_blank" class="external">French version</a> - <span class="smaller-text">25<sup>th</sup> of September 2014, presented by myself</span></li>
         <li><a href="http://www.bonitasoft.com/for-you-to-read/videos/bonita-bpm-angularjs-ideal-combination-your-process" target="_blank" class="external">English version</a> - <span class="smaller-text">15<sup>th</sup> of October 2014, presented by myself</span></li>

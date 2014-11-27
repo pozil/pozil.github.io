@@ -3,6 +3,14 @@
   
   
   <url>
+    <loc>http://pozil.github.io/blog/2014/11/20/integrating-mongodb-with-bonita/</loc>
+    
+    <lastmod>2014-11-20T09:40:41+01:00</lastmod>
+    
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://pozil.github.io/blog/2014/11/06/bpm-of-things/</loc>
     
     <lastmod>2014-11-06T10:35:13+01:00</lastmod>
@@ -37,14 +45,14 @@
   
   <url>
     <loc>http://pozil.github.io/blog/archives/</loc>
-    <lastmod>2014-11-27T09:18:24+01:00</lastmod>
+    <lastmod>2014-11-27T11:15:56+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://pozil.github.io/</loc>
-    <lastmod>2014-11-27T09:18:24+01:00</lastmod>
+    <lastmod>2014-11-27T11:15:56+01:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
