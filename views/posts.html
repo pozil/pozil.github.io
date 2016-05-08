@@ -1,0 +1,19 @@
+<div ng-controller="PostsController as postsCtrl" class="full-posts">
+	<div ng-repeat="post in postsCtrl.posts" class="post">
+		<h2 class="post-title">{{post.title}}</h2>
+		<p class="post-date">{{post.date | date}}</p>
+		<div class="post-content" ng-bind-html="postsCtrl.getAsHtml(post.content)"></div>
+	</div>
+
+	<div class="text-center">
+		<uib-pagination total-items="postsCtrl.totalCount" ng-model="postsCtrl.pageIndex" ng-change="postsCtrl.pageChanged()"
+			max-size="5" items-per-page="3"
+			boundary-links="true" rotate="true" num-pages="numPages" class="pagination-sm"></uib-pagination>
+	</div>
+	
+	<div class="text-center more-posts">
+		<span>-</span>
+		<a href="#archives">Blog archives</a>
+		<span>-</span>
+	</div>
+</div>

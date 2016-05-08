@@ -1,0 +1,9 @@
+<div ng-controller="ArchiveController as archiveCtrl" class="archives">
+	<div ng-repeat="year in archiveCtrl.uniqueYears" class="year">
+		<h2>{{year}}</h2>
+		<div ng-repeat="post in posts | filter : {date : year}" class="post">
+			<span class="post-date">{{post.date | date : 'MMM dd'}}</span>
+			<a href="#post/{{post.date}}" class="post-title">{{post.title}}</a>
+		</div>
+	</div>
+</div>

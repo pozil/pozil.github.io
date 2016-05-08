@@ -1,0 +1,5 @@
+<div ng-controller="PostController as postCtrl" class="full-posts post">
+	<h2 class="post-title">{{postCtrl.post.title}}</h2>
+	<p class="post-date">{{postCtrl.post.date | date}}</p>
+	<div class="post-content" ng-bind-html="postCtrl.getAsHtml(postCtrl.post.content)"></div>
+</div>

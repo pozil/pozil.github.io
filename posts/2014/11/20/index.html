@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1 class="entry-title">Integrating MongoDB With Bonita</h1>
+	<p class="meta">
+		<time class='entry-date' datetime='2014-11-20T09:40:41+01:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:40 am</span></time>		
+	</p>
+</header>
+
+<div class="floating-right">
+	<img src="{{POST_PATH}}bonita_bpm_with_mongodb.png" alt="Bonita BPM + MongoDB"/>	
+</div>
+
+
+<h3>About the talk</h3>
+
+<p>In this talk, I presented NoSQL databases in general and MongoDB more in depth.
+I then gave an overview of the pro and cons of using NoSQL databases vs traditional RDBMS 
+illustrated with some good and bad uses cases.
+I concluded by providing an example of an integration of MongoDB with Bonita BPM.</p>
+
+
+<h3>Implementing the Bonita connectors for MongoDB</h3>
+
+<p>For the need of the webinar I wanted to a least one MongoDB connector with the community.
+A previous version of such a connector already existed but it lacked flexibility in its connection 
+configuration and query definition.</p>
+
+<p class="small-bottom-margin">In order to compensate for this, I implemented two connectors with:</p>
+<ul>
+	<li>A distinct connection mode: direct connection or pooled datasource</li>
+	<li>Full text queries supporting server-side JS code</li>
+</ul>
+
+<p>This later point proved extremly useful when I built a sample &#8220;Mongo Store&#8221; set of processes to demonstrate the use of the connectors.<br/>
+With this capability, I could write the following query in Groovy including a JS function that would be executed on the MongoDB server side:</p>
+
+<div class="code-caption">Generating an id, inserting a document and returning its id</div>
+<pre>StringBuffer query = new StringBuffer("function () {\n");
+query.append("var id = ObjectId();\n");
+query.append("db.productTypes.insert({_id : id, name : \""+ productTypeName +"\"});\n");
+query.append("return id;");
+query.append("}");
+return query.toString();</pre>
+
+
+<h3>Implementing a JNDI datasource for MongoDB</h3>
+
+<p>While implementing these connectors, I discovered - with utmost disarray - that MongoDB did not provide a 
+JNDI datasource implementation. It relies instead on a built-in pooling mechanism provided by the MongoDB client.</p>
+
+<p>Being used to configure large Java applications, I must say that connection pooling and JNDI datasources 
+are quite mandatory for performance as well as maintainability.<br/>
+In consequence, I implemented a generic implementation of a JNDI datasource for MongoDB.</p>
+
+
+<h3>Resources</h3>
+
+<ul>
+	<li><a href="https://github.com/pozil/mongodb-jndi-datasource" target="_blank" class="external">MongoDB JNDI Datasource</a></li>
+	<li><a href="https://github.com/pozil/bonita-mongodb-connectors" target="_blank" class="external">MongoDB Connectors for Bonita BPM</a></li>
+</ul>
+
+</article>
