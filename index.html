@@ -46,7 +46,7 @@
 
 			<div class="site-content" ng-class="appCtrl.isSidebarMinimized ? 'col-sm-12' : 'col-sm-9'">
 				<span class="toggle-sidebar" ng-click="appCtrl.toggleSidebar()" ng-class="appCtrl.isSidebarMinimized ? 'minimized' : 'maximized'"></span>
-				<div ng-view></div>
+				<div ng-view autoscroll="true"></div>
 			</div>
 
 			<div class="sidebar" ng-class="appCtrl.isSidebarMinimized ? 'minimized' : 'col-sm-3'">

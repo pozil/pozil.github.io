@@ -57,8 +57,8 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 }]);
 
 
-appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', '$sce',
-	function($rootScope, $routeParams, $http, $sce) {
+appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', '$sce', '$anchorScroll',
+	function($rootScope, $routeParams, $http, $sce, $anchorScroll) {
 		
 	var ctrl = this;
 	ctrl.posts = [];
@@ -71,6 +71,7 @@ appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', 
 
 	ctrl.pageChanged = function() {
 		ctrl.posts = [];
+		$anchorScroll('top');
 		var startIndex = (ctrl.pageIndex-1) * 3;
 		var stopIndex = startIndex +3;
 		for (var postIndex = startIndex; postIndex < ctrl.totalCount && postIndex < stopIndex; postIndex++) {
