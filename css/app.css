@@ -227,6 +227,7 @@ article>header {display:none;}
 article h4 {margin-top: 1em;}
 
 article .floating-right {float:right; margin-left:20px;}
+article .floating-left {float:left; margin-right:20px;}
 article .grey-container	{
 	border:1px solid #bfbfbf;
 	border-radius:5px;
