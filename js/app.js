@@ -132,7 +132,6 @@ appModule.config(function($routeProvider, $locationProvider) {
 
 appModule.run(['$rootScope', '$location', '$window', function($rootScope, $location, $window){
 	$rootScope.$on('$routeChangeStart', function (event) {
-		console.log('Update: '+ $location.path());
 		if (!$window.ga)
 			return;
 		$window.ga('send', 'pageview', $location.path());
