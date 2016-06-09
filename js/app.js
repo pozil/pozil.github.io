@@ -3,8 +3,8 @@
 
 var appModule = angular.module('pozBlog', ['ui.bootstrap', 'ngRoute']);
 
-appModule.controller('AppController', ['$rootScope', '$location', '$anchorScroll', '$http',
-	function($rootScope, $location, $anchorScroll, $http) {
+appModule.controller('AppController', ['$rootScope', '$location', '$window', '$anchorScroll', '$http',
+	function($rootScope, $location, $window, $anchorScroll, $http) {
 
 	$rootScope.posts = [];
 
@@ -129,5 +129,14 @@ appModule.config(function($routeProvider, $locationProvider) {
 		redirectTo: '/posts'
 	});
 });
+
+appModule.run(['$rootScope', '$location', '$window', function($rootScope, $location, $window){
+	$rootScope.$on('$routeChangeStart', function (event) {
+		console.log('Update: '+ $location.path());
+		if (!$window.ga)
+			return;
+		$window.ga('send', 'pageview', $location.path());
+	});
+}]);
 
 })();
