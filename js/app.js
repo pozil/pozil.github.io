@@ -35,6 +35,7 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 		
 	var ctrl = this;
 	ctrl.post = null;
+	ctrl.postIndex = null;
 	
 	ctrl.getAsHtml = function(content) {
 		return $sce.trustAsHtml(content);
@@ -51,7 +52,42 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 			ctrl.post.content = content.replace(/{{POST_PATH}}/g, postPath);
 			content = null;
 		});
+		// Get post index
+		ctrl.postIndex = getPostIndex();
 	}
+	
+	function getPostIndex() {
+		var postIndex = null;
+		for (var i=0; postIndex == null && i<$rootScope.posts.length; i++) {
+			if ($rootScope.posts[i].date === ctrl.post.date)
+				postIndex = i;
+		}
+		return postIndex;
+	}
+	
+	ctrl.getPreviousPostUrl = function() {
+		if (ctrl.hasPreviousPost()) {
+			var previousPost = $rootScope.posts[ctrl.postIndex -1];
+			return '#/post/'+ previousPost.date;	
+		}
+		return '';		
+	};
+	
+	ctrl.getNextPostUrl = function() {
+		if (ctrl.hasNextPost()) {
+			var nextPost = $rootScope.posts[ctrl.postIndex +1];
+			return '#/post/'+ nextPost.date;
+		}
+		return '';
+	};
+	
+	ctrl.hasNextPost = function() {
+		return (ctrl.postIndex !== $rootScope.posts.length -1);
+	};
+	
+	ctrl.hasPreviousPost = function() {
+		return (ctrl.postIndex !== 0);
+	};
 	
 	loadPost($routeParams.postId);
 }]);
@@ -112,6 +148,22 @@ appModule.controller('ArchiveController', ['$rootScope', '$filter', function($ro
 	
 	this.uniqueYears = getUniqueYears();
 }]);
+
+
+appModule.directive('toggleableLink', function() {
+	return {
+		restrict: 'A',
+		scope: {
+			enabled: '=toggleableLink'
+		},
+		link: function(scope, element, attrs) {
+			element.bind('click', function(event) {
+				if(!scope.enabled)
+					event.preventDefault();
+			});
+		}
+	};
+});
 
 
 appModule.config(function($routeProvider, $locationProvider) {
