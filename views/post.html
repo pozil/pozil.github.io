@@ -3,22 +3,22 @@
 		<ul class="pager">
 			<li class="previous" ng-class="postCtrl.hasPreviousPost() ? '' : 'disabled'">
 				<a ng-href="{{postCtrl.getPreviousPostUrl()}}" toggleable-link="postCtrl.hasPreviousPost()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer</a>
-			</li> 
+			</li>
 			<li class="next" ng-class="postCtrl.hasNextPost() ? '' : 'disabled'">
 				<a ng-href="{{postCtrl.getNextPostUrl()}}" toggleable-link="postCtrl.hasNextPost()"> Older<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
 			</li>
 		</ul>
 	</nav>
 	
-	<h2 class="post-title">{{postCtrl.post.title}}</h2>
-	<p class="post-date">{{postCtrl.post.date | date}}</p>
+	<h2 class="post-title">{{postCtrl.post.title}}<a class="glyphicon glyphicon-link" ng-href="#/post/{{post.date}}" title="Direct link"></a></h2>
+	<p class="post-date"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{postCtrl.post.date | date}}</p>
 	<div class="post-content" ng-bind-html="postCtrl.getAsHtml(postCtrl.post.content)"></div>
 	
 	<nav>
 		<ul class="pager">
 			<li class="previous" ng-class="postCtrl.hasPreviousPost() ? '' : 'disabled'">
 				<a ng-href="{{postCtrl.getPreviousPostUrl()}}" toggleable-link="postCtrl.hasPreviousPost()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Newer</a>
-			</li> 
+			</li>
 			<li class="next" ng-class="postCtrl.hasNextPost() ? '' : 'disabled'">
 				<a ng-href="{{postCtrl.getNextPostUrl()}}" toggleable-link="postCtrl.hasNextPost()"> Older<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
 			</li>
