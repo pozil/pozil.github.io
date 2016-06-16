@@ -128,7 +128,10 @@ appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', 
 		});
 	}
 	
-	ctrl.pageChanged();
+	// Trigger initial display once posts are loaded
+	$rootScope.$watch('posts', function () {
+		ctrl.pageChanged();
+	});
 }]);
 
 
