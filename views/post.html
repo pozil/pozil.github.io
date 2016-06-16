@@ -10,9 +10,11 @@
 		</ul>
 	</nav>
 	
-	<h2 class="post-title">{{postCtrl.post.title}}<a class="glyphicon glyphicon-link" ng-href="#/post/{{post.date}}" title="Direct link"></a></h2>
-	<p class="post-date"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{postCtrl.post.date | date}}</p>
-	<div class="post-content" ng-bind-html="postCtrl.getAsHtml(postCtrl.post.content)"></div>
+	<div itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+		<h2 class="post-title" itemprop="about">{{postCtrl.post.title}}<a class="glyphicon glyphicon-link" ng-href="#/post/{{post.date}}" title="Direct link" itemprop="url"></a></h2>
+		<p class="post-date" itemprop="datePublished"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{postCtrl.post.date | date}}</p>
+		<div class="post-content" itemprop="articleBody" ng-bind-html="postCtrl.getAsHtml(postCtrl.post.content)"></div>
+	<div>
 	
 	<nav>
 		<ul class="pager">

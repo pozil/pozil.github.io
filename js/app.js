@@ -180,6 +180,8 @@ appModule.config(function($routeProvider, $locationProvider) {
 	.otherwise({
 		redirectTo: '/posts'
 	});
+	
+	$locationProvider.html5Mode(true);
 });
 
 appModule.run(['$rootScope', '$location', '$window', function($rootScope, $location, $window){

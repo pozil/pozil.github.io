@@ -8,11 +8,14 @@
 	<meta name="author" content="Philippe Ozil">
 	<meta name="description" content="A blog about various technologies and Open Source projects">
 	
-	<link href="/favicon.png" rel="icon">
+	<base href="/">
+	
+	<link href="favicon.png" rel="icon">
 	<link href="css/3rd-party/bootstrap.min.css" rel="stylesheet">
 	<link href="css/app.css" rel="stylesheet">
 </head>
-<body ng-controller="AppController as appCtrl">
+<body ng-controller="AppController as appCtrl" itemscope itemtype="http://schema.org/Blog">
+	<meta itemprop="keywords" content="Technology, Salesforce, Bonita, BPM, Open Source"/>
 
 	<!-- Site header -->
 	<div class="container site-header" id="top">
@@ -51,9 +54,9 @@
 
 			<div class="sidebar" ng-class="appCtrl.isSidebarMinimized ? 'minimized' : 'col-sm-3'">
 				<img class="avatar" src="images/avatar.png" alt="Philippe Ozil"/>
-				<div class="sidebar-module">
+				<div class="sidebar-module" itemprop="author" itemscope itemtype="http://schema.org/Person">
 					<h4><span class="glyphicon glyphicon-user"></span> About me</h4>
-					<p>My name is Philippe Ozil, I am Developer Evangelist at Salesforce.</p>
+					<p>My name is <span itemprop="name">Philippe Ozil</span>, I am <span itemprop="jobTitle">Developer Evangelist</span> at <span itemprop="worksFor">Salesforce</span>.</p>
 					<p>Prior to that, I was Technical Evangelist and consultant for Bonitasoft an Open Source BPM software vendor.</p>
 					<p>I am a Java and AngularJS expert but I enjoy experimenting with many different technologies.</p>
 					<p>I am opening this blog to share my experience.<br/>
@@ -85,7 +88,9 @@
 	<div class="container site-footer">
 		<div class="row">
 			<div class="col-sm-4">
-				<p>Copyright © 2016 - Philippe Ozil</p>
+				<p>Copyright © <span itemprop="copyrightYear">2016</span> - 
+					<span itemprop="copyrightHolder" itemscope itemtype="http://schema.org/Person">Philippe Ozil</span>
+				</p>
 			</div>
 			<div class="col-sm-4 text-center">
 				<a href="" ng-click="appCtrl.scrollToTop()"><span class="glyphicon glyphicon-arrow-up"></span>Back to top</a>

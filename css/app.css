@@ -5,6 +5,7 @@ html, body {
 	font-size: 17px;
 }
 
+.hidden {display:none;}
 .text-center {text-align: center;}
 p {text-align: justify;}
 a .glyphicon {margin-right:5px;}
