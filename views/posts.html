@@ -1,7 +1,8 @@
 <div ng-controller="PostsController as postsCtrl" class="full-posts">
+	
 	<div ng-repeat="post in postsCtrl.posts" class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-		<h2 class="post-title" itemprop="about">{{post.title}}<a class="glyphicon glyphicon-link" ng-href="#/post/{{post.date}}" title="Direct link" itemprop="url"></a></h2>
-		<p class="post-date" itemprop="datePublished"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{post.date | date}}</p>
+		<h2 class="post-title" itemprop="name headline">{{post.title}}<a class="glyphicon glyphicon-link" ng-href="#/post/{{post.date}}" title="Direct link" itemprop="url"></a></h2>
+		<time class="post-date" itemprop="datePublished" datetime="{{post.date}}"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>{{post.date | date}}</time>
 		<div class="post-content" itemprop="articleBody" ng-bind-html="postsCtrl.getAsHtml(post.content)"></div>
 	</div>
 
