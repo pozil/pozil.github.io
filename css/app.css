@@ -185,6 +185,7 @@ a.external:before	{width:20px; height:16px; background:url('../images/external-l
 .full-posts .post {
     border-top: 1px dotted #B7B7B7;
 	margin-bottom: 50px;
+	clear: both;
 }
 .full-posts .post:first-of-type {
     border-top-width: 0;
@@ -241,6 +242,7 @@ article .grey-container	{
 }
 article .small-bottom-margin	{margin-bottom:5px;}
 article .smaller-text			{font-size:smaller;}
+article ul.large-list li	{margin-bottom:10px;}
 
 article table.pro-cons	{margin:10px auto 20px auto; width:650px;}
 article table.pro-cons th, article table.pro-cons td	{border:1px solid grey; padding:5px;}
@@ -265,7 +267,7 @@ article .code-caption {
 	border-bottom: 0;
 	border-radius: 5px 5px 0 0;
 }
-article pre {border-radius: 0 0 5px 5px;}
+article pre, article xmp {border-radius: 0 0 5px 5px;}
 
 /* IMAGE */
 article .img-caption {
@@ -276,3 +278,17 @@ article .img-caption {
 
 /* Bootstrap Angular fix */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+/* Bootstrap fix to apply 'pre' style to 'xmp' tag */
+xmp {
+	font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+	display: block;
+	padding: 9.5px;
+	margin: 0 0 10px;
+	font-size: 13px;
+	line-height: 1.42857143;
+	color: #333;
+	word-break: break-all;
+	word-wrap: break-word;
+	background-color: #f5f5f5;
+	border: 1px solid #ccc;
+}

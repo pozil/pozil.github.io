@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Meet the Salesforce App Cloud</h1>
+</header>
+
+<h3>Wait, what? Salesforce isn't just a CRM?</h3>
+
+<div class="floating-right">
+	<img src="posts/2016/06/17/salesforce-clouds.png" alt="Salesforce clouds"/>
+	<div class="img-caption">Salesforce clouds</div>
+</div>
+
+<p>In the past month I attended a couple of Salesforce events in various countries. While Salesforce is quite established in the USA, it still an ongoing effort in Europe.</p>
+
+<p>I was surprised by the number of people that did not see the potential of Salesforce's beyond its original CRM offer.</p>
+
+<p>In fact, it provides way more solutions via its clouds than just CRM, it even does IoT with the recently announced <a href="https://www.salesforce.com/iot-cloud" target="_blank" class="external">IoT Cloud</a> (missing from this image).</p>
+
+<p>In the context of this post, I will focus on the cloud that matters the most to me as a developer: the <a href="https://www.salesforce.com/platform/overview/" target="_blank" class="external">App Cloud</a>.</p>
+
+
+<h3>Introducing the App Cloud</h3>
+
+<div class="floating-left">
+	<img src="posts/2016/06/17/app-cloud.png" alt="Salesforce App Cloud"/>
+</div>
+
+<p>So what's the deal with this App Cloud thing?<br/>
+Well, if - like me - you implemented some applications, pushed them to production and maintained them over time, this is a game changer (not a euphemism).</p>
+
+<p>With this cloud service, you can build and host applications without having to worry about the usual pain points of standard apps &amp; platforms.</p>
+
+<p>Just like any developer, I have spent countless hours of stress and sweating while trying to figure out how to setup and optimize things such as platform settings (JVM memory, database pooling...), authentication via SSO and other joys. Note that I am not even mentioning infrastructure (hardware, networking...) here as it should hopefully not rest in the hands of developers.</p>
+
+<p>Still, this is just the beginning of concerns for developers. Further down the road a set of other major risks kick in: updates, upgrades or migrations.
+These can genuinely generate stress for entire organizations.
+Behind these words is a silent fear that can be simply resumed by "things could go wrong, critical data may be lost".</p>
+
+<p>By developing and hosting applications on a cloud such as the App Cloud, you eliminate most of that burden. You simply trust the platform for all of that.
+The relief you get out of this allows us - developer - to re-focus on what really matters: the application implementation.</p>
+
+<p>Ok, fine, you get the point but how are these application actually implemented?</p>
+
+
+<h3>Developing on Force.com, Salesforce's PaaS</h3>
+
+<p>What made the historical success of Salesforce's original CRM offer was its support for multi-tenancy while being highly customizable.</p>
+
+<p>Long story short: the company realized that it could reuse its powerful in-house platform and formidable tools by making them more generic and opening them to customers for any kind of application development.<br/>
+Hence came <a href="http://www.salesforce.com/platform/products/force/" target="_blank" class="external">Force.com</a> in 2007, Salesforce's PaaS.</p>
+
+<p>As a developer, you probably will wonder what is behind this PaaS and what can be leveraged to implement applications so let me guide you through a quick tour.</p>
+
+<p>Force.com development relies on 3 main technologies: Apex, Visualforce and Lighting.</p>
+
+
+<h4>Apex</h4>
+
+<p><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/" target="_blank" class="external">Apex</a> is Force.com backend programming language.</p>
+
+<p>Its basic syntax is quite similar to Java but there are some key difference.
+I will dedicate a detailed post to this later but in the meanwhile I will summarize a bit.</p>
+
+<p>Apex is a 'simplified' or 'reduced' version of Java but it also brings some extremely useful additions such as <a href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/" target="_blank" class="external">SOQL</a> (Salesforce Object Query Language).</p>
+
+<p>What this means is that developers no longer have to worry about managing connections, transactions and other ORM (Object Relational Mapping) aspects.<br/>
+They can directly write a query in their code and manipulate objects as simply as this:</p>
+
+<div class="code-caption">Apex sample with some SOQL</div>
+<pre>
+public void updateLead(Id leadId) {
+	Lead lead = [SELECT name FROM Lead WHERE Id=:leadId];
+	System.Debug('Updating lead '+ lead.name);
+	lead.leadSource = 'POZ blog';
+	update lead;
+}
+</pre>
+
+
+<h4>Visualforce</h4>
+
+<p><a href="https://developer.salesforce.com/docs/atlas.en-us.pages.meta/pages/" target="_blank" class="external">Visualforce</a> is Force.com historical view (as in MVC) control technology.</p>
+
+<p>It is XML based and acts as an extension of HTML by adding some extra tags and behavior to pages.<br/>
+Note that it can also be mixed with HTML, CSS or JavaScript.</p>
+
+<p>An important aspect of this technology is that it is server-compiled so it resides on the backend.<br/>
+The advantage of this resides in the fact that it can be seamlessly integrated with the model (Apex object instances) and the controller (Apex classes).</p>
+
+<div class="code-caption">Visualforce page sample</div>
+<xmp><apex:page standardController="Opportunity">
+
+	<h1>I can also write pure HTML</h1>
+
+	<apex:pageBlock title="Opportunity Details">
+		<apex:pageBlockSection >
+			<apex:outputField value="{! Opportunity.Name }"/>
+			<apex:outputField value="{! Opportunity.Amount }"/>
+			<apex:outputField value="{! Opportunity.CloseDate }"/>
+			<apex:outputField value="{! Opportunity.Account.Name }"/>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:page>
+</xmp>
+
+<p>Although it remains the most popular technology in use for designing Salesforce user interfaces it will eventually be gradually replaced by its more modern counterpart: Lightning.<br/>
+Think of it just like modern MVVC frameworks such as AngularJS or React are somehow replacing traditional MVC technologies such as JSF or GWT.</p>
+
+
+<h4>Lightning</h4>
+
+<p><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/" target="_blank" class="external">Lightning</a> is Force.com brand new view control technology.</p>
+
+<p>The major difference with its predecessor (Visualforce) is that this technology is mostly client-based.</p>
+
+<p>Lightning actually consists of a set of frameworks and a build tool:</p>
+
+<div class="floating-right">
+	<img src="posts/2016/06/17/aura.png" alt="Aura framework"/>
+</div>
+
+<ul class="large-list">
+	<li><a href="https://github.com/forcedotcom/aura" target="_blank" class="external">Aura</a>, a JavaScript Open Source framework that deals with MVC on the client side.<br/>
+	It contains a stateful client that relies on an event/component based architecture. It also relies on a stateless server (not directly exposed to users) for metadata access.<br/>
+	In Force.com, Aura can be coupled with Apex controllers for backend processing.</li>
+	<li><a href="https://github.com/forcedotcom/aura" target="_blank" class="external">Salesforce Lightning Design System</a> (SLDS), a CSS3 Open Source responsive UI framework.<br/>
+	SLDS is similar to Bootstrap except that it does not use JavaScript and only supports the Salesforce theme.</li>
+	<li><span style="color:#337ab7;">Lightning App Builder</span>, a graphical UI designer that allows to create pages using Lightning Components (implemented with Aura and SLDS).</li>
+</ul>
+
+<div class="text-center">
+	<img src="posts/2016/06/17/lightning-app-builder.png" alt="Lightning App Builder"/>
+	<div class="img-caption">Lightning App Builder</div>
+</div>
+
+
+<h3>Closing words</h3>
+
+<p>Well, that was intense. We went through a tour of the different Force.com technologies but we only scratched the surface here.</p>
+<p>There is plenty more to discover so make sure to check out all the links I have scattered in this article and read my upcoming posts.</p>
+
+<div class="grey-container" style="margin-top:20px;">
+<p><b>Resources</b></p>
+<ul>
+	<li>To get access to all developer resources head to:<br/>
+<a href="https://developer.salesforce.com" target="_blank" class="external">https://developer.salesforce.com</a></li>
+</ul>
+<ul>
+	<li>To start training yourself, try the amazing Trailhead experience:<br/>
+<a href="https://developer.salesforce.com/trailhead" target="_blank" class="external">https://developer.salesforce.com/trailhead</a></li>
+</ul>
+</div>
+
+</article>

@@ -1,6 +1,9 @@
 {
 	"posts": [
 		{
+			"date": "2016-06-17",
+			"title": "Meet the Salesforce App Cloud"
+		}, {
 			"date": "2016-06-06",
 			"title": "Becoming Salesforce"
 		}, {
