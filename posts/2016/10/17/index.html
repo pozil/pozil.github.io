@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Driving Salesforce with React &amp; Node.js</h1>
+</header>
+
+<div class="floating-right">
+	<img src="posts/2016/10/17/post-thumbnail.png" alt="Technologies used"/>
+</div>
+
+<p>Having recently joined Salesforce, I wanted to learn more about the potential interactions and integrations
+	between Force.com and third party technologies.</p>
+
+<p>I came with a strong AngularJS knowledge but I also had an interest in its closest competitor: React.
+	Being a regular attendee of tech conferences and reading publications,
+	I knew that it was gaining a lot of attention over the years.
+	However being popular does not imply greatness so I wanted to check it out for myself.</p>
+
+<p>Based on these two interests I started an exercise that would lead me to build a web application that
+	interacts with Salesforce’s Force.com APIs through a React front-end and a Node.js back-end.</p>
+
+<p>I used this opportunity to write this blog post to share my learning journey. It will provide some insights to any developer wishing to start a similar venture.</p>
+
+<p>I will describe the solution’s architecture and the implementation path I followed. Then, as a takeaway I will provide a sample application and a reusable utility library.</p>
+
+
+<h2>An overview of the sample application</h2>
+<p>Before we deep-dive into the code, I will take some time to present the sample application that I have implemented to illustrate this integration.</p>
+
+<p>When I started this project I wanted to cover the following common use cases:</p>
+<ul>
+ 	<li>Logging in and out with a Salesforce user.</li>
+ 	<li>Getting some information from the currently connected user.</li>
+ 	<li>Running a Salesforce Object Query Language (SOQL) query and displaying its results.</li>
+</ul>
+
+<p>To do that, I implemented a single page application built in React with two main views:</p>
+<ul>
+ 	<li>A landing view where the user can connect.</li>
+ 	<li>A main view where the user can type a SOQL query, execute it and get the results then, log out.</li>
+</ul>
+
+<p>Without giving a React course, I will just say that it relies on components to build user interfaces.</br>
+I decomposed my application’s views in the following 5 components (the app itself counts as one):</p>
+
+<p class="text-center">
+	<img title="React components" src="posts/2016/10/17/react-components.png" alt="React components" width="40%" height="40%" />
+</p>
+
+<p>I then applied the “icing on the cake” to make it look nice like a Salesforce application by using the <a class="external" href="https://www.lightningdesignsystem.com" target="_blank">Salesforce Lightning Design System</a> (SLDS).</p>
+
+<p>For those of you who are not yet familiar with SLDS, this is a pure CSS (no JavaScript) Open Source framework used for rendering responsive web applications with a Salesforce lightning look and feel (more information in the resources section at the end of this post).</p>
+
+<p>With that said, here is a preview of the final rendering:</p>
+<img style="float: left;" title="Login screenshot" src="posts/2016/10/17/screenshot-login.png" alt="Login screenshot" width="40%" height="40%" />
+<img style="float: right; margin-bottom:10px;" title="Main screenshot" src="posts/2016/10/17/screenshot-main.png" alt="Main screenshot" width="40%" height="40%" />
+
+
+<h2 style="clear: both">OAuth 2.0 architecture considerations</h2>
+<p>Any application not hosted on the Force.com platform must authenticate its user when communicating with Salesforce.
+There are several authentication methods available such as Basic Authentication, OAuth 2.0 or SAML. In the case of our simple web application, the best practice resides in using OAuth 2.0.</p>
+
+<p>Using OAuth in an application imposes two particular constraints: a certain type of architecture and the need to provide a specific client implementation.</p>
+
+<p>In the context of a web application, OAuth requires a solution built on 3 layers: the client, a host (OAuth client/consumer) and the service provider (OAuth provider).
+These layers are required for several reasons but most importantly the fact that some of the information held by the OAuth client should never be exposed publicly (in particular the secret consumer key).</p>
+
+<p>For this project I decided to build a stack including a React application for the front-end, a Node.js application for the back-end and the Force.com services.</p>
+
+<p class="text-center">
+	<img class="text-center" title="Architecture overview" src="posts/2016/10/17/solution.png" alt="Architecture overview" />
+</p>
+
+<p>Although OAuth is a powerful authentication framework it lacks generic libraries to integrate with it. Its base is strictly specifications but it also has some unspecified extensions. So identity providers have some kind freedom in terms of their implementation.</p>
+<blockquote class="small-bottom-margin"><i>Because OAuth 2.0 is more of a framework than a defined protocol, one OAuth 2.0 implementation is less likely to be naturally interoperable with another OAuth 2.0 implementation. Further deployment profiling and specification is required for any interoperability.</i>
+</blockquote>
+<p class="smaller-text" style="text-align:right; width:60%; float:right;">Dick Hardt, ed. "Interoperability". The OAuth 2.0 Authorization Framework. IETF. sec. 1.8. RFC 6749.</p>
+
+<p style="clear:both;">As a consequence of this, we will have to take care of providing that extra glue that will allows us to interact with Force.com.</p>
+
+<p>For this project I built a lightweight and reusable <a href="https://github.com/pozil/salesforce-node-client" target="_blank">Force.com OAuth 2.0 client</a> as a Node.js module.</p>
+
+<p>For the sake of transparency, please note that there are several other alternatives to the use of this project such as:</p>
+<ul>
+ 	<li>Kevin O'Hara’s <a class="external" href="https://github.com/kevinohara80/nforce" target="_blank">nforce</a> library (probably the most popular)</li>
+ 	<li><a class="external" href="http://passportjs.org/" target="_blank">Passport</a> combined with the <a href="https://github.com/joshbirk/passport-forcedotcom" target="_blank">Force.com strategy</a>.</li>
+ 	<li>Cangencer’s <a class="external" href="https://github.com/cangencer/salesforce-oauth2" target="_blank">salesforce-oauth2</a> library (the source of inspiration of my project).</li>
+</ul>
+
+<p>One last thing worth mentioning about OAuth and Force.com is that whatever library you choose to use, you will have to declare a Connected Application in Salesforce. This will allow you to obtain credentials such as the consumer key and secret.
+For more information on how to declare a Connected App, you may either refer to the <a class="external"  href="https://help.salesforce.com/apex/HTViewHelpDoc?id=connected_app_create.htm" target="_blank">official documentation</a> (covers more that just OAuth) or read this <a href="https://github.com/pozil/salesforce-node-client#documentation" target="_blank">trimmed down version</a> (only covers OAuth).</p>
+
+
+<h2>The React.js code</h2>
+<p>Ok, now that we have seen what the application is used for and how it looks like, let’s dive into the code. We will start with the React client first.</p>
+
+<p>Our React components interact with each other and with our Node host in a variety of ways.</p>
+<p class="text-center">
+	<img class="aligncenter" title="React/Node interactions" src="posts/2016/10/17/react-node-interactions.png" alt="React/Node interactions" />
+</p>
+
+<p>To exchange information with our Node backend, we will rely on several HTTP endpoints on which we will perform Ajax calls and redirections. I will get back to those later in this post but for now we will focus on interactions between React components.</p>
+
+<p>In a basic React application, components interact with each other through properties and states.</p>
+
+<p>A state is internal to a component and can be passed to other components via properties.  Think of states as private read/write data whereas properties are read-only data within a component.</p>
+
+<p>In this sample project, we will have to deal with two set of state information:</p>
+<ul>
+ 	<li>the currently connected user</li>
+ 	<li>the query and its results</li>
+</ul>
+
+
+<h3>Dealing with the currently connected user</h3>
+<p>The “user” state is used in the rendering logic of the component (whether the login or query view should be displayed) and passed to the navigation bar sub-component (NavBar) as a property.</p>
+<pre>render: function() {
+  return (
+    &lt;div&gt;
+      &lt;NavBar user={this.state.user} /&gt;
+      { this.state.user == null ?
+        &lt;LoginPanel /&gt;
+        :
+        &lt;div className="slds-m-around--xx-large"&gt;
+          &lt;QueryForm onExecuteQuery={this.handleQueryExecution} /&gt;
+          { this.state.result ?
+            &lt;QueryResults result={this.state.result} /&gt;
+            :
+            null
+          }
+        &lt;/div&gt;
+      }
+    &lt;/div&gt;
+  );
+}</pre>
+
+<p>At this point, you should ask yourself “Where is the user state set? In the login panel component?” Well, no, there is an extra trick required here.</p>
+
+<p>As the HTML page holding our application can be refreshed at any time, we may lose all our React state (it is just JavaScript so it is not persisted unless we use a cookie or some other storage mean). Despite this, we still need to be able to display the right view to our user and not show him the login view when he is already connected.</p>
+
+<p>To achieve that, we will use the “componentDidMount” function. This is a special React component function that is triggered when the component is displayed.
+We will use it to perform an Ajax call to our backend to get the currently logged in user and set the state accordingly.</p>
+<pre>componentDidMount: function() {
+  // Get logged in user
+  $.ajax({
+    url: '/auth/whoami',
+    dataType: 'json',
+    success: function(data) {
+      this.setState({user: data});
+    }.bind(this)
+    ...
+  });
+}</pre>
+
+
+<h3>Dealing with the query and its result</h3>
+<p>Let’s now take look at our second important set of state information: the SOQL query and its result.</p>
+
+<p>Our parent App component calls two underlying components related to the query:</p>
+
+<p>First, a query form component (QueryForm) that exposes an onExecuteQuery property:</p>
+<pre>&lt;QueryForm onExecuteQuery={this.handleQueryExecution} /&gt;</pre>
+
+<p>Secondly, a query results component (QueryResults) that exposes a result property:</p>
+<pre>&lt;QueryResults result={this.state.result} /&gt;</pre>
+
+<p>The QueryForm component allows the user to type a query, which is then captured in a local “query” state (<b>1</b>).
+When the user submits the form, the component will pass the “query” state to a callback function that was set in the onExecuteQuery property (<b>2</b>):</p>
+<pre>this.props.onExecuteQuery({query: query});</pre>
+
+<p>This in turn calls the App component’s handleQueryExecution function with the query as parameter (<b>3</b>). This function will send the query to the Node backend via Ajax and store its result in a “result” state (<b>4</b>).</p>
+
+<p>Setting the “result” state will trigger a re-render of the App component. The new “result” state value will be passed to the QueryResults “result” property (<b>5</b>) and the query result will be displayed.</p>
+<p class="text-center">
+	<img title="React query interactions" src="posts/2016/10/17/react-query-interactions.png" alt="React query interactions" />
+</p>
+
+
+<h2>The Node.js code</h2>
+<p>I previously mentioned that the React code has to interact with several HTTP endpoints on the Node backend. We are now going to look into these in detail.</p>
+
+<p>There are two types of incoming requests that our Node application will handle: redirections and Ajax calls.
+Redirections will be used for logging in (this is a requirement for the OAuth authentication mode we will use) and logging out. Ajax calls will be used for all other requests.</p>
+
+<p>In order to process incoming requests, our Node application needs to act as an HTTP server. To achieve that we will use a module called “express” with an extension to handle server-side sessions (express-session).</p>
+
+<p>Our application will also need to emit HTTP requests to exchange with the Force.com services so we will also have a simple HTTP client called “request”.</p>
+
+<p>Then, most importantly we have a dependency on the Force.com Node.js client I implemented (salesforce-node-client). The idea here is to abstract some the complexity of dealing with the OAuth2 and Data service requests.</p>
+
+<p class="text-center">
+	<img title="Node/Force.com interactions" src="posts/2016/10/17/node-force-interactions.png" alt="Node/Force.com interactions" />
+</p>
+
+<p>Let’s take a closer look at the login scenario as it is the most complex yet the most interesting.</p>
+
+<p>Here is what happens:</p>
+<ol class="large-list">
+ 	<li>The user clicks on the login button in the React application. This will redirect him to the <code>/auth/login</code> endpoint of the Node application.</li>
+ 	<li>Based on its configuration the node application will generate a Salesforce authorization URL and redirect the user to it.
+<pre>app.get("/auth/login", function(request, response) {
+  var uri = sfdc.auth.getAuthorizationUrl({scope: 'api'});
+  return response.redirect(uri);
+});</pre>
+</li>
+ 	<li>The user will log in to Salesforce if needed and authorize access to our application. This last action will redirect him to a pre-configured <code>/auth/callback</code> URL in our Node application.</li>
+ 	<li>The endpoint will retrieve an authorization code sent by Salesforce and will verify it by using the Salesforce Node Client authenticate function.
+<pre>app.get('/auth/callback', function(request, response) {
+  // Authenticate with Force.com via OAuth
+  sfdc.auth.authenticate({
+    'code': request.query.code
+  }, function(error, payload) {
+    ...
+  });
+});</pre>
+</li>
+ 	<li>Upon authentication success, we will store the returned OAuth session in a node session and will redirect the user to the React application’s home page.</li>
+</ol>
+
+<p>Once the user is successful authenticated we can then send Force.com data requests through the REST API. Fortunately for us, this process is way simpler.</p>
+
+<p>For example, performing a SOQL query can be done with these few lines:</p>
+<pre>var apiRequestOptions = sfdc.data.createDataRequest(session.sfdcAuth, 'query?q='+ query);
+
+httpClient.get(apiRequestOptions, function (error, payload) {
+  // Do something with payload.body
+});</pre>
+
+<p>Here, we first create some REST API request options with the Salesforce Node client. The client will use the OAuth session that we persisted to:</p>
+<ul>
+ 	<li>generate the proper request URL to our Force.com organization</li>
+ 	<li>sign the data requests by adding some HTTP headers.</li>
+</ul>
+
+<p>Finally, we use our HTTP client to execute the request with these options and we process the response accordingly.</p>
+
+<p>If we want to go further, we can expand this example and perform any kind of REST operations not limited to GET.</p>
+
+
+<h2>Conclusion</h2>
+<p>In this post I have detailed the technical implementation of an application that interacts with Force.com through a React.js frontend and a Node.js backend.</p>
+
+<p>I have demonstrated Force.com authentication through OAuth2 and I have given an example of a REST API call by running user-submitted SOQL queries.</p>
+
+<p>The combination of this post and the two related projects that I delivered should help anyone to get started quickly to build their first React/Node/Salesforce applications.</p>
+
+
+<div class="grey-container" style="margin-top:20px;">
+<p><b>Resources</b></p>
+<ul class="large-list">
+	<li>
+		<b>Sample React application</b></br>
+		The source code of the sample React application used in this project is available in this <a href="https://github.com/pozil/salesforce-react-integration" target="_blank">GitHub repository</a>.
+	</li>
+	<li>
+		<b>Salesforce Node Client</b></br>
+		The source code and documentation of the Salesforce Node Client is available in this <a href="https://github.com/pozil/salesforce-node-client" target="_blank">GitHub repository</a>
+	</li>
+	<li>
+		<b>Salesforce Lightning Design System (SLDS)</b></br>
+		Check out the <a href="https://www.lightningdesignsystem.com" target="_blank">SLDS site and its documentation</a>.
+		You can also train yourself by following this excellent <a href="https://developer.salesforce.com/trailhead/module/lightning_design_system" target="_blank">SLDS Trailhead module</a>.
+	</li>
+	<li>
+		<b>React Lightning Design System</b></br>
+		For the sake simplicity and flexibility, I directly used SLDS CSS in my sample application but note that if you are looking at a bigger deployment you might want to consider this <a href="https://github.com/mashmatrix/react-lightning-design-system" target="_blank">SLDS React integration</a>.
+	</li>
+	<li>
+		<b>Digging Deeper into OAuth 2.0 on Force.com</b></br>
+		If you wish to learn more on OAuth 2.0 authentication on Force.com, I recommend this <a href="https://developer.salesforce.com/page/Digging_Deeper_into_OAuth_2.0_on_Force.com target=">blog post</a>.
+	</li>
+</ul>
+</div>
+
+</article>

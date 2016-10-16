@@ -242,7 +242,7 @@ article .grey-container	{
 }
 article .small-bottom-margin	{margin-bottom:5px;}
 article .smaller-text			{font-size:smaller;}
-article ul.large-list li	{margin-bottom:10px;}
+article ul.large-list li, article ol.large-list li	{margin-bottom:10px;}
 
 article table.pro-cons	{margin:10px auto 20px auto; width:650px;}
 article table.pro-cons th, article table.pro-cons td	{border:1px solid grey; padding:5px;}
