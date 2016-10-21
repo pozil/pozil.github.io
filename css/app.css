@@ -254,6 +254,10 @@ article table.pro-cons tr:first-child>th:nth-child(2), article table.pro-cons tr
 article table.pro-cons tr:nth-child(2) th, article table.pro-cons tr:nth-child(2) td		{background-color:#C0F6D2;}	/* Pros */
 article table.pro-cons tr:nth-child(3) th, article table.pro-cons tr:nth-child(3) td		{background-color:#F6C0C0;}	/* Cons */
 
+/* QUOTE */
+article blockquote {margin-bottom:5px; font-style:italic;}
+article .quote-source {font-size:smaller; text-align:right; width:60%; float:right;}
+
 /* CODE */
 article .code-caption {
 	text-align: center;
@@ -268,6 +272,7 @@ article .code-caption {
 	border-radius: 5px 5px 0 0;
 }
 article pre, article xmp {border-radius: 0 0 5px 5px;}
+span.code {font-family: Menlo,Monaco,Consolas,"Courier New",monospace; font-size: 15px;	background-color: #e0e0e0; padding:3px;}
 
 /* IMAGE */
 article .img-caption {

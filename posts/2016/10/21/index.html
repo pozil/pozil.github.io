@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<article>
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@PhilippeOzil" />
+<meta name="twitter:title" content="Leveraging Virtual Reality to engage with your audience" />
+<meta name="twitter:description" content="Sharing my personal experience on VR and my learning journey on building a VR app supporting a business use case." />
+<meta name="twitter:image" content="http://pozil.github.io/#/posts/2016/10/17/oculus-rift.jpg" />
+
+<header>
+	<h1>Leveraging Virtual Reality to engage with your audience</h1>
+</header>
+
+<div class="floating-right">
+	<img src="posts/2016/10/21/dreamhouse-logo.jpg" alt="Technologies used"/>
+</div>
+
+<p>With an active ecosystem and large companies investing in it (Google, Facebook, Sony...), Virtual Reality (VR) is no longer just a buzzword. It is a whole new way to engage with audiences.</p>
+
+<p>If you were at Dreamforce 2016, you may have come across the DreamHouse.org VR demo booth that my team set up.<br/>
+We showcased a demo that involved Salesforce and VR. This experience depicted a customer journey with a fictitious NGO named DreamHouse.org that provides sustainable and affordable buildings made of recycled shipping containers.</p>
+
+<p>Having said that, I will dedicate this blog post to share about what it takes to build such a VR experience and how to have it interact with the Salesforce platform.</p>
+
+<p>Since VR is a relatively new technology, I have often heard criticism about it such as:</p>
+
+<ul>
+		<li>there are very limited business use cases for VR, it's just for meant for gaming</li>
+		<li>VR costs a fortune in terms of hardware and software</li>
+		<li>VR development sounds either like dark magic or something that requires a PhD</li>
+</ul>
+
+<p>I will do my best to cast away these misconceptions by sharing my personal experience and my learning journey. It may surprise you but I knew nothing about VR two months ago!</p>
+
+
+<h2>Defining a use case</h2>
+
+<p>Our DreamHouse.org VR demo sure did look like a video game from a distance but it was not its core focus. In the experience, we used stylised graphics to take the viewer on a compelling customer journey and we captured lead information in Salesforce. This is not gaming but marketing!</p>
+
+<p>Beyond this particular example, there are various other <a class="external" href="https://www.entrepreneur.com/article/274586" target="_blank">business applications</a> for VR:</p>
+
+<ul class="large-list">
+		<li>Exploring remote or dangerous areas. For example you could go for a virtual shopping experience, property tours for a real estate company or a museum visit.</li>
+		<li>Various configurator applications. Imagine if you could design the perfect room layout for your living room without the pain of physically moving pieces of furniture around or, order the kitchen of your dream just from you chair?</li>
+		<li>Training simulation that involves expensive or rare hardware.</li>
+</ul>
+
+<p>And the list goes on... In the end, your imagination is the limit.</p>
+
+<h2>Picking the right hardware</h2>
+
+<p>Depending on your use case you will have to choose between two main hardware categories: either a low cost mobile solution or a high end desktop solution. Bear in mind that the target hardware will impact the development process and once you start with one platform, it will be difficult and costly to change the hardware stack.</p>
+
+<h3>Low cost, mobile solution</h3>
+
+<p>This requires a recent mobile phone (1 or 2 year old) and a "VR headset" (in that case, it is more a "phone holder" if you ask me).<br/>
+Devices in this category include the Samsung Gear VR, the yet to be released Google Daydream View or cheaper alternatives such as the Google Cardboard.<br/>
+The whole solution will cost around $500 ($400 phone + $3 to $100 headset), which is not too expensive considering the fact that you may already own a compatible mobile phone.</p>
+
+<p>The downside of this solution is the quality/performance of the experience. Depending on the complexity of the scenes that you want to render, there might be some serious optimisation effort to undertake to keep the frame rate at acceptable level.</p>
+
+<p>In VR, frame rate is something that is particularly important compared to traditional monitor experiences.<br/>
+For instance, in a video game on a desktop, the frame rate might drop on some occasions and you might notice that things are a bit bumpy but you would not experience nausea or motion sickness like you would on a VR headset.</p>
+
+<h3>High end, desktop solution</h3>
+
+<p>This requires a high end VR-ready desktop configuration with a bleeding edge GPU and the VR headset.<br/>
+Devices in this category include the Oculus Rift and the Steam VR/HTC Vive. I am not mentioning the yet to be released PlayStation VR here as it appears not to be DYI developer friendly.</p>
+
+<p>Anyway, you may have guessed it, this solution does not come cheap. You can safely bet on a $3000 budget but the immersive experience it can deliver is nowhere comparable to the cheaper alternative.</p>
+
+
+<h2>Setting up your developer tools</h2>
+
+<p>There are few tools that one may use for developing VR applications but the most popular ones are game development engines: Unity 3D and the Unreal engine.</p>
+
+<p>In my opinion and limited experience, the easiest one to grab and learn from is Unity 3D. Here are some of the many reasons why this is a great platform to get you started: </p>
+
+<ul>
+	<li>there a free personal edition that allows you to explore VR development at your own pace</li>
+	<li>it is multi platform, it works on all almost all OS and device types</li>
+	<li>there is a solid documentation with excellent tutorial videos</li>
+	<li>there is a large and dynamic community backing it</li>
+	<li>there are great quantities of downloadable assets including official content dedicated to VR</li>
+	<li>Unity is undertaking a great effort in unifying the various VR vendor specific SDKs into a common "standard"</li>
+</ul>
+
+<p>After using it for some time, I still believe that it is a great tool. Although I must admit that I "lost" a bit of time by having to learn to code in C# (which is not too far from Java). I could have used JS as it is also supported.</p>
+
+<p>One important thing to consider is that Unity is not a 3D modelling tool, it is a game engine that assembles and animates models in 3D scenes. These models need to be created by third party modelling tools.</p>
+
+<p>I advise you to not waste your time with 3D modelling unless you know exactly what you are doing and you are an artist. The Unity asset store is here for you if you do not fit in that category (that is my case). It provides 3D models created by the community that you can either use for free or purchase. Using these assets will save you precious time as modelling requires a whole different set of skills.</p>
+
+<p>However, if you still want to have a go at it, feel free to try a 3D modelling tool. There a several proprietary software that are compatible with Unity (3ds Max, Maya...) but I  recommend Blender 3D since it is it is Open Source and quite powerful.</p>
+
+
+<h2>Integrating with the Salesforce platform</h2>
+
+<p>You should now get a better sense of what VR development is about but how does that integrate with Salesforce?</p>
+
+<p>In our DreamHouse.org demo we used a Lightning S1 mobile application running on a tablet to register users and capture their details in a Salesforce record.</p>
+<p class="text-center">
+	<img class="text-center" src="posts/2016/10/21/s1-ui.png" alt="S1 mobile app" />
+</p>
+
+<p>Then, we used the VR experience to enrich their record with their input and present some other information such as the readings from a connected object (temperature and luminosity from an Estimote BLE beacon).</p>
+<p class="text-center">
+	<img class="text-center" src="posts/2016/10/21/vr-user-input.png" alt="VR user input" />
+</p>
+
+<p>Most of the data was stored in a Salesforce custom object named <span class="code">VR_Session_c</span>.</p>
+<p class="text-center">
+	<img class="text-center" src="posts/2016/10/21/object-structure.png" alt="VR session object structure" />
+</p>
+
+<p>Now, let's dive into how we achieved this.</p>
+
+<p>To put it simply, we created and used a Force.com C# SDK for Unity that would connect to our Salesforce Org (in our case, a free Developer Edition). After that, things were as simple as using the various Force.com APIs.</p>
+
+<p>For example, we started by using our SDK (<span class="code">sfClient</span>) to authenticate with Force.com via OAuth 2.0 using a technical user account:</p>
+
+<div class="code-caption">Authenticating with Force.com</div>
+<pre>public IEnumerator loginCoroutine()
+{
+    sfClient.login(username, password, personalSecurityToken);
+    float waited = 0;
+    while (waited <= LOGIN_TIMEOUT && !sfClient.isAuthTokenSet())
+    {
+        waited += 0.1f;
+        yield return new WaitForSeconds(0.1f);
+    }
+    if (!sfClient.isAuthTokenSet())
+        throw new System.Exception("SFDC login failed: timeout");
+}</pre>
+
+<p>We then retrieved the VR session record containing the user details that where previously registered via the S1 mobile application. We did so by running a basic SOQL query with these lines:</p>
+
+<div class="code-caption">Retrieving the VR session record</div>
+<pre>public IEnumerator retrieveSessionCoroutine() {
+    // Run query to retrieve a session pending for start
+    sfClient.query("SELECT Id, First_name__c, Last_name__c, Email__c, Company__c, Country__c "
+            + "FROM VR_Session__c WHERE Start_time__c != NULL AND End_time__c = NULL "
+            + "ORDER BY CreatedDate ASC LIMIT 1");
+    while (sfClient.response == null)
+        yield return new WaitForSeconds(0.1f);
+    // Omitting timeout code for simplicity
+
+    // Parse VR session data from JSON response
+    JSONObject json = JSONObject.Parse(sfClient.response);
+    JSONArray sessionsJson = json.GetArray("records");
+    List&lt;SessionData&gt; sessions = SessionData.parseFromJsonArray(sessionsJson);
+
+    // Store result
+    if (sessions.Count != 1)
+        throw new System.Exception("SFDC failed to retrieve VR session object");
+    session = sessions[0];
+}</pre>
+
+<p>Later on, we updated the session record with the user's input (building type and size that they selected in the VR experience):</p>
+
+<div class="code-caption">Updating the VR session record</div>
+<pre>public void saveUserInputInSession(int buildingType, int buildingSize) {
+    string updateJson = "{\"Building_type__c\": \"" + buildingType
+        + "\", \"Building_size__c\": \"" + (buildingSize + 1) + "\"}";
+    sfClient.update(session.id, "VR_Session__c", updateJson);
+}</pre>
+
+<p>These basic code examples demonstrate how we can authenticate and read/write Salesforce data from a VR application.</p>
+
+
+<h2>Closing words</h2>
+
+<p>Clearly VR is still in its early days, but as you can see even now business use cases are beginning to appear. This technology is affordable and is not reserved to an elite.</p>
+
+<p>I have demonstrated that the integration of Salesforce data can be achieved with a few line of codes and that it is as simple as using the Force.com APIs in other applications.</p>
+
+<p>All you need to get started is a bit of time to go though basic tutorials and some imagination to create the next generation of VR applications. This is just the beginning of a whole new way to engage with your customers and partners.</p>
+
+<div class="grey-container" style="margin-top:20px;">
+<p><b>Resources</b></p>
+<ul class="large-list">
+	<li>For a hands-on experience you can try our new <a class="external" target="_blank" href="https://trailhead.salesforce.com/project/workshop-virtual-reality">Trailhead VR project</a>. Just note that it does not use the same SDK that I presented in this post (its approach is more declarative) and it targets Google Cardboard running on an Android phone.</li>
+	<li>
+		<a class="external" target="_blank" href="https://unity3d.com">Unity 3D</a>
+	</li>
+	<li>
+		<a class="external" target="_blank" href="https://www.quora.com/I-want-to-be-a-virtual-reality-developer-From-where-can-I-start-What-are-the-best-learning-materials">General advice for a VR developer beginner</a>
+	</li>
+</ul>
+
+</article>
