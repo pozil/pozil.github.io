@@ -231,8 +231,8 @@ article>header {display:none;}
 
 article h4 {margin-top: 1em;}
 
-article .floating-right {float:right; margin-left:20px;}
-article .floating-left {float:left; margin-right:20px;}
+article .floating-right {float:right; margin-left:20px; margin-bottom:20px;}
+article .floating-left {float:left; margin-right:20px; margin-bottom:20px;}
 article .grey-container	{
 	border:1px solid #bfbfbf;
 	border-radius:5px;
@@ -253,6 +253,8 @@ article table.pro-cons tr:first-child>th:first-child	{width:20%;}
 article table.pro-cons tr:first-child>th:nth-child(2), article table.pro-cons tr:first-child>th:nth-child(3)	{width:40%; background-color:#E9E9E9;}
 article table.pro-cons tr:nth-child(2) th, article table.pro-cons tr:nth-child(2) td		{background-color:#C0F6D2;}	/* Pros */
 article table.pro-cons tr:nth-child(3) th, article table.pro-cons tr:nth-child(3) td		{background-color:#F6C0C0;}	/* Cons */
+
+article .notice, article .notice a, article .notice .glyphicon {color:#A1A1A1;}
 
 /* QUOTE */
 article blockquote {margin-bottom:5px; font-style:italic;}
