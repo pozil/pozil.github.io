@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>How to Design, Build and Publish Your Lightning Component for AppExchange</h1>
+</header>
+
+<p class="notice text-center">- Original article written on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/03/design-build-publish-lighting-component-appexchange.html">Salesforce Developer blog</a> -</p>
+
+<p>This blog post provides a high level overview of the steps needed to create and publish a Lightning component for AppExchange. We will walk through the design, creation, testing and distribution of your Lightning component, with considerations for security, packaging, documentation and capturing success metrics.</p>
+
+<p>This post is broken down into three steps:</p>
+<ol>
+ 	<li>Design your component</li>
+ 	<li>Build and test your component</li>
+ 	<li>Publish your component in the AppExchange</li>
+</ol>
+
+
+<h3>Lightning Components</h3>
+<p>The Salesforce Spring '17 release features two ways developers can leverage the Lightning Experience for the best apps. The first is <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/data_service.htm">Lightning Data Services</a> for easier data transport and the second is <a href="https://developer.salesforce.com/blogs/developer-relations/2017/01/base-lightning-components.html">Base Lightning components</a> for easily constructing user interfaces. As Salesforce continues to contribute to the Lightning Experience ecosystem with fresh components, curious developers may ask themselves:</p>
+
+<blockquote>How can I contribute components?</blockquote>
+
+<p>The Lightning Component Framework is not only made of components made by Salesforce, but is also comprised of robust components built by our thriving developer community. Components can be published on the AppExchange, installed by an administrator and then easily utilized for end users via the Lightning App Builder.</p>
+
+<p>How does a developer go from an idea all the way to a published component that others can download and use from the AppExchange? Today's blog post uses as an example the first Lightning component I published: <a href="https://appexchange.salesforce.com/listingDetail?listingId=a0N3A00000EOCHnUAP">a customizable data tree</a>. How did I move my component from design to publishing? Let's take a look.</p>
+
+<img class="floating-right" title="lc_appex Lightning Component Tree" src="http://res.cloudinary.com/hzxejch6p/image/upload/h_300,w_214/v1488911605/tree-mobile_fgnben.png" width="214" height="300" />
+
+
+<h2>Step 1. Design your component</h2>
+<p>The first step leading to the creation of a Lightning component is to give yourself a blueprint of what you want to build. At this point, you want to ask yourself questions such as:</p>
+<ul>
+ 	<li>What is the goal of this new component?</li>
+ 	<li>Can it be reusable?</li>
+ 	<li>Is it a single monolithic component or should it be split into smaller, modular components?</li>
+</ul>
+
+<img class="floating-left" title="li_appex_screenshot_appex" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_305/v1488911606/appexchange_c8780w.png" width="305" height="232" />
+
+<p>Before you dive into coding - consider a basic rule of development: <i>never re-invent the wheel</i>. While you consider your idea, browse the <a href="https://appexchange.salesforce.com">AppExchange</a> to see if someone has already built what you need.</p>
+
+<p>In my case, I was looking for a generic component on which I could test my Lightning development skills.</p>
+
+<p>With a bit of research on AppExchange I noticed there were no Lightning tree components available. I then began creating my own with the plan of contributing it to the Salesforce community.</p>
+
+
+<h2>Step 2. Build and test your component</h2>
+<p>Building individual Lightning Components is well beyond the scope of this blog post. Thankfully we have Trailhead which includes a wealth of information and interactive tutorials on developing for Lightning, including <a href="https://trailhead.salesforce.com/modules/lex_dev_lc_basics">a module specific to learning the Lightning Component Framework</a>.</p>
+
+<p>After reviewing the modules and begin coding a killer helper.js, consider the following in regards to developing specifically for the AppExchange.</p>
+
+
+<h3>Set up your Developer Editions</h3>
+<p>I recommend using two Developer Edition instances if you intend on publishing to the AppExchange. Remember that these instances are free to developers, and it's <a href="http://developer.salesforce.com/signup">easy to sign up for a new one</a>.</p>
+
+<p>Here's what I recommend:</p>
+<ul>
+ 	<li>One instance for development and publishing</li>
+ 	<li>One instance for testing and security review</li>
+</ul>
+
+<p>Both of these should be completely new, and should spin up with Lightning Experience as default. The new instances prevent accidentally relying on existing code, objects or static resources. It will make sure you have no background processes like triggers blocking your development.</p>
+
+<p>When starting you should also activate <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/security_code.htm">LockerService</a> on both orgs from as this a requirement for successful publishing.</p>
+
+<p>Two orgs also helps you avoid common issues with namespace and access control. If you want to publish on the AppExchange you need to consider how your code will be packaged and run in a completely different environment. You can read more about this in the <a href="https://developer.salesforce.com/docs/atlas.en-us.packagingGuide.meta/packagingGuide/packaging_testing.htm">ISVforce Guide</a>, made for independent software vendors.</p>
+
+<p>Note that if you are working on additional contributions later on, you will need to reuse your existing developer org to keep the same namespace.</p>
+
+
+<h3>Decide what kinds of package you want</h3>
+<p>Salesforce has two types of packages for distributing software: managed and unmanaged. Unmanaged packages are intended for ad hoc sharing of code and do not support versioning, nor do they protect any of the material in the package. That last part is something of an advantage if you are trying to share code, however, as people can see how the package is put together and even modify it.</p>
+
+<p>A managed packaged exists within its own namespace and the resources in that package are not visible to those who install it. It has the advantage of being able to support upgrades, which means if you want to offer fresh versions of your code you can maintain it within the same package and users can go to a single link to install and upgrades.</p>
+
+<p>A managed package is required if you intend to distribute your component on the AppExchange.</p>
+
+<p>My personal choice for my example Lightning Tree component was a compromise between these two options, as you can see in the screenshot. I released the component as a free managed packaged to be able to deal with maintenance and improvements but <a href="https://github.com/pozil/sfdc-ui-tree">I also shared the source code on GitHub for learning purposes</a>.</p>
+
+<p class="text-center">
+	<img title="li_appex_packages" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_749/v1488911606/package_cpxve4.png" width="622" height="277" />
+</p>
+
+<p>If you are considering releasing a paid app on AppExchange, there are a few mandatory extra steps needed such as registering as a Checkout Partner or signing an ISV contract. For the sake of brevity, we will not discuss those in this post.</p>
+
+
+<h3>Mind your access control</h3>
+<p>Never assume that because your project runs fine in your personal developer org it will work for other orgs as well.</p>
+
+<p>Access control is what determines which users can use which parts of the functional parts installed in a Salesforce instance.</p>
+
+<p>By default, if you do not set any <code>access</code> attributes on your Lightning components, attributes, events and the like, everything is <code>public</code>. That setting is perfectly fine if you run everything in your own org. However, as soon as you want to share your component and deploy it to another org, it will cease to function. This setting will throw errors when sharing as <code>public</code> only works within the org which owns the namespace.</p>
+
+<p>Let's have a look at a practical example. If I declare a component in my main developer org using just <code>&lt;aura:component&gt;</code> then, my component is public. As a result I will not be able to access it in any other org even after deploying its package. In order to share my component, I need to declare it using <code>&lt;aura:component access="global"&gt;</code>. The same logic goes with applications, attributes, events, interfaces and methods: they also need to be global if you wish to expose them.</p>
+
+<p>It is your responsibility as a developer to ensure that your component beats the correct access settings. If you fail to configure them properly, your contribution may be unusable on other orgs. Deploying and testing your project on a secondary org is key to help you avoid those issues.</p>
+
+<p>Development best practice is to specify access attributes manually from the start. If you are planning to contribute an application or component, remember to always use "global" access to expose functionalities.</p>
+
+
+<h3>Don't forget documentation</h3>
+<p>If you are familiar with JavaDoc, the Aura framework (which is the foundation layer behind Lightning) offers a similar solution. The Aura documentation framework is fairly basic but integrates with the standard components' documentation. If your end users are using several custom packages in their org, leveraging the Aura documentation is a simple way to put all of the useful information about their installed components in one spot.</p>
+
+<p>As a reminder, your personalized Aura documentation is available at this url:</br>
+<a href="https://&lt;YOUR_DOMAIN&gt;.lightning.force.com/auradocs/reference.app">https://&lt;YOUR_INSTANCE_URL&gt;/auradocs/reference.app</a></p>
+
+<p class="text-center">
+	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_924/v1488911605/aura-doc_cqgakj.png" width="529" height="358" />
+</p>
+
+<p>Notice the descriptions and default values in the screenshot above? These are defined in your component attribute definitions! I highly recommend not skimping on this aspect of documenting your components. Not only will it be useful for you when you do further development, it also clearly explains to any user of your component what the values are and types.</p>
+
+<p>Also, you can easily provide example usage that will be shown on the “Examples” tab as seen in the screenshot above. Examples are included by adding a documentation definition to your component bundle.</p>
+
+
+<h2>3. Publish your component on the AppExchange</h2>
+<p>By now I've assumed you have built a managed package with killer features and robust documentation. Let's take a look at the best way to share it with the community. Be aware that this stage requires a bit of work to set up at first and that it may some time as components are subject to the same rigorous security review as AppExchange Apps. The security review is definitely worth the effort as being listed in the AppExchange will provide greater visibility for your project and it may also help you monetize your work.</p>
+
+<p>Here is a high level overview of the steps that you will go through:</p>
+<ol>
+ 	<li>Begin with a bit of digital paperwork by <a href="https://partnersignup.salesforce.com">registering as a Salesforce Partner</a>.</li>
+ 	<li>Once you join our Partner Community (welcome!), you gain access to the <a href="https://partners.salesforce.com">Publisher Console</a>. This is where you declare, customize and track your contributions to the AppExchange.</li>
+ 	<li>Connect your developer org to your AppExchange account. To do so, navigate to the organization tab and connect the developer instance where you developed the package.</li>
+ 	<li>Once your developer org is tied to the Publisher Console, select your package and submit it for security review. This step may take a few weeks, but is vital to ensure that our Community remains a safe place to exchange contributions. It helps us maintain our number one value at Salesforce: Trust.</li>
+</ol>
+
+<p>While you are waiting for the security review results, you can prepare your project's listing. This is where you will describe your component's features, supported devices, licensing options and provide some - hopefully - appealing media to boost installs. You can see what that looks like below.</p>
+
+<div class="text-center"><img title="li_appex_review" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_483/v1488911606/Screen_Shot_2016-12-12_at_12.31.41_cfrkof.png" width="384" height="300" /></div>
+
+<p>Once your project has passed the security review, all that's left is to push a button to publish your listing to the AppExchange.</p>
+
+<p>From there, I suggest that you use your preferred social media to advertise your work and monitor some analytics such as the number of installs in the Publisher Console. You can see an example of how that looks below.</p>
+
+<p>
+	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/v1488911605/Screen_Shot_2016-12-12_at_12.03.06_mrn1mp.png" height="230" />
+</p>
+
+<p>You will also want to monitor user feedback as they post reviews, request additional information or declare bugs.</p>
+
+
+<h2>Closing words</h2>
+<p>We have covered the different steps required to take your component from idea all the way to AppExchange. There are limitless apps out there waiting to be built and added to the AppExchange, whether it is an app that forms the cornerstone of your business or a simple, useful app for others. Happy Lightning contributing!</p>
+
+<p>Here are some related links:</p>
+<ul>
+ 	<li><a href="https://developer.salesforce.com/docs/atlas.en-us.packagingGuide.meta/packagingGuide/packaging_intro.htm">ISVforce Guide</a> (for Independent Software Vendors)</li>
+ 	<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/access_intro.htm">Introduction to Access Control</a></li>
+ 	<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_documentation.htm">Aura Documentation</a></li>
+ 	<li>AppExchange: <a href="https://appexchange.salesforce.com/">https://appexchange.salesforce.com</a></li>
+ 	<li><a href="https://partnersignup.salesforce.com">Salesforce Partner Signup</a></li>
+ 	<li><a href="https://trailhead.salesforce.com/trail/lex_dev">Trailhead: Developing for the Lightning Experience</a></li>
+</ul>
+
+</article>
