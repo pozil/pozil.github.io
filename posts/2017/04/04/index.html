@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Lightning Inter-Component Communication Patterns</h1>
+</header>
+
+<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/04/lightning-inter-component-communication-patterns.html">Salesforce Developer blog</a> -</p>
+
+<img class="floating-right" title="Lightning Inter-Component Communication Patterns" src="/posts/2017/04/04/post-logo.png" width="300" />
+
+<p>If you’re comfortable with how a Lightning Component works and want to build production-grade applications for use in your org or to sell in AppExchange, this article is a must read. Understanding how a singular component works is important, but understanding how they work together is essential for building an effective application.</p>
+
+<p>Interactive applications require components that can exchange data. In traditional HTML and JavaScript, this is straightforward as any script can modify the whole page. The modular nature of the Lightning Component Framework (LCF) requires more consideration for interactivity.</p>
+
+<p>In line with best practices for security concerns, Lightning components are intentionally initially isolated from each other. By default, they’re safe from receiving or causing unwanted interference that can be exploited for malicious purposes. In practice, a Lightning component’s code cannot directly interact with its parent and vice versa. A parent component cannot manipulate its children or siblings as with standard JavaScript and the DOM. Inter-component communication must be specified by the developer.</p>
+
+<img class="floating-right" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1491242556/options_ub9c1z.png" width="300" height="172" />
+<p>In LCF, inter-component communication is supported in several well-defined ways. One can only use the following developer-defined interfaces to specify what can be exchanged:</p>
+<ul>
+ 	<li><strong>Attributes</strong> or <strong>Methods</strong> to pass data down the component hierarchy</li>
+ 	<li>Lightning <strong>Events</strong> to pass data up and around in the component hierarchy</li>
+</ul>
+
+
+<h2>Passing data down the component hierarchy</h2>
+
+<h3>Attributes</h3>
+
+<p>Attributes are the most commonly used element to pass data down the component hierarchy as they are simple to use. In order to pass data down from a parent component to its child, simply use the following code:</p>
+
+<strong>Parent component</strong>
+<pre>&lt;aura:component&gt;
+   &lt;aura:attribute name="parentAttribute" type="String"/&gt;
+   &lt;c:childComponent childAttribute="{!v.parentAttribute}"/&gt;
+&lt;/aura:component&gt;
+</pre>
+<strong>Child component</strong>
+<pre>&lt;aura:component&gt;
+   &lt;aura:attribute name="childAttribute" type="String"/&gt;
+&lt;/aura:component&gt;
+</pre>
+
+<p>In this example, the parent component value of <code>parentAttribute</code> is transferred to the <code>childAttribute</code> of the child component via the <code>{!v.parentAttribute}</code> expression.</p>
+
+<p>This is perfect if you just want to display the data in a child component. What about if you also want to execute some logic when the attribute’s value changes?</p>
+
+<p>Consider the following updated definition of <code>childComponent</code> :</p>
+<pre>&lt;aura:component&gt;
+   &lt;aura:attribute name="childAttribute" type="String"/&gt;
+   &lt;aura:handler name="change" value="{!v.childAttribute}" action="{!c.onChildAttributeChange}"/&gt;
+&lt;/aura:component&gt;
+</pre>
+
+<p>With the addition of a <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_aura_valueChange.htm" target="_blank">change handler</a>, the child component can now trigger the <code>onChildAttributeChange</code> controller function automatically when the value of <code>childAttribute</code> changes. This allows us to implement some custom logic such as:</p>
+
+<pre>({
+    onChildAttributeChange : function (component, event, helper) {
+        console.log("Old value: " + event.getParam("oldValue"));
+        console.log("Current value: " + event.getParam("value"));
+    }
+})
+</pre>
+
+<p>We now have established a top-down communication chain between the parent and the child component. This can be summarized in these few steps:</p>
+
+<p class="text-center">
+	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_750/v1491242836/attribute-change_e70oir.png" width="750" height="372" />
+</p>
+
+<ol>
+ 	<li><code>parentAttribute</code> value changes</li>
+ 	<li><code>parentAttribute</code> value is transferred to <code>childAttribute</code></li>
+ 	<li><code>childComponent</code>’s change handler triggers the <code>onChildAttributeChange</code> controller function</li>
+</ol>
+
+<p>This approach works great for processing an attribute. What about multiple attribute changes? If you want to change two or more attributes and then trigger some logic, this method becomes unwieldy. You can either combine the attributes into a larger object (not always practical) or write a complex synchronization algorithm (please don’t). Instead, I recommend methods for multiple attribute changes.</p>
+
+
+<h3>Methods</h3>
+<p>Based on frequent exchanges with the developer community, I have gathered that <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_method.htm" target="_blank">methods</a> tend to be overlooked in favor of attributes. However, I have found methods to be quite flexible, as they allow users to create and expose component APIs.</p>
+
+<p>Let’s look at an example involving two components communicating with a method. Here we have a child component that exposes a <code>myMethod</code> method with two parameters (<code>param1</code> and <code>param2</code>).</p>
+
+<pre>&lt;aura:component&gt;
+    &lt;aura:method name="myMethod" action="{!c.executeMyMethod}"&gt;
+        &lt;aura:attribute name="param1" type="String"/&gt;
+        &lt;aura:attribute name="param2" type="String"/&gt;
+    &lt;/aura:method&gt;
+&lt;/aura:component&gt;
+</pre>
+
+<p><code>myMethod</code> is hooked to an <code>executeMyMethod</code> function in the component's controller:</p>
+
+<pre>({
+    executeMyMethod : function (component, event, helper) {
+        var params = event.getParam('arguments');
+        console.log('Param 1: '+ params.param1);
+        console.log('Param 2: '+ params.param2);
+    }
+})
+</pre>
+
+<p>This function retrieves the arguments (<code>param1</code> and <code>param2</code>) passed to <code>myMethod</code> and outputs them in the console. Note that the <code>arguments</code> key used in <code>event.getParam</code> is a constant.</p>
+
+<p>Let’s now look at the parent component. It has two attributes (<code>parentAttribute1</code> and <code>parentAttribute2</code>), a reference to the child component, and a button.</p>
+
+<pre>&lt;aura:component&gt;
+    &lt;aura:attribute name="parentAttribute1" type="String" default="A"/&gt;
+    &lt;aura:attribute name="parentAttribute2" type="String" default="B"/&gt;
+
+    &lt;c:childComponent aura:id="child"/&gt;
+
+    &lt;lightning:button label="Call child method" onclick="{! c.onCallChildMethod }" /&gt;
+&lt;/aura:component&gt;
+</pre>
+
+<p>When clicked, the button calls a <code>onCallChildMethod</code> function in the component’s controller. This function retrieves the value of the two attributes and retrieves the child component by using its <code>aura:id</code>. It then calls a <code>myMethod</code> method on the child component and passes the two attribute values as parameters.</p>
+
+<pre>({
+    onCallChildMethod : function(component, event, helper) {
+        var attribute1 = component.get('v.parentAttribute1');
+        var attribute2 = component.get('v.parentAttribute2');
+        var childComponent = component.find('child');
+        childComponent.myMethod(attribute1, attribute2);
+    }
+})
+</pre>
+
+<p>If we now step back and look at the big picture, here’s what happens:</p>
+
+<p class="text-center">
+	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_750/v1491243115/method_tuaizu.png" width="750" height="395" />
+</p>
+
+<ol>
+ 	<li>When the parent component button is clicked, the <code>onCallChildMethod</code> controller function of <code>parentComponent</code> is called</li>
+ 	<li><code>onCallChildMethod</code> retrieves a reference to <code>childComponent</code> using <code>find</code> with an <code>aura:id</code></li>
+ 	<li><code>onCallChildMethod</code> calls the <code>myMethod</code> method of <code>childComponent</code></li>
+ 	<li><code>myMethod</code> triggers the <code>executeMyMethod</code> controller function of <code>childComponent</code></li>
+</ol>
+
+<p>This “method” approach is quite powerful as users can pass data to a child component and perform some operations once this is done. Users can also create distinct methods involving the same arguments but triggering different functions. Finally, developers get the benefit of clarity by exposing named methods that—hopefully—reflect their intended behavior.<br/>
+Achieving all of this is not possible by just passing attributes from parent to child components.</p>
+
+
+<h2>Passing data up and around the Lightning component hierarchy</h2>
+<p>The way to pass data up and around in the Lightning component hierarchy is to use events. There are two types of events that users can employ for that purpose: <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application events</a> and <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component events</a>.</p>
+
+<p>There are some minor syntax differences between these two types of events, but we do not discuss them in this article for the sake of brevity. Instead, we focus on their propagation mechanisms, which in turn dictates their use cases.</p>
+
+
+<h3>Application Events</h3>
+<p>Application events are broadcast to all Lightning components that are registered as listeners for that specific event.</p>
+
+<img class="floating-right" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_150/v1491243181/application-event_hbnbk0.png" width="150" height="185" />
+
+<p>If we look at the example described in the schema on the right, here’s what happens:</p>
+<ol>
+ 	<li>A component fires an application event.</li>
+ 	<li>All other components can handle the event provided that they have registered the appropriate event handler.</li>
+</ol>
+
+<p>All event handlers are triggered simultaneously. There is no way to cancel an application event once fired.</p>
+
+<p>Application events are great for supporting business logic events as they are quite flexible: They do not impose a particular architecture. This is ideal when building components that are exposed in the Lightning App Builder. However, bear in mind that this flexibility comes at the expense of performance in certain use cases due to the event broadcast.</p>
+
+<p>For example, it can be expensive to use an application event for a fine-grained component such as a button to notify other components that it is clicked. Your event will be sent to all of the components. They have to identify the source of the event then, verify if they handle it. Typically all components except one are registered to handle the event. Conversely, if you use an application event for a coarse-grained event in the App Builder that two other components may listen to, there is no performance impact.</p>
+
+
+<h3>Component Events</h3>
+<p>Component events are “clones” of standard DOM events (mouse clicks, key press, and so on). Just like their DOM counterparts, they propagate up in the component hierarchy via a bubbling mechanism and can be stopped en route to the application root component.</p>
+
+<p>Here is an example of such a behavior:</p>
+
+<img class="floating-right" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1491243324/component-event_hywzsn.png" width="300" height="185" />
+<ol>
+ 	<li>Component E fires a component event.</li>
+ 	<li>Event bubbles to E’s direct parent: component D.</li>
+ 	<li>Component D can handle the event or not and optionally prevent its propagation by capturing it.</li>
+ 	<li>If Component D did not capture the event, it propagates to A (this applies even if D did not handle the event).</li>
+ 	<li>Component B and C do not handle the event, as they are not in the ancestry line of E.</li>
+</ol>
+
+<p>The advantage of component events is that you know their maximum scope in advance (all parent components) and you have some degree of control over it (you can capture the event along the way).</p>
+
+
+<h2>Advanced event architecture</h2>
+<p>As a rule, consider using a component event before employing an application event. These are more common and usually have little effect on performance. However, when facing a blocking use case or an overly complex architecture, think about going for an application event.</p>
+
+<p>Consider using a component event for handling low-level UI interactions such as selections and form validation. You can then combine these with application events that handle “business” events. This integrates into a larger architecture via a central “dispatcher” component such as this:</p>
+
+<p class="text-center">
+	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_400/v1491243533/dispatcher_q4t3mz.png" width="400" height="346" />
+</p>
+
+<h2>Closing words</h2>
+<p>In this article we covered Lightning inter-component communication options. You learned about passing data down the component hierarchy with attributes and methods. You also had an overview of the different event types with their use cases and limitations. You are now ready to build a larger Lightning project with a robust architecture that you can quickly deploy to production. If you have any questions, reach out to our community's <a href="http://salesforce.stackexchange.com/" target="_blank">Stack Exchange</a>.</p>
+
+
+<h2>Code samples</h2>
+<p>Here are some working code samples covering the inter-component communication patterns presented in this post:</p>
+
+<img class="floating-right" src="/posts/2017/04/04/github.png"/>
+
+<ul>
+ 	<li><a href="https://gist.github.com/pozil/a3c329063871f255b8887cc185f07af0" target="_blank">Attribute and change handler</a></li>
+ 	<li><a href="https://gist.github.com/pozil/05337d5a64af11a4ebe99c5f303b3ef2" target="_blank">Method</a></li>
+ 	<li><a href="https://gist.github.com/pozil/70e101ae3e22dc4330474ea2ffb040bb" target="_blank">Component event</a></li>
+ 	<li><a href="https://gist.github.com/pozil/36b93995d9d84463b46060d161129198" target="_blank">Application event</a></li>
+</ul>
+
+</article>
