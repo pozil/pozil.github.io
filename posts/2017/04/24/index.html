@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Mastering Salesforce Lightning Design System Grids and Lightning Layouts</h1>
+</header>
+
+<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/04/mastering-salesforce-lightning-design-system-grids-lightning-layouts.html">Salesforce Developer blog</a> -</p>
+
+<p>Web applications we create must be both mobile and desktop friendly. Fortunately, with responsive web design frameworks such as the <a target="_blank" href="https://www.lightningdesignsystem.com/">Salesforce Lightning Design System</a> (SLDS), we can thoughtfully develop apps once, then deploy across all devices. In this article we discuss the backbone of responsive Lightning applications: SLDS grids and the related Lightning components of <code>layout</code> and <code>layoutItem</code>.</p>
+
+<p>Before we dive deeper, a quick reminder of what responsive web design is:</p>
+
+<blockquote>
+<p>Responsive web design (RWD) is an approach to web design aimed at allowing desktop webpages to be viewed in response to the size of the screen or web browser one is viewing with.</p>
+<p style="text-align:right;"><em>– <a target="_blank" href="https://en.wikipedia.org/wiki/Responsive_web_design">Wikipedia</a> (<a target="_blank" href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>)</em></p>
+</blockquote>
+
+<div class="floating-right" style="margin-left:20px; width:350px">
+<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_350/v1493021430/content-is-like-water_cztkvm.jpg" width="350" height="263">
+<p><em>Illustration by <a target="_blank" href="https://blog.stephaniewalter.fr/illustration-content-is-like-water-et-traduction-responsive-webdesign-present-et-futur-de-ladaptation-mobile/">Stéphanie Walter</a> for Alsacréations (<a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/2.0/">CC BY-NC-SA 2.0</a>)</em></p>
+</div>
+
+<p>As illustrated in this image, content responds to its container. We want the same features across all screen sizes, but we never want to see these horizontal scrollbars again. :)</p>
+
+<p>This sounds like a lot of effort, but you’ll learn that with SLSD grids and Lightning layout components it becomes simple.</p>
+
+
+<h2>What is the SLDS Grid?</h2>
+
+<p>You benefit from the power of the SLDS grid every time you use the Salesforce Lightning Experience. </p>
+
+<p>In order to present the SLDS grid, let’s peek at its <a target="_blank" href="https://www.lightningdesignsystem.com/components/utilities/grid/">definition</a>:</p>
+
+<blockquote>The Lightning Design System grid, based on Flexbox, provides a flexible, mobile-first, device-agnostic scaffolding system.</blockquote>
+
+<p>This is a complex description, but it’s complete and contains valuable information. Let’s have a closer look at these technical terms.</p>
+
+<p><strong>Based on Flexbox</strong><br />
+Flexbox (short for flexible boxes) is a layout mode that is part of CSS3, a standard implemented by all modern browsers. It lets developers build responsive web pages without relying on custom JS code.</p>
+
+<p><strong>Flexible</strong><br />
+The SLSD grid enables you to build responsive pages with concepts similar to Bootstrap. You can position components on columns and rows with specific settings for different screen resolutions.</p>
+
+<p><strong>Mobile-first</strong><br />
+This means that mobile support is built-in (it’s not considered a plugin).</p>
+
+<p><strong>Device-agnostic</strong><br />
+This means that SLDS is not bound to a particular device or browser, thanks to the use of HTML and CSS standards.</p>
+
+<p><strong>Scaffolding system</strong><br />
+This indicates that the framework provides building blocks of various granularity upon which rich and complex UIs are built.</p>
+
+
+<h2>How does the SLDS grids work?</h2>
+
+<p>SLSD grids divide the screen width into 12 virtual columns. Developers can place components across these columns and create rows by applying specific SLDS CSS classes. For the sake of brevity, we don’t go into the details of syntax in this article but you can read more in our <a target="_blank" href="https://www.lightningdesignsystem.com/components/utilities/sizing/#overview">documentation</a>.</p>
+
+<p>With these SLDS grids, developers can specify the column span of components for each of these screen resolution categories:</p>
+
+<ul>
+<li><strong>Small</strong> for phone (page width between 480px and 767px)</li>
+<li><strong>Medium</strong> for a tablet (page width between 768px and 1023px)</li>
+<li><strong>Large</strong> for a laptop or desktop (width above 1024px)</li>
+<li>Default as a fallback category when no other categories apply</li>
+</ul>
+
+<p>As screen resolutions change across devices, content expands across columns or wraps and pushes itself onto new rows.</p>
+
+<p>This animation demonstrates the behavior of a responsive grid with three components. Note that the column span of components varies depending on the resolution. That behavior is controlled by the developer.</p>
+
+<p class="text-center">
+<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_400/v1493023417/layout-animation_prihmb.gif" width="400" height="300">
+</p>
+
+<p>Let’s examine a different and more detailed code example.</p>
+
+<pre>
+&lt;div class="slds-grid slds-wrap"&gt;
+    &lt;div class="slds-size--1-of-1"&gt;1&lt;/div&gt;
+    &lt;div class="slds-size--1-of-2 slds-medium-size--5-of-6 slds-large-size--8-of-12"&gt;2&lt;/div&gt;
+    &lt;div class="slds-size--1-of-2 slds-medium-size--1-of-6 slds-large-size--4-of-12"&gt;3&lt;/div&gt;
+    &lt;div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-3"&gt;4&lt;/div&gt;
+    &lt;div class="slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-3"&gt;5&lt;/div&gt;
+    &lt;div class="slds-size--1-of-1 slds-large-size--1-of-3"&gt;
+        &lt;div class="slds-grid slds-wrap"&gt;
+            &lt;div class="slds-size--1-of-2 slds-medium-size--1-of-1 slds-large-size--1-of-2"&gt;6&lt;/div&gt;
+            &lt;div class="slds-size--1-of-2 slds-medium-size--1-of-1 slds-large-size--1-of-2"&gt;7&lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+
+<p>In this sample we create a top-level grid that contains six components. The sixth component contains an embedded grid that holds two subcomponents.</p>
+
+<p>With the addition of a CSS rule that adds red borders on divs, this code renders as following across different resolutions:</p>
+
+<p class="text-center">
+<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_600/v1493024196/responsive-animation_o5pqp3.gif" width="600" height="145">
+</p>
+
+<p>Notice that the layout changes responsively as the resolution of the page enters a new category.</p>
+
+<p>Notice as well that we didn’t explicitly define component sizes for a small resolution. We’re using the default sizes to handle that.</p>
+
+
+<h2>Responsive Lightning components</h2>
+
+<p>Starting from Winter ’17 the Lightning Component Frameworks introduced a new way to create responsive content with two components: <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/aura_compref_lightning_layout.htm">lightning:layout</a> and <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/aura_compref_lightning_layoutItem.htm">lightning:layoutItem</a>.</p>
+
+<p>These components assist developers in using SLDS grids without having to directly use CSS classes. <code>layout</code> represents a grid and <code>layoutItem</code> represents a component that’s part of a grid. With a couple of properties, these components generate the right CSS classes behind the scene.</p>
+
+<p>The following code produces the exact same effect as the previous SLDS grid sample:</p>
+
+<pre>
+&lt;lightning:layout horizontalAlign="spread" multipleRows="true"&gt;
+    &lt;lightning:layoutItem flexibility="grow" size="12"&gt;1&lt;/lightning:layoutItem&gt;
+    &lt;lightning:layoutItem flexibility="grow" size="8" mediumDeviceSize="10" largeDeviceSize="8"&gt;2&lt;/lightning:layoutItem&gt;
+    &lt;lightning:layoutItem flexibility="grow" size="4" mediumDeviceSize="2" largeDeviceSize="4"&gt;3&lt;/lightning:layoutItem&gt;
+    &lt;lightning:layoutItem flexibility="grow" size="4" mediumDeviceSize="6" largeDeviceSize="4"&gt;4&lt;/lightning:layoutItem&gt;
+    &lt;lightning:layoutItem flexibility="grow" size="4" mediumDeviceSize="6" largeDeviceSize="4"&gt;5&lt;/lightning:layoutItem&gt;
+    &lt;lightning:layoutItem flexibility="grow" size="12" largeDeviceSize="4"&gt;
+        &lt;lightning:layout horizontalAlign="spread" multipleRows="true"&gt;
+            &lt;lightning:layoutItem flexibility="grow" size="6" mediumDeviceSize="12" largeDeviceSize="6"&gt;6&lt;/lightning:layoutItem&gt;
+            &lt;lightning:layoutItem flexibility="grow" size="6" mediumDeviceSize="12" largeDeviceSize="6"&gt;7&lt;/lightning:layoutItem&gt;
+        &lt;/lightning:layout&gt;
+    &lt;/lightning:layoutItem&gt;
+&lt;/lightning:layout&gt;
+</pre>
+
+<p>This version is a bit more verbose than SLDS classes, but attributes are more readable thanks to syntax coloring. These can also easily be controlled via dynamic Lightning expressions.</p>
+
+<p>One of the things that I appreciate the most about these Lightning components is the fact that their column span is easier to assess at a glance compared to SLDS classes.<br />
+This is a minor difference but <code>layoutItem</code>'s size attributes are all based on an integer value ranging from 1 to 12, whereas SLDS classes are based on fractions such as <code>1-of-2</code> or <code>2-of-3</code>. In that particular case, we have more information to read and we also have different ways to express the same value (<code>1-of-2</code> is equal to <code>2-of-4</code>, <code>3-of-6</code>, and so on). On the downside, SLDS classes do allow finer-grained column spans (such as <code>5-of-8</code>) that are not available in <code>layoutItem</code>.</p>
+
+
+<h2>Next steps</h2>
+
+<p>Whether you choose to go for a combination of HTML and SLDS classes or Lightning components, make sure that you consider the user experience on different devices. The syntax differs between these two approaches, but the responsive capabilities remain the same. You can check it out for yourself in this <a target="_blank" href="https://gist.github.com/pozil/47358f8e6c53bc1bb7b6c1c009b9a330">sample Gist</a>.</p>
+
+<p>If you haven’t done so yet, I recommend that you complete the following Trailhead modules:</p>
+
+<ul>
+<li><a target="_blank" href="https://trailhead.salesforce.com/modules/lightning_design_system">Lightning Design System</a>. This will teach you the basics of SLDS. It even has a unit dedicated to grids with Visualforce.</li>
+<li><a target="_blank" href="https://trailhead.salesforce.com/modules/ux-prototyping-basics">UX Prototyping Basics</a>. This guides you through prototyping best practices. It can help you save time when choosing application layouts.</li>
+</ul>
+
+<p>If you’re looking for some inspiration, here are some <a target="_blank" href="https://www.lightningdesignsystem.com/guidelines/layout/">common layouts</a> that our UX specialists recommend.</p>
+
+<p>Finally, remember that you can also use the built-in layout templates provided by the Lightning App Builder. That can be a time-saver if you wish to build a simple high-level page layout without having to code it.</p>
+
+<p class="text-center">
+<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_400/v1493024397/LAB-layouts_dnrpez.png" width="400" height="227">
+</p>
+
+</article>
