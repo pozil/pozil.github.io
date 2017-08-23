@@ -162,6 +162,10 @@ a.external:before	{width:20px; height:16px; background:url('../images/external-l
 	text-align: center;
 }
 
+.social a:hover {
+	text-decoration: none;
+}
+
 /* SITE FOOTER */
 .site-footer {
 	background-color: #ccc;
