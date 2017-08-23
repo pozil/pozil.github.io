@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>An In-Depth Look at Lightning Component Events</h1>
+</header>
+
+<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/08/depth-look-lightning-component-events.html">Salesforce Developer blog</a> -</p>
+
+<p> This post presents the specificities of Lightning <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component events</a> (in opposition to <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application events</a>). This event type is the most commonly used in the Lightning Component framework; yet, it’s also the most complex. Few Lightning developers know all of its “secrets.”</p>
+
+<p>This article is a follow up of the <a href="https://developer.salesforce.com/blogs/developer-relations/2017/04/lightning-inter-component-communication-patterns.html" target="_blank">Lightning Inter-Component Communication Patterns</a> post. If you have not read it yet, read it first as it covers the basics of firing and handling events.</p>
+
+<h2>DOM event propagation basics</h2>
+
+<p>Before we get into the details of component events propagation, let’s first have a quick refresher on standard DOM event propagation. Forget the Lightning Component framework for a moment; we’re talking about standard HTML in this section.</p>
+
+<img class="floating-right" style="margin-left:20px;" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1502872464/capture-bubble_nbgmry.png" width="350" height="263"/>
+
+<p>DOM events follow two consecutive propagation phases that developers can follow: capture (rarely used) and bubble (widely used). Events first go down the DOM tree during the capture phase, then up during the bubble phase. The capture phase always executes before the bubble phase.</p>
+
+<p>The diagram illustrates the two event propagation phases that occur along the DOM tree after a user clicks a button in a form. Notice that the event propagation does not originate from the button itself.</p>
+
+<p>If you want to learn more on this subject, here’s a <a href="https://javascript.info/bubbling-and-capturing" target="_blank">great article</a> on DOM event propagation. But let’s get back to the Lightning Component framework for now.</p>
+
+<h2>Component event propagation</h2>
+
+<h3>Handling an event in a specific phase</h3>
+
+<p>Lightning component events also support both capture and bubble phases, but there are some framework specificities in terms of syntax and behavior.</p>
+
+<p>By default, component events are handled in the bubble phase, and that’s what most developers use.</p>
+
+<p>To handle the capture phase, add a  <code>phase="capture"</code> attribute to your event handler, like so:</p>
+
+<pre>
+&lt;aura:handler name="cmpEvent" event="c:cmpEvent" action="{!c.handleCmpEvent}" phase="capture"/&gt;
+</pre>
+
+
+<p>Note that you can declare two handlers for the same event if you wish to handle both phases (one for bubble and one for capture).</p>
+
+<p>You can query the event’s current propagation phase by calling <code>event.getPhase()</code> in your event handling function. This function returns either <code>capture</code> or <code>bubble</code>.</p>
+
+<h3>Propagating to Container components</h3>
+
+<p>There’s a major difference between component events and DOM events: the way they propagate to containers.</p>
+
+<p>To summarize, and as stated in the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component_bubbling.htm" target="_blank">component event documentation</a>:</p>
+
+
+<blockquote>By default, every parent in the containment hierarchy can’t handle an event during the capture and bubble phases. Instead, the event propagates to every owner in the containment hierarchy.”</blockquote>
+
+
+<p>To put it simply: A Lightning component hierarchy does not behave like a DOM tree. By default (we get to the exceptions later), only parent components that create subcomponents (either in their markup or programmatically) can handle events. This singles out container components.</p>
+
+<p>A container is a component that supports embedding subcomponents. In HTML, most elements are containers (for instance, a <code>div</code> or a <code>span</code>). In the Lightning Component framework, containers are components that expose one or more attribute of type <code>Aura.Component[]</code> such as the default <code>body</code> attribute.</p>
+
+<p>For example, this code presents a <code>containerCmp</code> component:</p>
+
+<pre>
+&lt;!-- c:containerCmp --&gt;
+&lt;aura:component&gt;
+    {!v.body}
+&lt;/aura:component&gt;
+</pre>
+
+
+<code>containerCmp</code> is a container since it exposes its <code>body</code> attribute in a <code>{!v.body}</code> expression. This implies that <code>containerCmp</code> can be used by a parent component <code>parentCmp</code> as shown here:
+
+<pre>
+&lt;!-- c:parentCmp --&gt;
+&lt;aura:component&gt;
+    &lt;c:containerCmp&gt;
+        &lt;!-- some markup --&gt;
+    &lt;/c:containerCmp&gt;
+&lt;/aura:component&gt;
+</pre>
+
+
+<p>By default, containers cannot handle events thrown by components they contain. That’s so because container components are not considered owners of events that they encapsulate.</p>
+
+<p>Let’s extend the previous example by adding an <code>eventEmitterCmp</code> component embedded inside <code>containerCmp</code>:</p>
+
+<pre>
+&lt;!-- c:parentCmp --&gt;
+&lt;aura:component&gt;
+    &lt;c:containerCmp&gt;
+        &lt;c:eventEmitterCmp&gt;
+    &lt;/c:containerCmp&gt;
+&lt;/aura:component&gt;
+</pre>
+
+
+<p>If <code>eventEmitterCmp</code> fires a component event, <code>containerCmp</code> cannot handle it by default, but <code>parentCmp</code> can.</p>
+
+<p>If you want a container component to handle a component event, add an <code>includeFacets="true"</code> attribute to its handler, such as:</p>
+
+<pre>
+&lt;!-- c:containerCmp --&gt;
+&lt;aura:component&gt;
+    &lt;aura:handler name="cmpEvent" event="c:cmpEvent" action="{!c.handleCmpEvent}" includeFacets="true"/&gt;
+    {!v.body}
+&lt;/aura:component&gt;
+</pre>
+
+
+<h3>Stopping Event Propagation</h3>
+
+<p>Just like for standard DOM events, the propagation of component events can be stopped to prevent other components from handling an event.</p>
+
+<p>Calling <code>event.stopPropagation()</code> stops the event propagation regardless of the current propagation phase.</p>
+
+<p>As a best practice, do not stop event propagation unless you have a particular reason to do so. Leaving the event to propagate itself allows you to extend your application by adding event handlers in other components.</p>
+
+<h3>Pausing and Resuming Event Propagation</h3>
+
+<p>Unlike DOM events, component event propagation can be paused with <code>event.pause()</code> and resumed with <code>event.resume()</code>. The typical use case for this is asynchronous processing.</p>
+
+<p>For example, the event handler’s code:</p>
+
+<ol><li>Pauses a component event</li>
+<li> Calls a server-side action</li>
+<li>Then, the action callback resumes or stops the event propagation based on the server response</li></ol>
+
+<pre>
+handleCmpEvent : function(component, event, helper) {
+  // Pause event propagation
+  event.pause();
+
+  // Call an asynchronous server-side action
+  var action = component.get("c.someServerFunction");
+  action.setCallback(this, function(response) {
+    var state = response.getState();
+    if (state === "SUCCESS") {
+      // Resume event propagation if action succeeded
+      event.resume();
+    }
+    else if (state === "ERROR") {
+      // Stop event propagation if action failed
+      event.stopPropagation();
+    }
+  });
+  $A.enqueueAction(action);
+}
+</pre>
+
+
+<h2>Closing words</h2>
+
+<p>You now know about the two event propagation phases: capture and bubble. You saw an overview of the subtleties of component events: event handling in container components and event propagation control functions (pausing, resuming, and stopping).</p>
+
+<p>How about experiencing all of what you’ve learned in the interactive <a href="https://github.com/pozil/sfdc-lightning-component-event-playground" target="_blank">Lightning Component Playground App</a>? Feel free to explore the different event functionalities and the source code.</p>
+
+<p>
+<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1502872490/component-event-playground_sqv6t3.gif" width="850" height="481" />
+</p>
+
+<p>Learn more on the Lightning Component framework by practicing with the <a href="https://trailhead.salesforce.com/modules/lex_dev_lc_basics" target="_blank">Lightning Components Basics</a> Trailhead module.</p>
+
+</article>

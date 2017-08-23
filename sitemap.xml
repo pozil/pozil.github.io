@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
+<loc>http://pozil.github.io/#/post/2017-08-17</loc>
+<lastmod>2017-08-17T12:00:00+0200</lastmod>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>http://pozil.github.io/#/post/2017-08-16</loc>
+<lastmod>2017-08-16T12:00:00+0200</lastmod>
+<priority>0.8</priority>
+</url>
+<url>
 <loc>http://pozil.github.io/#/post/2017-04-24</loc>
 <lastmod>2017-04-24T02:29:55+0200</lastmod>
 <priority>0.8</priority>
@@ -73,13 +83,13 @@
 
 	<url>
 		<loc>http://pozil.github.io/#/archives</loc>
-		<lastmod>2014-12-22T09:27:06+02:00</lastmod>
+		<lastmod>2017-08-23T09:27:06+02:00</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>0.7</priority>
 	</url>
 	<url>
 		<loc>http://pozil.github.io/</loc>
-		<lastmod>2014-12-22T09:27:06+02:00</lastmod>
+		<lastmod>2017-08-23T09:27:06+02:00</lastmod>
 		<changefreq>weekly</changefreq>
 		<priority>1.0</priority>
 	</url>
