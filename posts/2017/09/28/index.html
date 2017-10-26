@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Error Handling Best Practices for Lightning and Apex</h1>
+</header>
+
+<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2017/09/error-handling-best-practices-lightning-apex.html">Salesforce Developer blog</a> -</p>
+
+
+<p>Sending a request from a Lightning component to an Apex Controller and getting back a response is a path that has several potential failure points. Developers sometimes assume for the sake of simplicity that “things will work” and don’t always perform all the proper error checks and handling. In this blog post we look at best practices for handling server-side and client-side errors.</p>
+
+<h2>Client-server communication overview</h2>
+
+<p>The Lightning Component framework is a client framework. It relies on Apex to perform backend operations such as accessing data.</p>
+
+<p>Exchanges between the two sides follow a common request-response pattern.</p>
+
+<ol>
+	<li>A Lightning component sends a request to its Apex controller using a server-side action.</li>
+	<li>The controller processes the request. This can trigger a server-side error (permission issue, invalid query).</li>
+	<li>The controller sends a response to the Lightning component.</li>
+	<li>The Lightning component processes the response in a callback function. This can trigger a client-side error (unexpected response).</li>
+</ol>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_500/v1506070189/client-server-roundtrip-generic.png_td4kst.png" alt="Generic client-server roundtrip" width="500" height="271" />
+</p>
+
+<p>If we omit the network-related errors, this pattern can trigger two types of errors that developers must handle: server-side and client-side errors.</p>
+
+<h2>Server-side errors</h2>
+
+<h3>Quick refresher on Apex server-side controller</h3>
+
+<p>The Lightning Component framework communicates with Apex via server-side actions. These actions are declared as  <code>static</code> methods annotated with <code>@AuraEnabled</code> (<a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_apex.htm" target="_blank">documentation</a>).</p>
+
+<pre>
+public with sharing class SimpleServerSideController {
+
+    // Exposing a server-side action to Lightning
+    @AuraEnabled
+    public static String serverEcho(String firstName) {
+        return ('Hello from the server, ' + firstName);
+    }
+}
+</pre>
+
+
+<h3>What to avoid</h3>
+
+<p>Processing a server request can trigger errors due to a variety of causes such as permission issues, invalid queries, or Apex limits being reached. These errors take the form of an <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_exception_definition.htm" target="_blank">Exception</a> being thrown in the Apex code.</p>
+
+<p>If you process a failing server request as is (see code below), a system exception is returned to the Lightning component. </p>
+
+<pre>
+// Bad practice: error message is not user-friendly or informative
+@AuraEnabled
+public static void triggerInternalError() {
+    integer a = 1 / 0; // Division by zero causes exception
+}
+</pre>
+
+<p>Doing so is bad practice as this results in a generic error message: “An internal server error has occurred.” This is not user-friendly and provides no information about the error. We all hate that. :( </p>
+
+<p class="text-center">
+<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1506606277/post-icon_ofu2mc.png" alt="System error" width="300" height="300" />
+</p>
+
+<h3>Basic error handling</h3>
+
+<p>Thankfully, the solution to this problem is quite simple.</p>
+
+<ol><li>Wrap the code that can trigger exceptions in a try-catch block.</li>
+<li>Throw an <code>AuraHandledException</code> in the catch block. This allows you to provide a custom user-friendly error message.</li></ol>
+
+<p>Here is the code of the previous example updated with this best practice.</p>
+
+<pre>
+// Best practice: user-friendly error message provided by an AuraHandledException
+@AuraEnabled
+public static void triggerBasicAuraHandledError() {
+    try {
+        integer a = 1 / 0; // Division by zero causes exception
+    }
+    catch (Exception e) {
+        // "Convert" the exception into an AuraHandledException
+        throw new AuraHandledException('Darn it! Something went wrong: '
+            + e.getMessage());
+    }
+    finally {
+        // Something executed whether there was an error or not
+    }
+}
+</pre>
+
+
+<p>The <code>AuraHandledException</code> is sent back to the client with your custom message, and you’re free to display it in the way you want using the Lightning Component framework.</p>
+
+<h3>Custom error handling</h3>
+
+<p>The previous solution is good enough for basic error handling, but what if you have a complex processing logic and require more information about the error on the client-side? How about adding an exception name and an error code?</p>
+
+<p> Unfortunately, you cannot extend <code>AuraHandledException</code> to create a custom exception because it is not an extensible Apex class. However, there is a trick that can help you bypass this limitation.</p>
+
+<p>You can add custom data to your  <code>AuraHandledException</code> by following these steps.</p>
+
+<ol><li>Create a simple wrapper class that can hold the data.</li></ol>
+
+<pre>
+// Wrapper class for my custom exception data
+public class CustomExceptionData {
+    public String name;
+    public String message;
+    public Integer code;
+
+    public CustomExceptionData(String name, String message, Integer code) {
+        this.name = name;
+        this.message = message;
+        this.code = code;
+    }
+}
+</pre>
+
+
+<ol><li>Instantiate your custom class, serialize it as JSON, then pass it to the AuraHandledException.</li></ol>
+
+<pre>
+// Throw an AuraHandledException with custom data
+CustomExceptionData data = new CustomExceptionData('MyCustomServerError', 'Some message about the error', 123);
+throw new AuraHandledException(JSON.serialize(data));
+</pre>
+
+
+<ol><li>Finally, on the client-side (Lightning controller or helper), parse the error message string as JSON, and access your custom error data.</li></ol>
+
+<pre>
+// Parse custom error data & report it
+let errorData = JSON.parse(error.message);
+console.error(errorData.name +" (code "+ errorData.code +"): "+ errorData.message);
+</pre>
+
+
+<h2>Client-side errors</h2>
+
+<p>Processing a response on the client-side can trigger several types of errors as well. These typically occur when the client receives an answer from the server that does not meet its expectations. This can be caused by a remote technical error such as an <code>AuraHandledException</code> or a value that does not meet certain business rules.</p>
+
+<h3>Quick refresher on Lightning Server-Side Actions</h3>
+
+<p>The Lightning Component framework uses <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">Server-Side Actions</a> to perform requests on Apex controllers. This is done in five steps.</p>
+
+
+<pre>
+// Calling a server-side action
+({
+    callServerSideAction : function(cmp) {
+        // 1. Retrieve an action object by specifying the
+        //    Apex method that will be called
+        let action = cmp.get("c.myApexEndpoint");
+
+        // 2. Optionally set some action parameters
+        action.setParams({ firstName : cmp.get("v.firstName") });
+
+        // 3. Configure a callback function that will be
+        //    executed to handle the server response
+        action.setCallback(this, function(response) {
+            // Some response processing code
+        });
+
+        // 4. Optionally set some action configuration flags
+
+        // 5. Enqueue the action so that the framework processes it
+        $A.enqueueAction(action);
+    }
+})
+</pre>
+
+
+<p>For the sake of brevity, we only focus on the callback function in this article. It exposes one argument that is an object holding the response sent by the server.</p>
+
+<p>The first thing to do upon entering the callback function is to check the response state with <code>response.getState()</code>. This function can return different state values, but you should at least check for <code>SUCCESS</code> and <code>ERROR</code> states.</p>
+
+<pre>
+// Server-side action callback
+function(response) {
+    // Checking the server response state
+    let state = response.getState();
+    if (state === "SUCCESS") {
+        // Process server success response
+        let returnValue = response.getReturnValue();
+    }
+    else if (state === "ERROR") {
+        // Process error returned by server
+    }
+    else {
+        // Handle other reponse states
+    }
+}
+</pre>
+
+
+<h3>Handling a server error</h3>
+
+<p>If the state of the response is <code>ERROR</code>, you need to handle a server error. You can access the errors details with the <code>response.getError()</code> function, but there’s a catch: Despite its name, this function returns an array of errors, not just a single one.</p>
+
+<p>In most of the cases, you want to check the first error of this array, but keep in mind that there can be more than one. Here’s the minimal code that covers that.</p>
+
+<pre>
+let errors = response.getError();
+let message = 'Unknown error'; // Default error message
+// Retrieve the error message sent by the server
+if (errors && Array.isArray(errors) && errors.length &gt; 0) {
+    message = errors[0].message;
+}
+// Display the message
+console.error(message);
+</pre>
+
+
+<p>Note that you should avoid using <code>console.log()</code> to report errors. Use <code>console.error()</code> instead. This ensures that your errors are properly reported in your browser’s developer tools. It’s easy to miss an error in a stack full of info or debug messages.</p>
+
+<p>Reporting the error in the console is a start, but the end goal is to display it to the user. The easiest way to do this if you’re working on a page that’s rendered in Lightning Experience is to display a Lightning Toast notification. You can do so by calling the following helper function while passing it the return value of <code>response</code> .<code>getError()</code>.</p>
+
+<pre>
+handleErrors : function(errors) {
+    // Configure error toast
+    let toastParams = {
+        title: "Error",
+        message: "Unknown error", // Default error message
+        type: "error"
+    };
+    // Pass the error message if any
+    if (errors && Array.isArray(errors) && errors.length &gt; 0) {
+        toastParams.message = errors[0].message;
+    }
+    // Fire error toast
+    let toastEvent = $A.get("e.force:showToast");
+    toastEvent.setParams(toastParams);
+    toastEvent.fire();
+}
+</pre>
+
+
+<h3>Throwing and catching client-side errors</h3>
+
+<p>Client-side errors take the form of a JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank">Error</a> being thrown. An Error is very similar to Apex Exception: It’s a type built with a constructor, and it supports the same throw-catch syntax.</p>
+
+<pre>
+try {
+    // Something that could throw an error
+    throw new Error('Error message goes here');
+} catch (e) {
+    // Error handling
+    console.error(e);
+} finally {
+    // Something executed whether there was an error or not
+}
+</pre>
+
+
+<p>Just like Apex Exceptions, JavaScript Errors enable you to separate result values from errors when you call a function. For instance, if you follow best practices and let your helper do the heavy-lifting, you can write code like this in your controller:</p>
+
+<pre>
+try {
+    // Call a function that may throws an Error
+    let value = helper.doSomethingThatMightFails();
+    // Process value if function succeeded
+} catch (e) {
+    // Handle error
+    console.error(e);
+}
+</pre>
+
+
+<h3>Custom client-side errors</h3>
+
+<p>If a text message is not enough data to describe your error, you can extend the JavaScript standard <code>Error</code> type and create errors with custom attributes.</p>
+
+<pre>
+// Declaring a custom error type
+function MyCustomError(name, message, code) {
+    this.name = name;
+    this.message = message;
+    this.code = code;
+    this.stack = (new Error()).stack;
+}
+MyCustomError.prototype = Object.create(Error.prototype);
+MyCustomError.prototype.constructor = MyCustomError;
+</pre>
+
+
+<p>You can then throw it and catch it with this code.</p>
+
+<pre>
+// Throwing and catching a custom error
+try {
+    throw new MyCustomError('MyCustomError', 'Custom error message', 456);
+} catch (e) {
+    if (e instanceof MyCustomError) {
+        // Specific message for MyCustomError
+        console.error(e.name +' (code '+ e.code +'): '+ e.message);
+    }
+    else {
+        // Generic message for other types of error
+        // (unreachable code in this sample)
+        console.error(e.message);
+    }
+}
+</pre>
+
+
+<h2>Closing words</h2>
+
+<p>We’ve covered the different types of errors that can occur when processing client-server communications. You now know how to handle those different errors and how to extend them to fit your needs.</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_500/v1506070189/client-server-roundtrip-tips_hlzduw.png" alt="Client-server roundtrip tips" width="500" height="243" />
+</p>
+
+<p>How about trying those different options in an <a href="https://github.com/pozil/sfdc-error-playground" target="_blank">interactive playground</a> and studying some sample code?</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_600/v1506072151/error-playground-animation_hna182.gif" alt="Error playground animation" width="600" height="281" />
+</p>
+
+<h2>Resources</h2>
+
+<ul><li><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_exception_definition.htm" target="_blank">Exceptions in Apex</a></li>
+<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">Calling a Server-Side Action</a></li>
+<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_apex_custom_errors.htm" target="_blank">Returning Errors from an Apex Server-Side Controller</a></li>
+<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_throw_error.htm" target="_blank">Throwing and Handling Client-Side Errors</a></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank">JavaScript Error Type</a></li></ul>
+
+
+</article>
