@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Promote equality by building accessible content</h1>
+</header>
+
+<p class="notice text-center">- Original article co-written with <a href="https://twitter.com/FabienTaillon" target="_blank">Fabien Taillon</a> (Texei) and published on <a href="https://developer.salesforce.com/blogs/2018/01/promote-equality-building-accessible-content.html">Salesforce Developer blog</a> -</p>
+
+<p>We all strive to become more inclusive but as developers, we can easily overlook one of inclusivity's many aspects: accessibility. In this blog post, we'll look at a few common bad practices that make content inaccessible and how to turn them around using some practical tips. With these best practices and some additional coding, along with Lightning Base Components and the Lightning Design System, you can create and deliver accessible content. </p>
+
+<p>What is accessibility? Accessibility is ensuring people with disabilities can perceive, understand, navigate, interact with, and contribute to any application. That is, equality of access to all aspect of our application's functionality and content.</p>
+
+<p>We can easily forget that accessibility should always be an explicit requirement. It is easier to implement when it is already baked into requirements rather than fixing the bugs at the last minute.</p>
+
+<h2>Accessibility is even more relevant than you think</h2>
+
+<p>When we mention accessibility, we tend to associate it with visible and permanent disabilities such as paraplegia or blindness. However, disabilities are much more frequent that we think.</p>
+
+<p>A disability is defined by any physical or mental condition that undermines one's ability to perform certain tasks. According to a similar broad definition of disability, the <a href="https://www.census.gov/newsroom/releases/archives/miscellaneous/cb12-134.html" target="_blank">U.S. Census Bureau</a> estimates that nearly 1 in 5 people have a disability in the U.S. This figure may look exaggerated, but it can be better understood by having a closer look at some common biases.</p>
+
+<p>A first bias is that we generally underestimate the frequency of certain disabilities. For example, let's consider a “well known” disability that affects the use of software: co_l_or blindness. Did you know that <a href="http://www.colourblindawareness.org/colour-blindness/" target="_blank">1 in 12 men are considered color blind</a> (For women, the condition affects 1 in 200)?</p>
+
+<a href="https://www.nidcd.nih.gov/health/statistics/quick-statistics-hearing" target="_blank">Hearing loss</a> is a similar example. Are you aware that approximately 15% of American adults suffer from it?
+
+<p>A second prevalent bias is that we generally do not account for all types of disabilities. Disabilities fall into multiple categories and some of them are invisible or temporary. For example, you can be temporarily disabled if you break your arm or undergo eye surgery.</p>
+
+
+<p>As a consequence of these biases, we may inadvertently design content that excludes a certain number of users or that is difficult for them to access. This has a negative impact as it deprives these individuals from their independence and hinders them in their daily life. Inaccessible content would be similar to not being able to access your bank account or health record on your own.</p>
+
+<p>Because disabilities impact a significant portion of the population, governments and international bodies are acting in favor of accessibility. In the software industry, this effort translates into various accessibility standards and regulations.</p>
+
+<p>If you are working for the public sector, there is a good chance that some of these apply to your projects. However, more and more private sector companies are also prioritizing accessibility. If you are not a User Experience (UX) specialist, consider the <a href="WCAG) 2.0](https://www.w3.org/TR/WCAG20/" target="_blank">Web Content Accessibility Guidelines (WCAG) 2.0</a> as a starting point (conformance level AA is the industry standard).</p>
+
+<p>For the sake of brevity, we will not cover all these guidelines in this article, but we will point out some bad and best practices.</p>
+
+<h2>Bad practices (or what most of us do everyday)</h2>
+
+<p>Without being exhaustive on accessibility bad practices, let's take a look at a basic example to highlight some common problems. If you develop a simple form with no consideration for accessibility, you could write something like this:</p>
+
+<pre>
+&lt;div class="slds-box"&gt;
+  &lt;div class="slds-media slds-media_center"&gt;
+    &lt;div class="slds-media__figure"&gt;
+      &lt;lightning:icon iconName="action:new_contact" size="medium"/&gt;
+    &lt;/div&gt;
+    &lt;div class="slds-media__body"&gt;
+      &lt;p&gt;New Contact&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="slds-form-element"&gt;
+    &lt;label class="slds-form-element__label" for="text-input-id-1"&gt;First Name&lt;/label&gt;
+    &lt;div class="slds-form-element__control"&gt;
+      &lt;input type="text" id="text-input-id-1" class="slds-input" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="slds-form-element"&gt;
+    &lt;label class="slds-form-element__label" for="text-input-id-1"&gt;Name&lt;/label&gt;
+    &lt;div class="slds-form-element__control"&gt;
+      &lt;input type="text" id="text-input-id-1" class="slds-input" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="slds-form-element"&gt;
+    &lt;label class="slds-form-element__label" for="text-input-id-1"&gt;Title&lt;/label&gt;
+    &lt;div class="slds-form-element__control"&gt;
+      &lt;input type="text" id="text-input-id-1" class="slds-input" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="slds-button slds-button_brand slds-m-top_medium"&gt;Create Contact&lt;/div&gt;
+&lt;/div&gt;
+</pre>
+
+
+<p>If you deploy this code, this is what happens if a user tries to use your form with a screen reader (an app that presents a UI into a non-visual form such as text-to-speech):</p>
+
+<p>
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1515747446/accessibility-screen-reader_ikodvm.png"
+		alt="Viewing a form with and without a screen reader" width="100%" />
+</p>
+
+<p>If you were a visually impaired person, how could you use this form?</p>
+
+<p>The good news is that it does not take a lot of efforts to make this form accessible. We are going to review several WCAG recommendations that help to achieve this.</p>
+
+<h2>Accessible content is simple to create</h2>
+
+<p>WCAG states that accessible content must respect four types of guidelines. Content must be <b>perceivable</b>, <b>operable</b>, <b>understandable</b>, and <b>robust</b>.</p>
+
+<h3><b>Perceivable</b></h3>
+
+<blockquote>Perceivable - Information and user interface components must be presentable to users in ways they can perceive.</blockquote>
+
+
+<p>Ensuring that content is <a href="https://www.w3.org/TR/WCAG20/#perceivable" target="_blank">perceivable</a> is critical for accessibility. For example, visually impaired users need the help of assistive technologies such as magnifiers or screen readers to access content. These technologies rely on properly structured code.</p>
+
+<p>When looking at the perceivable aspect of our sample form, the first problem that comes to light is that we do not provide a textual alternative to the use of images (the “new contact” icon).</p>
+
+<p>Images need to provide an HTML <code>alt</code> attribute in order to provide a textual description to screen readers. If the attribute is missing, the assistive technology will read out the file name and this will result in a poor user experience.</p>
+
+<p>An exception to this requirement is for decorative images. In that case, do not omit the <code>alt</code> attribute but use an empty value (<code>alt=""</code>) instead.</p>
+
+<p>Going back to our demo code, we need to add an <code>alternativeText</code> attribute on the <code>lightning:icon</code> component to make it accessible. This generates the HTML <code>alt</code> attribute.</p>
+
+<pre>
+&lt;lightning:icon iconName="action:new_contact" size="medium" `alternativeText="Contact icon"`/&gt;
+</pre>
+
+<img class="floating-right" src="https://res.cloudinary.com/hzxejch6p/image/upload/v1515747441/accessibility-color-contrast_swxnei.png" alt="Color contrast examples" width="241" height="276" />
+
+<p>Another important cause of perception issues is the use of a non-accessible color palette. When building a user interface, designers need to maintain a sufficient color ratio in their theme. If you are using <a href="https://www.lightningdesignsystem.com/guidelines/color" target="_blank">Salesforce Lightning Design System</a> (SLDS), you are already working with fully accessible color palettes throughout the Lightning Experience. If not, there are <a href="http://www.aremycoloursaccessible.com/" target="_blank">online tools</a> that can help you ensure that your colors are accessible.</p>
+
+<p>As a general rule, never use color as the only means to convey a message. For example, do not solely rely on a red border to indicate that a field contains invalid input. Add a text label or an accessible icon to <a href="https://lightningdesignsystem.com/components/form-element/?state=error&variant=base" target="_blank">indicate an error</a>.</p>
+
+<h3><b>Operable</b></h3>
+
+<blockquote>Operable - User interface components and navigation must be operable.</blockquote>
+
+
+<p>Maintaining <a href="https://www.w3.org/TR/WCAG20/#operable" target="_blank">operable</a> content implies that you can access and interact with your content while replacing the mouse and/or keyboard with alternative input methods such as voice controls. </p>
+
+<p>A basic rule to make your content operable is to use HTML with the right semantic meaning.</p>
+
+<p>For example, use the right tags for interactions:</p>
+
+<ul><li><code>&lt;button&gt;</code> tag for submitting forms or modifying something in a page</li>
+<li><code>&lt;a&gt;</code> tag to navigate inside a page or to another page.</li></ul>
+
+<p>A common mistake is to use other elements such as <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code> with an <code>onclick</code> attribute for interactions as these elements do not receive keyboard focus without <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role" target="_blank">additional coding</a>.</p>
+
+<p>If you need to trigger an action on an image, wrap it in a <code>&lt;button&gt;</code> or an <code>&lt;a&gt;</code> tag and control the elements' appearance with CSS.</p>
+
+<p>In our sample code we use a <code>div</code> with a<code> slds-button</code> CSS class to submit the form, but we should use either a <code>button</code> tag or a <code>lightning:button</code> Lightning Base Component to make it accessible.</p>
+
+<b>HTML example:</b>
+
+<pre>
+&lt;button class="slds-button slds-button_brand"&gt;Create Contact&lt;/button&gt;
+</pre>
+
+
+<b>Lightning Base Component example:</b>
+
+<pre>
+&lt;lightning:button label="Create Contact" variant="brand"/&gt;
+</pre>
+
+
+
+
+<h3><b>Understandable</b></h3>
+
+<blockquote>Understandable - Information and the operation of user interface must be understandable.</blockquote>
+
+
+<a href="https://www.w3.org/TR/WCAG20/#understandable" target="_blank">Understandable</a> content implies that it can be read by a user and also be presented by the means of assistive technology. Understandable content also helps users avoid and correct mistakes.
+
+<p>The first thing that needs to be done to create an understandable form is to provide <code>label</code> tags for each <code>input</code>. These help assistive technology such as screen readers to present the UI. Providing <code>placeholder</code> tags alone is not enough.</p>
+
+<p>In our sample code we did include these <code>label</code> tags, but we made a very common mistake: we just copy/pasted the SLDS template without updating it. This causes two problems which break the accessibility of our form:</p>
+
+<ul><li>values of the <code>id</code> attribute of our <code>input</code> elements are duplicated.</li>
+<li>values of the <code>for</code> attribute of our <code>label</code> elements are not matching the right <code>input</code> elements.</li></ul>
+
+<p>To fix this, we can use distinct id values or we can replace the form's HTML elements with some <code>lightning:input</code> Lightning Base Components.</p>
+
+<b>HTML example:</b>
+
+<pre>
+&lt;div class="slds-form-element"&gt;
+  &lt;label class="slds-form-element__label" for="FirstName"&gt;First Name&lt;/label&gt;
+  &lt;div class="slds-form-element__control"&gt;
+    &lt;input type="text" id="FirstName" class="slds-input" /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+
+
+<b>Lightning Base Component example:</b>
+
+<pre>
+&lt;lightning:input type="text" name="firstName" label="First Name"/&gt;
+</pre>
+
+
+<p>If you write your own HTML components, you must use id values they are unique across an entire page. An easy way to do this is to generate them dynamically by using the unique identifier of the Lightning component as a prefix like so: <code>id="{!globalId + '_footer'}"</code>.</p>
+
+<p>If you wish to hide input labels for a specific UI design, do not hide them with CSS (<code>display:none</code> or <code>visibility:hidden</code>) as this will break accessibility. Apply the <code>slds-assistive-text</code> class. It will safely hide the label while keeping it available for assistive technology.</p>
+
+
+<p>Another good practice that helps to maintain understandable content is the use of the <code>aria-describedby</code> attribute to link inputs with error messages or help text. This attribute works in the same way as the <code>for</code> attribute of the <code>label</code> tag: it points to the <code>id</code> of the element it describes.</p>
+
+<h3><b>Robust</b></h3>
+
+<blockquote>Robust - Content must be robust enough that it can be interpreted reliably by a wide variety of user agents, including assistive technologies.</blockquote>
+
+
+<a href="https://www.w3.org/TR/WCAG20/#robust" target="_blank">Robustness</a> is guaranteed by the use of valid HTML5. Modern web browsers are able to render invalid HTML up to some point, but assistive technologies are more sensitive to invalid markup.
+
+<p>IDEs will do most of the work to assist you, but here are some basic recommendations to ensure that your markup is valid:</p>
+
+<ul><li>Avoid duplicate attributes for a given tag unless it is allowed in its specification.</li>
+<li>Use unique  <code>id</code> attribute values.</li>
+<li>Properly place opening and closing tags for your elements.</li></ul>
+
+
+
+<h2>Testing</h2>
+
+<p>The best way to understand how accessible your content is is to try it out.</p>
+
+<p>For Mac users, macOS has a built-in screen reader, <a href="https://www.apple.com/accessibility/mac/vision/" target="_blank">VoiceOver</a>. Windows doesn't have an integrated tool, but there are some great free tools available, like <a href="https://www.nvaccess.org/" target="_blank">NVDA</a>.</p>
+
+<p>If we had tested our previous form with a screen reader, we could have easily highlighted some accessibility issues. Let's take VoiceOver as an example. VoiceOver lets you cycle through the page elements by pressing the <code>tab</code> key. It reads and writes information about the active element.</p>
+
+<p>Here is what we can see/hear with VoiceOver:</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_500/v1515747505/accessibility-not-accessible_jgjy4q.gif"
+	alt="Not accessible form previewed with Voice Over" width="500" height="357" />
+</p>
+
+<p>While this form has three input fields, VoiceOver is only able to display one label. It identifies the remaining two fields as just “input.” It also fails to see both the form header and the button.</p>
+
+<p>After fixing our form's accessibility with the best practices we mentioned earlier, we obtain the following code:</p>
+
+<pre>
+&lt;div class="slds-box"&gt;
+  &lt;div class="slds-media slds-media_center"&gt;
+    &lt;div class="slds-media__figure"&gt;
+      &lt;lightning:icon iconName="action:new_contact" size="medium" alternativeText="Indicates approval"/&gt;
+    &lt;/div&gt;
+    &lt;div class="slds-media__body"&gt;
+      &lt;p role="heading" aria-level="1" tabindex="0"&gt;New Contact&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;br/&gt;
+    
+  &lt;div class="slds-form-element"&gt;
+    &lt;label class="slds-form-element__label" for="FirstName"&gt;First Name&lt;/label&gt;
+    &lt;div class="slds-form-element__control"&gt;
+      &lt;input type="text" id="FirstName" class="slds-input" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="slds-form-element"&gt;
+    &lt;label class="slds-form-element__label" for="Name"&gt;Name&lt;/label&gt;
+    &lt;div class="slds-form-element__control"&gt;
+      &lt;input type="text" id="Name" class="slds-input" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="slds-form-element"&gt;
+    &lt;label class="slds-form-element__label" for="Title"&gt;Title&lt;/label&gt;
+    &lt;div class="slds-form-element__control"&gt;
+      &lt;input type="text" id="Title" class="slds-input" /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;button class="slds-button slds-button_brand slds-m-top_medium"&gt;Create Contact&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+
+
+<p>We can run VoiceOver on this new version and see that our component is now fully accessible. </p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_500/v1515747529/accessibility-accessible_f8rnas.gif"
+	alt="Accessible form previewed with Voice Over" width="500" height="366" />
+</p>
+
+<p>In addition to testing, we can use audit tools like <a href="https://chrome.google.com/webstore/detail/axe/lhdoppojpmngadmnindnejefpokejbdd" target="_blank">aXe Chrome Plugin</a>. Once installed in your browser, it scans your page, lists issues, and provides tips to fix them.</p>
+
+<p>
+	<img class="alignnone wp-image-188255" src="https://res.cloudinary.com/hzxejch6p/image/upload/v1515747448/accessibility-axe_awyxza.png"
+		alt="Accessibility test with aXe Chrome plugin" width="100%" />
+</p>
+
+<p>Testing is easy to do with these tools, plus it helps you understand which parts of your content are not accessible. Give it a try on one your components!</p>
+
+<p>One last thing that you can do is to unplug your mouse. If you're not able to use your UI with just a keyboard, then your content isn't fully accessible. This issue is not solely related to accessibility alone--lots of users love to use keyboard shortcuts. Fixing this will also give these users an awesome keyboard experience!</p>
+
+<h2>Conclusion</h2>
+
+
+<p>Building and delivering accessible content does not cost much time or money if you follow the best practices we listed in this article. In short, we recommend that you rely on the combination of the Lightning Design System (<a href="https://trailhead.salesforce.com/modules/lightning_design_system" target="_blank">learn more</a> about it on Trailhead) and Lightning Base Components to build accessible UIs.</p>
+
+<p>If you want to build your own theme, remember that SLDS can easily be customized with <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/tokens_intro.htm" target="_blank">design tokens</a>. This provides a safer alternative to building an accessible theme from scratch.</p>
+
+<p>Lightning Base Components generate accessible HTML but it is your responsibility to properly configure certain attributes such as distinct  <code>id</code> attributes or the <code>alternativeText</code> attribute on <code>lightning:icon</code>.</p>
+
+<p>Feel free to explore <a href="https://github.com/FabienTaillon/accessibleLC" target="_blank">this demo</a> that presents two versions of the same form: a poorly accessible version and a fully accessible one.</p>
+
+<p>Thank you for reading this post and for helping us to promote equality and inclusiveness.</p>
+
+<h2>Resources</h2>
+
+<ul><li><a href="https://www.lightningdesignsystem.com/accessibility/overview/" target="_blank">Accessibility Overview on the Salesforce Lightning Design System website</a></li>
+<li><a href="https://www.salesforce.com/company/legal/508_accessibility/" target="_blank">Salesforce Product Accessibility Status</a></li>
+<li><a href="https://www.w3.org/WAI/videos/standards-and-benefits" target="_blank">Video Introduction to Web Accessibility and W3C Standards</a></li>
+<li><a href="https://github.com/FabienTaillon/accessibleLC" target="_blank">Accessibility demo repository</a></li>
+<li><a href="https://success.salesforce.com/_ui/core/chatter/groups/GroupProfilePage?g=0F93A000000LfSVSA0" target="_blank">Disability topic group in the Trailblazer Community</a></li>
+<li>Dreamforce 2017 session recordings
+<ul>    <li><a href="https://success.salesforce.com/Sessions?eventId=a1Q3A00000stRRuUAM#/session/a2q3A000001yvdMQAQ" target="_blank">Accessibility at Salesforce</a></li>
+<p>    <li><a href="https://success.salesforce.com/Sessions?eventId=a1Q3A00000stRRuUAM#/session/a2q3A000001yuoRQAQ" target="_blank">Delivering your first accessible Lightning Component</a></li></ul></li></ul></p>
+
+</article>
