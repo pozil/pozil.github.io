@@ -110,7 +110,7 @@
 
 <p>It is critical to design such a component with scalability in mind from the start. There are two things that you need do to ensure that your component scales.</p>
 
-<h3>USe Storable actions</h3>
+<h3>Use storable actions</h3>
 
 <p>The first thing that needs to be done is to leverage the client-side cache so that you do not make unneeded server requests when searching for the same terms. Fortunately for us, this can easily be achieved by using <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_storable_actions.htm" target="_blank">storable actions</a>. All you need to do to benefit from this cache is to call <code>action.setStorable()</code> in your JS before <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">enqueuing your server-side action</a>.</p>
 
@@ -148,7 +148,7 @@ searchTerm.trim().replace(/\*/g).toLowerCase();
 
 <p>This will ensure that search terms like “Astro,” “astro*” or “Astro ” (with a trailing space) all hit the same cached response.</p>
 
-<h3>Throttle Search requestS</h3>
+<h3>Throttle search requests</h3>
 
 <p>Using the client-side cache is the bare minimum but you should go further by implementing a mechanism that throttles search requests. If you do not do so, every letter typed by the user will generate its own search query and will bombard the server with unneeded requests.</p>
 
@@ -205,7 +205,7 @@ FIND :searchTerm IN ALL FIELDS RETURNING
 </pre>
 
 
-<h3>limit the number of results</h3>
+<h3>Limit the number of results</h3>
 
 <p>Regardless of the querying language you use, you should always include a <a href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_sosl_limit.htm" target="_blank">LIMIT</a> statement in your query. This caps the maximum number of results that can be returned by the server and boost the query's performance.</p>
 
