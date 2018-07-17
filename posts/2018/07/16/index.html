@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>10 Tips for Implementing an Efficient Lightning Lookup Component</h1>
+</header>
+
+
+<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2018/07/10-tips-for-implementing-an-efficient-lightning-lookup-component.html">Salesforce Developer blog</a> -</p>
+
+
+<p>A Lightning lookup component is a text field with autocompletion and a dropdown. There are several different ways to create these for Lightning Experience, but a few best practices emerge.</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1531164257/dropdown-open_rollax.png"
+	alt="A lookup component" width="443"/>
+</p>
+
+<p>In this blog post, I will present ten technical decisions and best practices that drove the implementation of a <a href="https://github.com/pozil/sfdc-ui-lookup" target="_blank">custom Lightning Lookup component</a> that I contributed. Even if you do not plan to build your own lookup component, you may learn valuable information that you can apply to other projects.</p>
+
+<p>Here is an overview of the themes that we will cover:</p>
+
+<ul><li>Third-party libraries</li>
+<li>Salesforce Lightning Design System</li>
+<li>Conditional rendering methods</li>
+<li>Performance and scalability</li>
+<li>Search optimization</li>
+<li>Flexible and reusable architecture</li></ul>
+
+<h2>Avoid using third-party libraries for basic UI needs</h2>
+
+<p>When building a custom lookup component, it can be quite tempting to go for simplicity and grab a component from a third-party library. For example, there are quite a few examples of components using jQuery or AngularJS.</p>
+
+<p>Although this is convenient because it reduces the development effort, keep in mind that loading such libraries adds an overhead that affects performance on the client side. This extra cost is not justified when displaying a simple lookup component because you can easily achieve this with basic HTML and JS. As a side note, using a third-party library may also prove problematic when styling your component.</p>
+
+<p>I recommend that you only use third-party libraries when the requirements are complex enough to justify it (e.g. displaying maps or charts).</p>
+
+<h2>Use the Salesforce Lightning Design System</h2>
+
+<p>If you create a custom component you should use the Salesforce Lightning Design System (SLDS). It guarantees that your component will have the proper style, be responsive and be accessible.</p>
+
+<p>SLDS provides <a href="https://www.lightningdesignsystem.com/components/overview/" target="_blank">component blueprints</a> that allow you to start from a static HTML template that has the proper CSS classes applied to it. Creating a component is a matter of copying the blueprint and turning into something dynamic with some JS.</p>
+
+<p>One of the important bits to remember when copying blueprints is to maintain the <a href="https://developer.salesforce.com/blogs/2018/01/promote-equality-building-accessible-content.html" target="_blank">accessibility</a> of your component by generating dynamic unique IDs. This allows assistive technology such as screen readers to link labels with their corresponding fields. It helps disabled users to access and use your component.</p>
+
+<p>You can easily achieve this by replacing the provided hard-coded IDs with expressions like this:</p>
+
+<pre>
+&lt;label for="{# globalId + '_input' }" ...&gt;...&lt;/label&gt;
+...
+&lt;input type="text" id="{# globalId + '_input' }" .../&gt;
+...
+</pre>
+
+
+<p>In this sample code, we use an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/expr_data_binding.htm" target="_blank">unbound expression</a> combined with the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_ids.htm#!" target="_blank">globalId</a> keyword to generate unique IDs even if there are multiple instances of our component on the same page.</p>
+
+
+<blockquote>The value of an unbound expression is never re-evaluated.</blockquote>
+
+
+<p>The unbound expression denoted by a <code>#</code> symbol is used to generate a constant value. Unlike bound expressions denoted by the <code>!</code> symbol, the value of an unbound expression is never re-evaluated. That holds true even when the value of attributes that compose the expression changes. This static behavior brings a performance gain.</p>
+
+<p>We also use the <code>globalId</code> keyword in our expression to retrieve a unique identifier for our component instance. We concatenate it with a suffix to identify our input.</p>
+
+<h2>Pick the optimal conditional rendering method</h2>
+
+<p>There are two main methods for conditional rendering and each has its advantages and drawbacks so you want to <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_conditional_markup.htm" target="_blank">use them in the right context</a>.</p>
+
+<h3>Aura:if tag</h3>
+
+<p>You may dynamically render a section of a page or a component by enclosing it in an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_if.htm" target="_blank">aura:if</a> tag. Although this syntax is easy to read, it has some performance implications. When hiding or displaying content with an <code>aura:if</code> tag, the Lightning component framework destroys and rebuilds the underlying DOM structure and these operations imply a UI rendering cost. This is probably an overkill if you are frequently hiding and displaying a portion of your UI.</p>
+
+<p>For example, the use of <code>aura:if</code> is perfectly adapted for toggling between a single or multiple entry lookup layout because this configuration is unlikely to change:</p>
+
+<pre>
+&lt;aura:if isTrue="{!v.isMultiEntry}"&gt;
+    &lt;!-- Multy entry lookup code goes here --&gt;
+
+    &lt;aura:set attribute="else"&gt;
+        &lt;!-- Single entry lookup code goes here --&gt;
+    &lt;/aura:set&gt;
+&lt;/aura:if&gt;
+</pre>
+
+
+
+<h3>Dynamic CSS classes</h3>
+
+<p>The second option for conditional rendering is to use dynamic CSS classes. This option is preferred when we often toggle the visibility of a section because it does not destroy or rebuild the DOM.</p>
+
+<p>For example, we should avoid using <code>aura:if</code> to conditionally display the lookup dropdown because we are likely going to toggle it often. Instead, we can achieve the same visual result in a cheaper way by toggling the dropdown visibility with CSS.</p>
+
+<p>This can be achieved in two different ways: via an expression and a ternary operators or via JS.</p>
+
+<p>The use of an expression can be convenient because it is a compact syntax. However, the ternary operators is generally harder to read:</p>
+
+<pre>
+&lt;div class="{! 'slds-combobox '+ (and(v.hasFocus, !empty(v.searchResults)) ? 'slds-is-open' : 'slds-combobox-lookup') }"&gt;
+</pre>
+
+
+<p>The alternative to expressions is to use JS to <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_show_hide_markup.htm" target="_blank">toggle a class</a> with the <code>$A.util.toggleClass(component,</code> <code>'class')</code> function. This is powerful but the downside of this approach is that you will have to duplicate this statement across your controller or helper code if there are multiple conditions that can toggle the class.</p>
+
+<h2>Build something that scales</h2>
+
+<p>A poorly coded lookup component can have a severe performance impact on the server because of the number of search requests generated by the autocompletion. You may not notice it while you are still developing and testing your component in an isolated environment but when hundreds of users will generate thousands of search queries concurrently, it will be too late and you will reach the <a href="https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm" target="_blank">API call limits</a> for your org.</p>
+
+<p>Reaching this limit has serious consequences. First of all, requests from the lookup component will fail and report errors. Then most importantly, all API calls from all org users will also fail and you will have to wait for the limit to be reset (24 hours) before resuming normal operations.</p>
+
+<p>It is critical to design such a component with scalability in mind from the start. There are two things that you need do to ensure that your component scales.</p>
+
+<h3>USe Storable actions</h3>
+
+<p>The first thing that needs to be done is to leverage the client-side cache so that you do not make unneeded server requests when searching for the same terms. Fortunately for us, this can easily be achieved by using <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_storable_actions.htm" target="_blank">storable actions</a>. All you need to do to benefit from this cache is to call <code>action.setStorable()</code> in your JS before <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">enqueuing your server-side action</a>.</p>
+
+<pre>
+// Get action instance
+// ('search' is an @AuraEnabled method on the Apex controller)
+const action = component.get("c.search");
+
+// Set action parameters
+action.setParams({ searchTerm : searchTerm });
+
+// Create a callback to handle action response
+action.setCallback(this, function(response) {
+    // Process response here
+});
+
+// Set action as storable to enable client-side cache
+action.setStorable();
+
+// Enqueue action for execution
+$A.enqueueAction(action);
+</pre>
+
+
+<p>In order to get the most out of the client-side cache you should also clean your search term before issuing a search request.</p>
+<p>To do so, you can apply the following code to</p>
+
+<ul><li>get rid of whitespaces and wildcard characters</li>
+<li>force the case of the keywords</li></ul>
+
+<pre>
+searchTerm.trim().replace(/\*/g).toLowerCase();
+</pre>
+
+
+<p>This will ensure that search terms like “Astro,” “astro*” or “Astro ” (with a trailing space) all hit the same cached response.</p>
+
+<h3>Throttle Search requestS</h3>
+
+<p>Using the client-side cache is the bare minimum but you should go further by implementing a mechanism that throttles search requests. If you do not do so, every letter typed by the user will generate its own search query and will bombard the server with unneeded requests.</p>
+
+<p>The average person types 200 characters per minute  — that translates to 300 milliseconds per character. If you do not throttle search requests and you type a search term like “Codey,” you will trigger five — and mostly useless — search queries in less than 1.5 seconds. Imagine the negative performance impact of this behavior when you multiply it by the number of concurrent user searches — it clearly does not scale.</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1531164707/Screen_Shot_2018-06-26_at_16.37.24_gwblzk.png"
+	alt="Graph showing number of queries per searches with or without throttling" width="615"/>
+</p>
+
+<p>An optimal throttling mechanism should prevent the search from occurring while the user is still typing. You want to force a minimum delay between the typing of a letter and the resulting search request. The right way to achieve this is to use a timeout function in your JS and to run the search in an asynchronous manner as illustrated in this sample code:</p>
+
+<pre>
+onSearchTermChange : function(component, searchTerm) {
+    // Cleanup search term and check if we need to
+    // proceed with search (has the search term changed?)
+
+    // Cancel previous timeout if any
+    let searchTimeout = component.get('v.searchTimeout');
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
+    }
+    // Set new timeout
+    searchTimeout = window.setTimeout(
+        $A.getCallback(() =&gt; {
+            // Send search request
+
+            // Clear timeout
+            component.set('v.searchTimeout', null);
+        }),
+        300 // Wait for 300 ms before sending search request
+    );
+    component.set('v.searchTimeout', searchTimeout);
+}
+</pre>
+
+
+<h2>Optimize search on the server side</h2>
+
+<p>The core functionality of a lookup component relies on the search that occurs on the server side. There are number of things that need to be done to optimize this search.</p>
+
+<h3>Use SOSL not SOQL</h3>
+
+<p>The first and most important thing that you need to do when implementing your search in Apex is to <a href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_sosl_intro.htm" target="_blank">use the right querying language for the task</a> that is SOSL  (Salesforce Object Search Language) in this case and not SOQL (Salesforce Object Query Language). That one letter difference means a lot because these languages run on different technical stacks.</p>
+
+<p>SOQL is great for searching on structured data like numbers, dates, checkboxes or picklist values. It can also search on text but its performance does not match the one of SOSL for that use case case.</p>
+
+<p>SOSL is specifically designed to search on unstructured textual content because of the way its underlying technology indexes data. It can also return results from multiple and unrelated object types. SOSL also has the huge advantage of allowing you to search on all of text fields without enumerating them in your search query. This is especially valuable when searching on multiple object types:</p>
+
+<pre>
+FIND :searchTerm IN ALL FIELDS RETURNING
+  Account (Id, Name, BillingCity),
+  Opportunity (Id, Name, StageName)
+</pre>
+
+
+<h3>limit the number of results</h3>
+
+<p>Regardless of the querying language you use, you should always include a <a href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_sosl_limit.htm" target="_blank">LIMIT</a> statement in your query. This caps the maximum number of results that can be returned by the server and boost the query's performance.</p>
+
+<p>Another reason why you should include <code>LIMIT</code> in your query is that you will also have a constraint on the maximum number of lines that are displayed in the lookup dropdown. There is no need to fetch more data than what you can display.</p>
+
+<pre>
+FIND :searchTerm IN ALL FIELDS RETURNING
+  Account (Id, Name, BillingCity),
+  Opportunity (Id, Name, StageName)
+  LIMIT :MAX_RESULTS;
+</pre>
+
+
+
+<h3>Exclude items that are already selected</h3>
+
+<p>If working with a multiple entry lookup component, you need to exclude the items that you have already selected from the search results. If you do not do that, you may be stuck when trying to select new items if you reach the limit imposed by the query.</p>
+
+<p>Excluding the selected items involves sending back a list of item IDs along with your search requests and filtering your queries to exclude those IDs. You can achieve that filtering by adding <code>NOT IN :selectedIds</code> to your SOSL query where <code>selectedIds</code> is the list of selected item IDs.</p>
+
+<pre>
+FIND :searchTerm IN ALL FIELDS RETURNING
+  Account (Id, Name, BillingCity WHERE id NOT IN :selectedIds),
+  Opportunity (Id, Name, StageName WHERE id NOT IN :selectedIds)
+  LIMIT :MAX_RESULTS
+</pre>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1531164988/exclude-selected-items_b9yrte.gif"
+	alt="Animation showing lookup component excluding selected items" width="510"/>
+</p>
+
+<h2>Deliver a flexible and reusable component</h2>
+
+<p>Don't assume that people will always search on all standard objects like Accounts or Opportunities. There is a good chance that they need to search on custom objects and that they also need to filter the list of selectable records based on certain conditions.</p>
+
+<p>To ensure that, you need to preserve the decoupling between the UI and the Apex search code. In other words you need to make sure that your lookup component is not tied to a given Apex controller.</p>
+
+<p>The way to achieve that is to call the search server action from a component that is a parent of the lookup:</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_650/v1531165161/Screen_Shot_2018-06-22_at_19.46.37_pzc6fd.png"
+	alt="Lookup architecture diagram" width="650"/>
+</p>
+
+
+<ol><li>The lookup component notifies its parent when a new search request should be sent via a component event.</li>
+<li>The parent component calls a search method in its Apex controller and fetches the results.</li>
+<li>The parent controller injects the search results in the lookup component via an Aura method.</li></ol>
+
+
+<p>With this strategy you can easily have dedicated search methods for each of your lookup instances while keeping the lookup component totally generic and reusable. We will share more on this type of architecture in an upcoming post on Lightning Service components.</p>
+
+<p>For example, let's assume that you are building a form that includes two lookups that allow to search on:</p>
+
+<ul><li>closed accounts</li>
+<li>a custom Machine__c object with an 'under maintenance' status</li></ul>
+
+<p>You can use two instances of the generic lookup in the parent form component. Each lookup can then be mapped to a specific Apex method like <code>searchClosedAccounts</code> and <code>search</code>Machines<code>UnderMaintenance</code>.</p>
+
+<h2>Closing words</h2>
+
+<p>A lookup component may seem trivial at first glance but there a number of pitfalls that need to be avoided when building one. Failing to properly design a component that scales will have a negative impact on performance (this is even more critical for a lookup component). Follow the best practices from this article and put your knowledge at work when creating custom Lightning components:</p>
+
+<ol><li>Avoid using third-party libraries for basic UI needs.</li>
+<li>Use the Salesforce Lightning Design System.</li>
+<li>Use <code> aura:if </code> tag when displaying a section that is not likely to be toggled often.</li>
+<li>Use dynamic CSS classes when frequently toggling the visibility of a section.</li>
+<li>Use Aura storable actions to leverage client-side cache.</li>
+<li>Throttle search requests on the client-side.</li>
+<li>Use SOSL — not SOQL — to perform search queries.</li>
+<li>Limit the number of results returned by your search query.</li>
+<li>Exclude items that are already selected from search results.</li>
+<li>Deliver a flexible and reusable component.</li></ol>
+
+
+<p>If you wish to learn more about these tips and tricks by looking at some source code or if you just want to use a lookup component, feel free to check out my <a href="https://github.com/pozil/sfdc-ui-lookup" target="_blank">Open Source contribution</a>.</p>
+
+<p>For more learning on Trailhead, check out the <a href="https://trailhead.salesforce.com/en/modules/lex_dev_lc_vf_tips" target="_blank">Lightning Component Tips and Gotchas</a> module.</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1531165259/lookup-animation_bqwcoa.gif"
+	alt="Animation showing lookup component" width="527"/>
+</p>
+
+</article>
