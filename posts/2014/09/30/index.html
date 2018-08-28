@@ -7,6 +7,18 @@
 	</p>
 </header>
 
+<style>
+article table.pro-cons	{margin:10px auto 20px auto; width:650px;}
+article table.pro-cons th, article table.pro-cons td	{border:1px solid grey; padding:5px;}
+article table.pro-cons th	{text-align:center; font-weight:bold;}
+article table.pro-cons td	{font-size:smaller;}
+article table.pro-cons tr:first-child>th:first-child	{border-width:0;}	/* Upper left cell is hidden */
+article table.pro-cons tr:first-child>th:first-child	{width:20%;}
+article table.pro-cons tr:first-child>th:nth-child(2), article table.pro-cons tr:first-child>th:nth-child(3)	{width:40%; background-color:#E9E9E9;}
+article table.pro-cons tr:nth-child(2) th, article table.pro-cons tr:nth-child(2) td		{background-color:#C0F6D2;}	/* Pros */
+article table.pro-cons tr:nth-child(3) th, article table.pro-cons tr:nth-child(3) td		{background-color:#F6C0C0;}	/* Cons */
+</style>
+
 <div class="entry-content">
 
 <div class="grey-container" id="angular_webinars">
@@ -117,17 +129,17 @@ appMainModule.config(function (bonitaConfigProvider) {
 // Application controller
 appMainModule.controller('AppController', ['$scope', '$log', 'bonitaConfig', 'bonitaAuthentication', 'ProcessDefinition',
   function($scope, $log, bonitaConfig, bonitaAuthentication, ProcessDefinition){
-  
+
   // Log in Bonita
   bonitaAuthentication.login('walter.bates','bpm').then(function(){
       $log.log('Logged in as '+ bonitaConfig.getUsername() +' (id='+ bonitaConfig.getUserId() +')');
-  
+
       // List the user's apps (process definitions)
       ProcessDefinition.getStartableByCurrentUser().$promise.then(function(processDefinitions){
           $log.log('Listing '+ processDefinitions.totalCount +' process definition(s):');
           for (var i=0; i&lt;processDefinitions.items.length; i++)
               $log.log('  - '+ processDefinitions.items[i].name +' '+ processDefinitions.items[i].version);
-          
+
           // Logs out of Bonita
           bonitaAuthentication.logout();
       });

@@ -248,17 +248,9 @@ article .small-bottom-margin	{margin-bottom:5px;}
 article .smaller-text			{font-size:smaller;}
 article ul.large-list li, article ol.large-list li	{margin-bottom:10px;}
 
-article table.pro-cons	{margin:10px auto 20px auto; width:650px;}
-article table.pro-cons th, article table.pro-cons td	{border:1px solid grey; padding:5px;}
-article table.pro-cons th	{text-align:center; font-weight:bold;}
-article table.pro-cons td	{font-size:smaller;}
-article table.pro-cons tr:first-child>th:first-child	{border-width:0;}	/* Upper left cell is hidden */
-article table.pro-cons tr:first-child>th:first-child	{width:20%;}
-article table.pro-cons tr:first-child>th:nth-child(2), article table.pro-cons tr:first-child>th:nth-child(3)	{width:40%; background-color:#E9E9E9;}
-article table.pro-cons tr:nth-child(2) th, article table.pro-cons tr:nth-child(2) td		{background-color:#C0F6D2;}	/* Pros */
-article table.pro-cons tr:nth-child(3) th, article table.pro-cons tr:nth-child(3) td		{background-color:#F6C0C0;}	/* Cons */
-
 article .notice, article .notice a, article .notice .glyphicon {color:#A1A1A1;}
+
+article ol ol {list-style-type: lower-alpha;}
 
 /* QUOTE */
 article blockquote {margin-bottom:5px; font-style:italic;}
