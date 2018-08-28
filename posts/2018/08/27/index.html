@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Implement and Use Lightning Service Components</h1>
+</header>
+
+<style>
+th,td {padding: 3px; border: 1px solid #e0e0e0;}
+th {text-align: center;}
+tr:nth-child(odd) {background-color: #f0f0f0;}
+</style>
+
+<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2018/08/implement-and-use-lightning-service-components.html">Salesforce Developer blog</a> -</p>
+
+<p>As the Lightning ecosystem evolves, I have noticed and adopted a valuable architecture pattern: Lightning service components. In this post, I will present this concept, illustrate how it is increasingly used in base components and provide tips and best practices on how developers can create their own service components.</p>
+
+<h2>Understanding Lightning service components</h2>
+
+<p>Before diving into the specifics of Lightning service components, let's define what a service component is: A service component is a component that provides an API for a set of functionalities. Ideally, the service should be specialized, generic and reusable.</p>
+
+<p>Another important thing that differentiates a service component from other components is the fact that it does not have a graphical representation. Unlike other components, it is not visible by default. However, it can display some graphics (like a modal dialog or a toast notification) upon request if it's a UI service.</p>
+
+<p>We will use the term “caller” throughout this post to designate a component calling a service.</p>
+
+<h2>An overview of base service components</h2>
+
+<p>Since the introduction of the Lightning Data Service (the first base service component) in Winter '17, the number of base service components has steadily increased over releases. As of Summer ’18 there are 13 base service components and this number is likely to grow in the upcoming releases.</p>
+
+<h3>Summer ’18 base service components</h3>
+
+<p>Here is an overview of the Summer ’18 base service components. Notice that the terms “library,” “API” and “service” are used interchangeably but these are all service components.</p>
+
+
+<table>
+<tbody>
+<tr>
+<th>Name</th>
+<th>Component</th>
+<th>Category</th>
+<th>Description</th>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/force:recordData">Lightning Data Service</a></td>
+<td>force:recordData</td>
+<td>Data</td>
+<td>Provides the ability to create, read, update, and delete Salesforce records in Lightning without the use of an Apex controller.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:notificationsLibrary">Notification Library</a></td>
+<td>lightning:notificationsLibrary</td>
+<td>UI</td>
+<td>Displays messages via notices and toasts.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:overlayLibrary">Overlay Library</a></td>
+<td>lightning:overlayLibrary</td>
+<td>UI</td>
+<td>Displays messages via modals and popovers.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:workspaceAPI">Workspace API</a></td>
+<td>lightning:workspaceAPI</td>
+<td>UI</td>
+<td>API for accessing/manipulating workspaces (Tabs and Subtabs).</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:utilityBarAPI">Utility Bar API</a></td>
+<td>lightning:utilityBarAPI</td>
+<td>UI</td>
+<td>API for the Utility Bar.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:navigation">Navigation Service</a></td>
+<td>lightning:navigation</td>
+<td>UI</td>
+<td>Allows to navigate to a given page or to generate a page URL.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:navigationItemAPI">Navigation Item API</a></td>
+<td>lightning:navigationItemAPI</td>
+<td>UI</td>
+<td>Allows to control navigation items in Lightning console apps, where navigation items display in an item menu.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:quickActionAPI">Quick Action API</a></td>
+<td>lightning:quickActionAPI</td>
+<td>UI</td>
+<td>Allows to control actions in Lightning Experience on record pages.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:conversationToolkitAPI">Conversation ToolkitAPI</a></td>
+<td>lightning:conversationToolkitAPI</td>
+<td>Service Cloud</td>
+<td>Console integration API for Live Agent.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:omniToolkitAPI">Omni-Channel Toolkit API</a></td>
+<td>lightning:omniToolkitAPI</td>
+<td>Service Cloud</td>
+<td>Provides access to the API for the Omni-channel toolkit.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightningsnapin:minimizedAPI">Minimized API</a></td>
+<td>lightningsnapin:minimizedAPI</td>
+<td>Service Cloud</td>
+<td>Enables customization of the user interface for the minimized snap-in in Snap-ins for web.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightningsnapin:prechatAPI">Pre-chat API</a></td>
+<td>lightningsnapin:prechatAPI</td>
+<td>Service Cloud</td>
+<td>Enables customization of the user interface for the pre-chat page in Snap-ins Chat.</td>
+</tr>
+<tr>
+<td><a href="https://developer.salesforce.com/docs/component-library/bundle/lightningsnapin:settingsAPI/documentation">Settings API</a></td>
+<td>lightningsnapin:settingsAPI</td>
+<td>Service Cloud</td>
+<td>Enables to fetch certain settings from within custom components for Snap-ins for web.</td>
+</tr>
+</tbody>
+</table>
+
+
+<h3>Using a base service component</h3>
+
+<p>All of the base components are <a href="https://developer.salesforce.com/docs/component-library/overview/components" target="_blank">documented</a> with examples. For the sake of brevity we won't examine all of them in detail in this post but let's have a look at an example: displaying a notification with the notifications library.</p>
+
+<p>The first step in using the notifications library or any other service is to add the service component to a caller component's markup:</p>
+
+<pre>
+&lt;aura:component&gt;
+    &lt;!-- Service component --&gt;
+    &lt;lightning:notificationsLibrary aura:id="notifLib"/&gt;
+    &lt;!-- Sample button that calls the service --&gt;
+    &lt;lightning:button name="notice" label="Show Notice" onclick="{!c.handleShowNotice}"/&gt;
+&lt;/aura:component&gt;
+</pre>
+
+
+<p>Notice that we included an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_ids.htm" target="_blank">aura:id</a> attribute in our <code>lightning:notificationsLibrary</code> tag. This attribute allows us to declare a local ID that identifies the component as <code>notifLib</code>. This helps us to get programmatic access to the service component later.</p>
+
+<p>The second step is to call our service with some JS code in our caller component's controller. In our example we have a button that triggers a <code>handleShowNotice</code> controller function. This function displays the notification via the service.</p>
+
+<pre>
+handleShowNotice : function(component, event, helper) {
+    component.find('notifLib').showNotice({
+        variant: 'error',
+        header: 'Something has gone wrong!',
+        message: 'Unfortunately, there was a problem.'
+    });
+}
+</pre>
+
+
+<p>The first thing that our function does is to retrieve a reference to our service component by using the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_find_by_id.htm" target="_blank">find</a> method with our local id (<code>notifLib</code>). Once we have the reference, we can then call an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_method.htm" target="_blank">Aura method</a> that provides the service. In our case, we call the <code>showNotice</code> method with some parameters (an object with properties that describe the notification). This displays a notification.</p>
+
+<p>This pattern of declaring a service component in markup and executing its Aura methods is the key to using service components.</p>
+
+<h2>Implementing and using a custom service component</h2>
+
+<p>In addition to the growing list of base service components, you may want to develop custom services. Here are a few simple steps on how to proceed:</p>
+
+<ol><li>Identify a custom service candidate</li>
+<li>Implement the service</li>
+<li>Use the service</li></ol>
+
+<h3>Identify a Custom Service Candidate</h3>
+
+<p>When looking for a custom service candidate, you want to ask yourself a couple of questions such as:</p>
+
+<ul><li>Is the JS code of your existing component's “polluted” by some non-core functions?</li>
+<li>Do you find yourself writing the same bit of code over and over again?</li>
+<li>Can some of your code be reused?</li></ul>
+
+<p>Creating a custom service will simplify your component’s code and help you reduce code duplication. This in turns makes your code more robust and facilitates maintenance.</p>
+
+<p>Let's take a concrete example: calling a server-side action. This is a great match for a service as we all have copied the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">documentation's JS template</a> over and over again. However, the fact is that out of the hundred of lines of code that this represents (if you handle errors thoroughly), there is only one block of instructions that really varies: processing the server response.</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_800/v1534465961/server-action_i1g1ge.png"
+	alt="Lightning server side action call code" width="600"/>
+</p>
+
+<p>This is why I contributed a <a href="https://github.com/pozil/server-action-service" target="_blank">Server Action Service</a>, an ideal candidate for a service component. This service reduces the hundreds of lines of code required to call a server action and handle errors to about ten lines for complex cases (we will provide this code later in this article):</p>
+
+<pre>
+const server = cmp.find('server');
+const actionReference = cmp.get('c.anAction');
+server.callServer(
+    actionReference,
+    actionParameters,
+    isCacheEnabled,
+    $A.getCallback(response =&gt; { /* Optional success callback */ }),
+    $A.getCallback(errors =&gt; { /* Optional error callback */ }),
+    isErrorNotificationEnabled
+);
+</pre>
+
+
+<p>For simple use cases, server calls can even be inlined:</p>
+
+<pre>
+cmp.find('server').callServer(cmp.get('c.anAction'), params);
+</pre>
+
+
+<p>Using this service lets you focus on what matters the most and also takes care of handling errors in a unified way (displaying an error toast notifications and detailed error logs in the developer console).</p>
+
+<h3>IMplement the custom service</h3>
+
+<p>When implementing a custom service, there are a couple of architectural approaches that you can explore. Here are some tips on how to adopt the best implementation strategies.</p>
+
+<b>Injecting your service</b>
+<p>A simple approach based on object-oriented programming is to use <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/oo_intro.htm" target="_blank">inheritance</a> to inject your service. In this approach, the caller component inherits from the service:</p>
+
+<pre>
+&lt;aura:component extends="c:MyService"&gt;
+    ...
+&lt;/aura:component&gt;
+</pre>
+
+
+<p>However, inheritance is not the best service injection strategy for a couple of reasons:</p>
+
+<ul><li>A component can only inherit from a single parent so this hampers your ability to use multiple services in the same component.</li>
+<li>Lightning component inheritance has some <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/oo_whats_inherited.htm" target="_blank">limitations</a>.</li></ul>
+
+<p>The best alternative to inheritance is to use composition. That is, declaring an instance of a service in the component that will use it. This lets you declare and use several services in the same caller component:</p>
+
+<pre>
+&lt;aura:component&gt;
+    &lt;c:ServerActionService aura:id="serverService"/&gt;
+    &lt;c:PicklistService aura:id="picklistService"/&gt;
+    ...
+&lt;/aura:component&gt;
+</pre>
+
+
+<b>Exposing your service</b>
+<p>Once you have settled on how to inject the service, you need to decide how to expose its functionalities. There are two options: using events or a combination of Aura methods and callback functions.</p>
+
+<p>Using events may seem the easiest way to call a service because of the low coupling that it implies:</p>
+
+<ul><li>if using an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application event</a>, a service instance can be called from anywhere in the Lightning app.</li>
+<li>if using a <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component event</a>, a service instance can be called by any component in the ancestry branch (parent or child) of its container.</li></ul>
+
+<p>However, there are some important downsides to the use of events:</p>
+
+<ul><li>Your service has to be a singleton (there can be only one instance of it) within the “reach” of the event. If not, the event will be handled by multiple service instances and every service call will be duplicated.</li>
+<li>Events do not offer an easy way to provide callbacks (it lets you trigger the service but you cannot get a response from it).</li></ul>
+
+<p>A more flexible approach is to use the combination of an Aura method with one or several callback functions. Interestingly, Aura methods are the only place where you can define an Aura attribute of type <code>Function</code>. This is extremely convenient as it allows to implement <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cmp_methods_async.htm" target="_blank">methods that return results asynchronously</a>.</p>
+
+<p>For example, in the server action service, we have a <code>callServer</code> Aura method which specifies two callback functions <code>successCallback</code> and <code>errorCallback</code>:</p>
+
+<pre>
+&lt;aura:method access="global" name="callServer" action="{!c.callServer}" description="..."&gt;
+    &lt;aura:attribute name="action" type="Map" required="true" description="..."/&gt;
+    &lt;aura:attribute name="params" type="Map" description="..."/&gt;
+    &lt;aura:attribute name="isStorable" type="Boolean" default="false" description="..."/&gt;
+    &lt;aura:attribute name="successCallback" type="Function" description="..."/&gt;
+    &lt;aura:attribute name="errorCallback" type="Function" description="..."/&gt;
+    &lt;aura:attribute name="disableErrorNotification" type="Boolean" description="..."/&gt;
+&lt;/aura:method&gt;
+</pre>
+
+
+<p>The component that calls the service executes the <code>callServer</code> method by specifying a success and an error callback function (the code of these functions lives in the calling component). Then the service executes itself and calls the appropriate callback function with some results or errors.</p>
+
+<b>Making your service generic by decoupling it from a specific Apex controller</b>
+<p>Some services like the server action service require access to an Apex controller. This implies a certain level of coupling between the service component and it's server controller. Unfortunately, such coupling goes against the principle of having generic services so we must break it. There are a two of ways to achieve this: moving the server controller out of the service component or implementing a generic Apex controller.</p>
+
+<p>In the context of the server action service, there is no way to implement a truly generic Apex controller so we have to avoid declaring the controller in the service. In order to do that, we let the calling component specify an Apex controller. We then obtain a reference to a server action and pass it to the server action service.</p>
+<p>Here are the four steps that illustrate how the server action service works (see diagram above):</p>
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_800/v1534466108/architecture_wzbhmx.jpg"
+	alt="Lightning server action service component schema" width="600"/>
+</p>
+
+<ol>
+	<li>Calling component controller gets a reference to the server-side action (the Apex <code>@AuraEnabled</code> method)</li>
+	<li>Calling component controller executes the service's <code>callServer</code> Aura method with:
+		<ol>
+			<li>the server-side action reference</li>
+		  <li>a reference to a success callback function</li>
+		  <li>optionally a reference to an error callback function</li>
+		</ol>
+	</li>
+	<li>Service executes the server-side action and gets the server response</li>
+	<li>Service either
+		<ol>
+			<li>calls the success callback function with the server response</li>
+			<li>calls the error callback function with the server error and handles error notification</li>
+		</ol>
+	</li>
+</ol>
+
+<p>An alternative to this approach is to implement a generic Apex controller. For example, I have contributed a <a href="https://github.com/pozil/picklist-service" target="_blank">picklist service</a> that retrieves the entries of any standard or custom picklist field. In such use cases, you do not want to create as many server actions as there are picklist types because this is a repetitive manual process. Plus, it is unmaintainable and does not scale well.</p>
+
+<p>The solution to that problem is to implement a single server-side action but to make it fully generic by leveraging  <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dynamic.htm" target="_blank">dynamic Apex</a> and <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_type.htm?search_text=forName#apex_methods_system_type" target="_blank">dynamic class instantiation</a>. The complexity of the <a href="https://github.com/pozil/picklist-service/blob/master/src/main/default/classes/PicklistServiceController.cls" target="_blank">Apex code</a> is beyond the scope of this post but here is the signature of the generic server-side action that returns picklist entries:</p>
+
+<pre>
+@AuraEnabled
+public static List&lt;Map&lt;String,Object&gt;&gt; getEntries(String objectName, String fieldName) {
+    // Dynamically load object and field based on their names
+    // then, load and return picklist entries`
+}`
+</pre>
+
+
+<p>This allows the caller component to call the service with any picklist field:</p>
+
+<pre>
+const service = cmp.find('picklistService');
+// Getting picklist entries for Account.Industry field
+service.getEntries('Account', 'Industry', entries =&gt; {
+    console.log(entries);
+});
+// Getting picklist entries for a custom object and field
+service.getEntries('TrailheadUser__c', 'Rank__c', entries =&gt; {
+    console.log(entries);
+});
+</pre>
+
+
+<p>While this dynamic Apex approach is extremely useful, bear in mind that it has the drawback of being slightly unsafe as it defeats compiler checks. You could be calling a service on a class or object that does not exist but the compiler will not throw an error when you save your code. You will only get an error at run time so this is harder to test and debug.</p>
+
+<h3>UsE the Custom service</h3>
+
+<p>Using a custom service is similar to using a base service component. To recap, these are the three steps:</p>
+
+<ol><li>Add the service component with an <code>aura:id</code> in a caller component's markup.</li>
+<li>Get a reference to the service by calling <code>component.find()</code> with the previously defined <code>aura:id</code> in the caller's JS controller or helper.</li>
+<li>Execute one of the service's Aura methods.</li></ol>
+
+<h2>Closing words</h2>
+
+<p>As you have seen by now, Lightning service components are becoming more prevalent in the Salesforce Platform. This architecture pattern is an efficient and safe way to reuse code across different projects. Give it a try by using one of the base service components and move to the next step by creating your own!</p>
+
+<p>Over the course of my different projects I have assembled a list of services that I often reuse. Feel free to check out my contributions:</p>
+
+<ul><li><a href="https://github.com/pozil/server-action-service" target="_blank">Server Action Service</a> - A service that calls server-side actions.</li>
+<li><a href="https://github.com/pozil/picklist-service" target="_blank">Picklist Service</a> -  A service that retrieves any picklist entries without the need to declare a custom Apex controller.</li>
+<li><a href="https://github.com/pozil/platform-event-service" target="_blank">Platform Event Service</a> - A service that publishes and subscribes to platform events.</li></ul>
+
+</article>
