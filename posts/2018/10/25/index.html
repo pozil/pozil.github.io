@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Building Real-Time Lightning Apps Gets Even Simpler</h1>
+</header>
+
+<style>
+	table {margin-bottom: 20px;}
+	th,td {padding: 3px; border: 1px solid #e0e0e0;}
+	th {text-align: center;}
+	tr:nth-child(odd) {background-color: #f0f0f0;}
+</style>
+		
+
+<p>Building modern apps that react to changes in real-time used to require some implementation effort, but the latest update to our streaming technologies greatly simplifies things. In this post we will go through a brief refresher on the Streaming API and we will introduce you to a new way of subscribing to streaming events using the <code>lightning:empApi</code> component. We'll give you an overview of this game changer plus some sample code.</p>
+
+<h2>A brief refresher on the Streaming API</h2>
+
+<p>The Streaming API enables the streaming of near real-time events using push technology. This can be used to react to data changes or to broadcast messages across different systems for integration purposes.</p>
+
+<p>With the release of <a href="https://developer.salesforce.com/docs/atlas.en-us.216.0.change_data_capture.meta/change_data_capture/cdc_intro.htm" target="_blank">Change Data Capture</a> (CDC) in Developer Preview in Winter '19, the Streaming API now includes four types of events: PushTopic events, generic events, platform events and CDC events. Each of these event types have <a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/event_comparison.htm" target="_blank">their own characteristics</a> but they all rely on the same routing technology: CometD.</p>
+
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_1200/v1540432200/streaming-api_uebtdg.png"
+	alt="Event types of the streaming API" width="600"/>
+</p>
+
+
+<p>In other words, CometD acts as a radio and all streaming events are registered as channels. These are the streaming channels currently available:</p>
+
+<table>
+<tbody>
+	<tr>
+		<th style="width:100x;">Event type</th>
+		<th>Channel</th>
+		<th>Description</th>
+		<th>Example</th>
+	</tr>
+	<tr>
+		<td>PushTopic event</td>
+		<td>/topic/&lt;Topic_Name&gt;</td>
+		<td>A PushTopic event</td>
+		<td>/topic/MyPushTopic</td>
+	</tr>
+	<tr>
+		<td>Generic event</td>
+		<td>/u/&lt;Event_Name&gt;</td>
+		<td>A generic event</td>
+		<td>/u/MyGenericEvent</td>
+	</tr>
+	<tr>
+		<td>Platform event</td>
+		<td>/event/&lt;Platform_Event_Name></td>
+		<td>A platform event</td>
+		<td>/event/MyPlatformEvent__e</td>
+	</tr>
+	<tr>
+		<td>CDC event</td>
+		<td>/data/ChangeEvents</td>
+		<td>All CDC events<br/>(standard and custom)</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>CDC event</td>
+		<td>/data/&lt;Standard_Object_Name&gt;<br/>ChangeEvent</td>
+		<td>A CDC event associated to a standard object</td>
+		<td>/data/AccountChangeEvent</td>
+	</tr>
+	<tr>
+		<td>CDC event</td>
+		<td>/data/&lt;Custom_Object_Name&gt;<br/>__ChangeEvent</td>
+		<td>A CDC event associated to a custom object</td>
+		<td>/data/MyCustomObject__ChangeEvent</td>
+	</tr>
+</tbody>
+</table>
+
+<p>Up till Winter '19, developers had to manually manage CometD connections in JS in order to subscribe to streaming events in Lightning. Now times are changing! What used to be a rather complex setup is now greatly simplified with <a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empApi</a>, a new Lightning component that streamlines the use of the Streaming API (pun intended).</p>
+
+<h2>A game changer</h2>
+
+<p>If you were already establishing and managing CometD connections in Lightning, you'll quickly see why <code>lightning:empApi</code> is a game changer: it provides an abstraction layer that increases performance and greatly reduces code complexity.</p>
+
+<h3>Performance increase</h3>
+
+<code>lightning:empApi</code> increases streaming performances by saving some precious time on the CometD server connection initialization and reducing network traffic.
+
+<p>What happens behind the scenes is that as soon as a Lightning page loads, we are establishing a CometD connection in the background. This was already the case prior to Winter '19 but we were reserving that connection for internal use. You had to establish your own connection in parallel for custom components.</p>
+
+<p>With <code>lightning:empApi</code> you can now benefit from a single shared connection. Thanks to that, you no longer have to configure CometD, establish a connection, and wait for it to become available before subscribing to a streaming event. This reduces network traffic and solves potential connection conflicts you might have experienced in the past.</p>
+<p>You can now safely and efficiently add multiple <code>lightning:empApi</code> components to the same page.</p>
+
+
+<p class="text-center">
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_1000/v1540432200/shared-connection_nky6lq.png"
+	alt="Architecture of empApi sharing a single CometD connection per Lighting page " width="600"/>
+</p>
+
+
+<h3>Reduced code complexity</h3>
+
+<code>lightning:empApi</code> greatly reduces code complexity by allowing you to get rid of close to a hundred lines of code for a basic use case. With <code>lightning:empApi</code> you won't have to deal with the CometD server handshake and authentication. All of this is automated and performed in the background for you. This means no more custom Apex controller, no JS static resources and only a few JS lines. This lets you focus on what matters the most: subscribing to events and handling errors.
+
+<h2>Working with the lightning:empApi component</h2>
+
+<a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empApi</a> is a <a href="https://developer.salesforce.com/blogs/2018/08/implement-and-use-lightning-service-components.html" target="_blank">Lightning service component</a> and like other service components, it has no user interface of its own and exposes its functionalities via Aura methods.
+
+<p>In order to use it, you just have to include it your Lightning component markup:</p>
+
+<pre>
+&lt;aura:component&gt;
+  &lt;!-- Declare the service --&gt;
+  &lt;lightning:empApi aura:id="empApi"/&gt;
+  
+  &lt;!-- Call the onInit controller function on component initalization --&gt;
+  &lt;aura:handler name="init" value="{!this}" action="{!c.onInit}"/&gt;
+  
+  &lt;!-- Hold a streaming event subscription (required for unsubscribing) --&gt;
+  &lt;aura:attribute name="subscription" type="Map"/&gt;
+&lt;aura:component&gt;
+</pre>
+
+
+<p>Then get a reference to the service in your JS controller or helper and call the service's aura methods.</p>
+
+<p>As a best practice, I recommend setting up the debugging flag (if needed) and specifying an error handler in the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_init_handler.htm" target="_blank">component initialization handler</a>, even if you plan to subscribe to events at later point in time.</p>
+
+<pre>
+// Sets an empApi error handler on component initialization
+onInit : function(component, event, helper) {
+  // Get a reference to the service component via its aura:id
+  const empApi = component.find('empApi');
+
+  // Enable debug logging (optional)
+  empApi.setDebugFlag(true);
+
+  // Register error listener and pass in the error handler function
+  empApi.onError($A.getCallback(error =&gt; {
+    // error can be any type of error (subscribe, unsubscribe...)
+    console.error('An EMP API error occured: ', error);
+}));
+</pre>
+
+
+<p>All error types (subscribe and unsubscribe errors) are handled by a unique function passed to <code>onError</code>. Make sure that you call <code>onError</code> only once in your component's lifespan. Calling <code>onError</code> multiple times overwrites the previous error handler. Doing so may lead to inconsistent error handling such as handling a subscribe error with a function that you designed to handle unsubscribe errors.</p>
+
+<p>Once you have set up an error handler, you can subscribe to a streaming event. To do so, you need to get the streaming channel associated with that event. Once you have the channel, subscribe to the event with the following code:</p>
+
+<pre>
+const channel = '/data/ChangeEvents'; // Channel for all CDC Events
+const replayId = -1; // Get all new events
+
+// Get a reference to the service component via its aura:id
+const empApi = component.find('empApi');
+
+// Subscribe to a streaming event
+empApi.subscribe(channel, replayId, $A.getCallback(eventReceived =&gt; {
+  // Process event (this is called each time we receive an event)
+  console.log('Received event ', JSON.stringify(eventReceived));
+}))
+.then(subscription =&gt; {
+  // Confirm that we have subscribed to the event channel
+  // We haven't received an event yet
+  console.log('Subscribed to channel ', subscription.channel);
+  // Save subscription in order unsubscribe later
+  component.set('v.subscription', subscription);
+});
+</pre>
+
+
+<p>Later on, you can unsubscribe from the event with the following code:</p>
+
+<pre>
+// Get previously saved subscription
+const subscription = component.get('v.subscription');
+
+// Get a reference to the service component via its aura:id
+const empApi = component.find('empApi');
+
+// Unsubscribe from the streaming event
+empApi.unsubscribe(subscription, $A.getCallback(unsubscribed =&gt; {
+  // Confirm that we have unsubscribed from the event channel
+  console.log('Unsubscribed from channel '+ unsubscribed.subscription);
+}));
+</pre>
+
+
+<h2>Full 'stream' ahead on Trailhead</h2>
+
+<p>Now that we have covered the basics of streaming events and the use of <code>lightning:empApi</code>, how about some hands-on exercises? We have updated the <a href="https://trailhead.salesforce.com/projects/workshop-platform-events" target="_blank">Build an Instant Notification</a> Trailhead project to use the new <code>lightning:empApi</code> component. Why don't you give it at try or even retry it? You'll notice how easy it is to use the Streaming API with platform events in less than an hour.</p>
+
+<h2>Resources</h2>
+
+<ul><li><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">Documentation: lightning:empApi Component</a></li>
+<li><a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm" target="_blank">Documentation: Streaming API Developer Guide</a></li>
+<li><a href="https://trailhead.salesforce.com/content/learn/projects/workshop-platform-events" target="_blank">Trailhead Project: Build an Instant Notification</a></li>
+<li><a href="https://trailhead.salesforce.com/sample-gallery" target="_blank">Sample Gallery: Sample Lightning apps using lightning:empApi</a></li>
+<li><a href="https://www.youtube.com/watch?v=C6Cp2P5Eb7Y" target="_blank">Video: Dreamforce '18 Developer Keynote</a></li></ul>
+
+</article>

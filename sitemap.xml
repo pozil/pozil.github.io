@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
+<loc>http://pozil.github.io/#/post/2018-10-25</loc>
+<lastmod>2018-10-25T12:00:00+02:00</lastmod>
+<priority>0.8</priority>
+</url>
+<url>
 <loc>http://pozil.github.io/#/post/2018-08-27</loc>
 <lastmod>2018-08-27T12:00:00+02:00</lastmod>
 <priority>0.8</priority>
