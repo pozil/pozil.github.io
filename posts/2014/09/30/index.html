@@ -24,8 +24,8 @@ article table.pro-cons tr:nth-child(3) th, article table.pro-cons tr:nth-child(3
 <div class="grey-container" id="angular_webinars">
 	<div class="small-bottom-margin"><b>Note:</b> part of this content is also accessible as an ongoing series of webinars:</div>
 	<ul class="small-bottom-margin">
-		<li><a href="http://fr.bonitasoft.com/ressources/videos/angularjs-bonita-bpm-le-couple-ideal-pour-vos-processus" target="_blank" class="external">French version</a> - <span class="smaller-text">25<sup>th</sup> of September 2014, presented by myself</span></li>
-		<li><a href="http://www.bonitasoft.com/for-you-to-read/videos/bonita-bpm-angularjs-ideal-combination-your-process" target="_blank" class="external">English version</a> - <span class="smaller-text">15<sup>th</sup> of October 2014, presented by myself</span></li>
+		<li><a rel="noopener" href="https://fr.bonitasoft.com/ressources/videos/angularjs-bonita-bpm-le-couple-ideal-pour-vos-processus" target="_blank" class="external">French version</a> - <span class="smaller-text">25<sup>th</sup> of September 2014, presented by myself</span></li>
+		<li><a rel="noopener" href="https://www.bonitasoft.com/for-you-to-read/videos/bonita-bpm-angularjs-ideal-combination-your-process" target="_blank" class="external">English version</a> - <span class="smaller-text">15<sup>th</sup> of October 2014, presented by myself</span></li>
 	</ul>
 </div>
 
@@ -107,7 +107,7 @@ In consequence, your best chances in passing UAT in such cases is to work with a
 
 <p>The first concern we have to address will be to implement an AngularJS client library for the Bonita REST API. Fortunately for you, I have created an open project covering that.</p>
 
-<p class="small-bottom-margin">Let me introduce <a href="https://github.com/rodriguelegall/ngBonita" target="_blank" class="external"><b>ngBonita</b></a>, the AngularJS Bonita REST client (disclaimer: this is not an official extension of Bonita BPM). It provides the following:</p>
+<p class="small-bottom-margin">Let me introduce <a rel="noopener" href="https://github.com/rodriguelegall/ngBonita" target="_blank" class="external"><b>ngBonita</b></a>, the AngularJS Bonita REST client (disclaimer: this is not an official extension of Bonita BPM). It provides the following:</p>
 <ul>
 	<li>a set of AngularJS resources mapped to Bonita REST APIs</li>
 	<li>efficient queries with support for pagination</li>
@@ -153,17 +153,17 @@ appMainModule.controller('AppController', ['$scope', '$log', 'bonitaConfig', 'bo
 <p>Now that we have taken care of communicating with Bonita engine, we can focus on our core task: writing our custom UI.</p>
 
 <p>I will not give an AngularJS course in this blog post but I can recommend this excellent course:
-<a href="http://campus.codeschool.com/courses/shaping-up-with-angular-js/intro" target="_blank" class="external">Code school&rsquo;s Shaping up with Angular.js</a></p>
+<a rel="noopener" href="https://campus.codeschool.com/courses/shaping-up-with-angular-js/intro" target="_blank" class="external">Code school&rsquo;s Shaping up with Angular.js</a></p>
 
 <p>Once you have written your application as standalone app, you may want to go one step further and to integrate it with the existing Bonita Portal UI.
-Hopefully there is a feature for that: <a href="http://documentation.bonitasoft.com/custom-pages" target="_blank" class="external">Custom Pages</a> (requires an Efficiency or Performance edition).</p>
+Hopefully there is a feature for that: <a rel="noopener" href="https://documentation.bonitasoft.com/custom-pages" target="_blank" class="external">Custom Pages</a> (requires an Efficiency or Performance edition).</p>
 
 <p class="small-bottom-margin">Using a custom page, you will be able to embed you AngularJS app into the Bonita portal just like this:</p>
 
 <img class="img-responsive center-block" src="{{POST_PATH}}screenshot_bonita_angular_dashboard.png" title="Custom user dashboard integrated in Bonita Portal"/>
 <div class="img-caption">Custom user dashboard integrated in Bonita Portal</div>
 
-<p>This custom page uses ngBonita and Bootstrap to present a clean user dashboard to users. You can check out the custom page code from <a href="https://github.com/pozil/bonita-angular-dashboard" target="_blank" class="external">here</a>.</p>
+<p>This custom page uses ngBonita and Bootstrap to present a clean user dashboard to users. You can check out the custom page code from <a rel="noopener" href="https://github.com/pozil/bonita-angular-dashboard" target="_blank" class="external">here</a>.</p>
 
 
 <h3>Conclusion</h3>
@@ -177,8 +177,8 @@ We have seen that one of the most efficient way to achieve that by using Angular
 <h3>Resources</h3>
 <ul>
 	<li><a href="#angular_webinars">Webinar videos</a> (listed at the top of this post)</li>
-	<li><a href="https://github.com/rodriguelegall/ngBonita" target="_blank" class="external">ngBonita</a> the AngularJS Bonita REST client</li>
-	<li><a href="https://github.com/pozil/bonita-angular-dashboard" target="_blank" class="external">Bonita user dashboard</a>	built on AngularJS and integrated as a custom page in the Bonita Portal</li>
+	<li><a rel="noopener" href="https://github.com/rodriguelegall/ngBonita" target="_blank" class="external">ngBonita</a> the AngularJS Bonita REST client</li>
+	<li><a rel="noopener" href="https://github.com/pozil/bonita-angular-dashboard" target="_blank" class="external">Bonita user dashboard</a>	built on AngularJS and integrated as a custom page in the Bonita Portal</li>
 </ul>
 
 </div>

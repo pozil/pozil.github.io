@@ -5,7 +5,7 @@
 	<h1>Promote equality by building accessible content</h1>
 </header>
 
-<p class="notice text-center">- Original article co-written with <a href="https://twitter.com/FabienTaillon" target="_blank">Fabien Taillon</a> (Texei) and published on <a href="https://developer.salesforce.com/blogs/2018/01/promote-equality-building-accessible-content.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article co-written with <a rel="noopener" href="https://twitter.com/FabienTaillon" target="_blank">Fabien Taillon</a> (Texei) and published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/01/promote-equality-building-accessible-content.html">Salesforce Developer blog</a> -</p>
 
 <p>We all strive to become more inclusive but as developers, we can easily overlook one of inclusivity's many aspects: accessibility. In this blog post, we'll look at a few common bad practices that make content inaccessible and how to turn them around using some practical tips. With these best practices and some additional coding, along with Lightning Base Components and the Lightning Design System, you can create and deliver accessible content. </p>
 
@@ -17,11 +17,11 @@
 
 <p>When we mention accessibility, we tend to associate it with visible and permanent disabilities such as paraplegia or blindness. However, disabilities are much more frequent that we think.</p>
 
-<p>A disability is defined by any physical or mental condition that undermines one's ability to perform certain tasks. According to a similar broad definition of disability, the <a href="https://www.census.gov/newsroom/releases/archives/miscellaneous/cb12-134.html" target="_blank">U.S. Census Bureau</a> estimates that nearly 1 in 5 people have a disability in the U.S. This figure may look exaggerated, but it can be better understood by having a closer look at some common biases.</p>
+<p>A disability is defined by any physical or mental condition that undermines one's ability to perform certain tasks. According to a similar broad definition of disability, the <a rel="noopener" href="https://www.census.gov/newsroom/releases/archives/miscellaneous/cb12-134.html" target="_blank">U.S. Census Bureau</a> estimates that nearly 1 in 5 people have a disability in the U.S. This figure may look exaggerated, but it can be better understood by having a closer look at some common biases.</p>
 
-<p>A first bias is that we generally underestimate the frequency of certain disabilities. For example, let's consider a “well known” disability that affects the use of software: co_l_or blindness. Did you know that <a href="http://www.colourblindawareness.org/colour-blindness/" target="_blank">1 in 12 men are considered color blind</a> (For women, the condition affects 1 in 200)?</p>
+<p>A first bias is that we generally underestimate the frequency of certain disabilities. For example, let's consider a “well known” disability that affects the use of software: co_l_or blindness. Did you know that <a rel="noopener" href="https://www.colourblindawareness.org/colour-blindness/" target="_blank">1 in 12 men are considered color blind</a> (For women, the condition affects 1 in 200)?</p>
 
-<a href="https://www.nidcd.nih.gov/health/statistics/quick-statistics-hearing" target="_blank">Hearing loss</a> is a similar example. Are you aware that approximately 15% of American adults suffer from it?
+<a rel="noopener" href="https://www.nidcd.nih.gov/health/statistics/quick-statistics-hearing" target="_blank">Hearing loss</a> is a similar example. Are you aware that approximately 15% of American adults suffer from it?
 
 <p>A second prevalent bias is that we generally do not account for all types of disabilities. Disabilities fall into multiple categories and some of them are invisible or temporary. For example, you can be temporarily disabled if you break your arm or undergo eye surgery.</p>
 
@@ -30,7 +30,7 @@
 
 <p>Because disabilities impact a significant portion of the population, governments and international bodies are acting in favor of accessibility. In the software industry, this effort translates into various accessibility standards and regulations.</p>
 
-<p>If you are working for the public sector, there is a good chance that some of these apply to your projects. However, more and more private sector companies are also prioritizing accessibility. If you are not a User Experience (UX) specialist, consider the <a href="WCAG) 2.0](https://www.w3.org/TR/WCAG20/" target="_blank">Web Content Accessibility Guidelines (WCAG) 2.0</a> as a starting point (conformance level AA is the industry standard).</p>
+<p>If you are working for the public sector, there is a good chance that some of these apply to your projects. However, more and more private sector companies are also prioritizing accessibility. If you are not a User Experience (UX) specialist, consider the <a rel="noopener" href="https://www.w3.org/TR/WCAG20/" target="_blank">Web Content Accessibility Guidelines (WCAG) 2.0</a> as a starting point (conformance level AA is the industry standard).</p>
 
 <p>For the sake of brevity, we will not cover all these guidelines in this article, but we will point out some bad and best practices.</p>
 
@@ -95,7 +95,7 @@
 <blockquote>Perceivable - Information and user interface components must be presentable to users in ways they can perceive.</blockquote>
 
 
-<p>Ensuring that content is <a href="https://www.w3.org/TR/WCAG20/#perceivable" target="_blank">perceivable</a> is critical for accessibility. For example, visually impaired users need the help of assistive technologies such as magnifiers or screen readers to access content. These technologies rely on properly structured code.</p>
+<p>Ensuring that content is <a rel="noopener" href="https://www.w3.org/TR/WCAG20/#perceivable" target="_blank">perceivable</a> is critical for accessibility. For example, visually impaired users need the help of assistive technologies such as magnifiers or screen readers to access content. These technologies rely on properly structured code.</p>
 
 <p>When looking at the perceivable aspect of our sample form, the first problem that comes to light is that we do not provide a textual alternative to the use of images (the “new contact” icon).</p>
 
@@ -111,16 +111,16 @@
 
 <img class="floating-right" src="https://res.cloudinary.com/hzxejch6p/image/upload/v1515747441/accessibility-color-contrast_swxnei.png" alt="Color contrast examples" width="241" height="276" />
 
-<p>Another important cause of perception issues is the use of a non-accessible color palette. When building a user interface, designers need to maintain a sufficient color ratio in their theme. If you are using <a href="https://www.lightningdesignsystem.com/guidelines/color" target="_blank">Salesforce Lightning Design System</a> (SLDS), you are already working with fully accessible color palettes throughout the Lightning Experience. If not, there are <a href="http://www.aremycoloursaccessible.com/" target="_blank">online tools</a> that can help you ensure that your colors are accessible.</p>
+<p>Another important cause of perception issues is the use of a non-accessible color palette. When building a user interface, designers need to maintain a sufficient color ratio in their theme. If you are using <a rel="noopener" href="https://www.lightningdesignsystem.com/guidelines/color" target="_blank">Salesforce Lightning Design System</a> (SLDS), you are already working with fully accessible color palettes throughout the Lightning Experience. If not, there are <a rel="noopener" href="https://www.aremycoloursaccessible.com/" target="_blank">online tools</a> that can help you ensure that your colors are accessible.</p>
 
-<p>As a general rule, never use color as the only means to convey a message. For example, do not solely rely on a red border to indicate that a field contains invalid input. Add a text label or an accessible icon to <a href="https://lightningdesignsystem.com/components/form-element/?state=error&variant=base" target="_blank">indicate an error</a>.</p>
+<p>As a general rule, never use color as the only means to convey a message. For example, do not solely rely on a red border to indicate that a field contains invalid input. Add a text label or an accessible icon to <a rel="noopener" href="https://lightningdesignsystem.com/components/form-element/?state=error&variant=base" target="_blank">indicate an error</a>.</p>
 
 <h3><b>Operable</b></h3>
 
 <blockquote>Operable - User interface components and navigation must be operable.</blockquote>
 
 
-<p>Maintaining <a href="https://www.w3.org/TR/WCAG20/#operable" target="_blank">operable</a> content implies that you can access and interact with your content while replacing the mouse and/or keyboard with alternative input methods such as voice controls. </p>
+<p>Maintaining <a rel="noopener" href="https://www.w3.org/TR/WCAG20/#operable" target="_blank">operable</a> content implies that you can access and interact with your content while replacing the mouse and/or keyboard with alternative input methods such as voice controls. </p>
 
 <p>A basic rule to make your content operable is to use HTML with the right semantic meaning.</p>
 
@@ -129,7 +129,7 @@
 <ul><li><code>&lt;button&gt;</code> tag for submitting forms or modifying something in a page</li>
 <li><code>&lt;a&gt;</code> tag to navigate inside a page or to another page.</li></ul>
 
-<p>A common mistake is to use other elements such as <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code> with an <code>onclick</code> attribute for interactions as these elements do not receive keyboard focus without <a href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role" target="_blank">additional coding</a>.</p>
+<p>A common mistake is to use other elements such as <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code> with an <code>onclick</code> attribute for interactions as these elements do not receive keyboard focus without <a rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role" target="_blank">additional coding</a>.</p>
 
 <p>If you need to trigger an action on an image, wrap it in a <code>&lt;button&gt;</code> or an <code>&lt;a&gt;</code> tag and control the elements' appearance with CSS.</p>
 
@@ -156,7 +156,7 @@
 <blockquote>Understandable - Information and the operation of user interface must be understandable.</blockquote>
 
 
-<a href="https://www.w3.org/TR/WCAG20/#understandable" target="_blank">Understandable</a> content implies that it can be read by a user and also be presented by the means of assistive technology. Understandable content also helps users avoid and correct mistakes.
+<a rel="noopener" href="https://www.w3.org/TR/WCAG20/#understandable" target="_blank">Understandable</a> content implies that it can be read by a user and also be presented by the means of assistive technology. Understandable content also helps users avoid and correct mistakes.
 
 <p>The first thing that needs to be done to create an understandable form is to provide <code>label</code> tags for each <code>input</code>. These help assistive technology such as screen readers to present the UI. Providing <code>placeholder</code> tags alone is not enough.</p>
 
@@ -198,7 +198,7 @@
 <blockquote>Robust - Content must be robust enough that it can be interpreted reliably by a wide variety of user agents, including assistive technologies.</blockquote>
 
 
-<a href="https://www.w3.org/TR/WCAG20/#robust" target="_blank">Robustness</a> is guaranteed by the use of valid HTML5. Modern web browsers are able to render invalid HTML up to some point, but assistive technologies are more sensitive to invalid markup.
+<a rel="noopener" href="https://www.w3.org/TR/WCAG20/#robust" target="_blank">Robustness</a> is guaranteed by the use of valid HTML5. Modern web browsers are able to render invalid HTML up to some point, but assistive technologies are more sensitive to invalid markup.
 
 <p>IDEs will do most of the work to assist you, but here are some basic recommendations to ensure that your markup is valid:</p>
 
@@ -212,7 +212,7 @@
 
 <p>The best way to understand how accessible your content is is to try it out.</p>
 
-<p>For Mac users, macOS has a built-in screen reader, <a href="https://www.apple.com/accessibility/mac/vision/" target="_blank">VoiceOver</a>. Windows doesn't have an integrated tool, but there are some great free tools available, like <a href="https://www.nvaccess.org/" target="_blank">NVDA</a>.</p>
+<p>For Mac users, macOS has a built-in screen reader, <a rel="noopener" href="https://www.apple.com/accessibility/mac/vision/" target="_blank">VoiceOver</a>. Windows doesn't have an integrated tool, but there are some great free tools available, like <a rel="noopener" href="https://www.nvaccess.org/" target="_blank">NVDA</a>.</p>
 
 <p>If we had tested our previous form with a screen reader, we could have easily highlighted some accessibility issues. Let's take VoiceOver as an example. VoiceOver lets you cycle through the page elements by pressing the <code>tab</code> key. It reads and writes information about the active element.</p>
 
@@ -272,7 +272,7 @@
 	alt="Accessible form previewed with Voice Over" width="500" height="366" />
 </p>
 
-<p>In addition to testing, we can use audit tools like <a href="https://chrome.google.com/webstore/detail/axe/lhdoppojpmngadmnindnejefpokejbdd" target="_blank">aXe Chrome Plugin</a>. Once installed in your browser, it scans your page, lists issues, and provides tips to fix them.</p>
+<p>In addition to testing, we can use audit tools like <a rel="noopener" href="https://chrome.google.com/webstore/detail/axe/lhdoppojpmngadmnindnejefpokejbdd" target="_blank">aXe Chrome Plugin</a>. Once installed in your browser, it scans your page, lists issues, and provides tips to fix them.</p>
 
 <p>
 	<img class="alignnone wp-image-188255" src="https://res.cloudinary.com/hzxejch6p/image/upload/v1515747448/accessibility-axe_awyxza.png"
@@ -286,25 +286,25 @@
 <h2>Conclusion</h2>
 
 
-<p>Building and delivering accessible content does not cost much time or money if you follow the best practices we listed in this article. In short, we recommend that you rely on the combination of the Lightning Design System (<a href="https://trailhead.salesforce.com/modules/lightning_design_system" target="_blank">learn more</a> about it on Trailhead) and Lightning Base Components to build accessible UIs.</p>
+<p>Building and delivering accessible content does not cost much time or money if you follow the best practices we listed in this article. In short, we recommend that you rely on the combination of the Lightning Design System (<a rel="noopener" href="https://trailhead.salesforce.com/modules/lightning_design_system" target="_blank">learn more</a> about it on Trailhead) and Lightning Base Components to build accessible UIs.</p>
 
-<p>If you want to build your own theme, remember that SLDS can easily be customized with <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/tokens_intro.htm" target="_blank">design tokens</a>. This provides a safer alternative to building an accessible theme from scratch.</p>
+<p>If you want to build your own theme, remember that SLDS can easily be customized with <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/tokens_intro.htm" target="_blank">design tokens</a>. This provides a safer alternative to building an accessible theme from scratch.</p>
 
 <p>Lightning Base Components generate accessible HTML but it is your responsibility to properly configure certain attributes such as distinct  <code>id</code> attributes or the <code>alternativeText</code> attribute on <code>lightning:icon</code>.</p>
 
-<p>Feel free to explore <a href="https://github.com/FabienTaillon/accessibleLC" target="_blank">this demo</a> that presents two versions of the same form: a poorly accessible version and a fully accessible one.</p>
+<p>Feel free to explore <a rel="noopener" href="https://github.com/FabienTaillon/accessibleLC" target="_blank">this demo</a> that presents two versions of the same form: a poorly accessible version and a fully accessible one.</p>
 
 <p>Thank you for reading this post and for helping us to promote equality and inclusiveness.</p>
 
 <h2>Resources</h2>
 
-<ul><li><a href="https://www.lightningdesignsystem.com/accessibility/overview/" target="_blank">Accessibility Overview on the Salesforce Lightning Design System website</a></li>
-<li><a href="https://www.salesforce.com/company/legal/508_accessibility/" target="_blank">Salesforce Product Accessibility Status</a></li>
-<li><a href="https://www.w3.org/WAI/videos/standards-and-benefits" target="_blank">Video Introduction to Web Accessibility and W3C Standards</a></li>
-<li><a href="https://github.com/FabienTaillon/accessibleLC" target="_blank">Accessibility demo repository</a></li>
-<li><a href="https://success.salesforce.com/_ui/core/chatter/groups/GroupProfilePage?g=0F93A000000LfSVSA0" target="_blank">Disability topic group in the Trailblazer Community</a></li>
+<ul><li><a rel="noopener" href="https://www.lightningdesignsystem.com/accessibility/overview/" target="_blank">Accessibility Overview on the Salesforce Lightning Design System website</a></li>
+<li><a rel="noopener" href="https://www.salesforce.com/company/legal/508_accessibility/" target="_blank">Salesforce Product Accessibility Status</a></li>
+<li><a rel="noopener" href="https://www.w3.org/WAI/videos/standards-and-benefits" target="_blank">Video Introduction to Web Accessibility and W3C Standards</a></li>
+<li><a rel="noopener" href="https://github.com/FabienTaillon/accessibleLC" target="_blank">Accessibility demo repository</a></li>
+<li><a rel="noopener" href="https://success.salesforce.com/_ui/core/chatter/groups/GroupProfilePage?g=0F93A000000LfSVSA0" target="_blank">Disability topic group in the Trailblazer Community</a></li>
 <li>Dreamforce 2017 session recordings
-<ul>    <li><a href="https://success.salesforce.com/Sessions?eventId=a1Q3A00000stRRuUAM#/session/a2q3A000001yvdMQAQ" target="_blank">Accessibility at Salesforce</a></li>
-<p>    <li><a href="https://success.salesforce.com/Sessions?eventId=a1Q3A00000stRRuUAM#/session/a2q3A000001yuoRQAQ" target="_blank">Delivering your first accessible Lightning Component</a></li></ul></li></ul></p>
+<ul>    <li><a rel="noopener" href="https://success.salesforce.com/Sessions?eventId=a1Q3A00000stRRuUAM#/session/a2q3A000001yvdMQAQ" target="_blank">Accessibility at Salesforce</a></li>
+<p>    <li><a rel="noopener" href="https://success.salesforce.com/Sessions?eventId=a1Q3A00000stRRuUAM#/session/a2q3A000001yuoRQAQ" target="_blank">Delivering your first accessible Lightning Component</a></li></ul></li></ul></p>
 
 </article>

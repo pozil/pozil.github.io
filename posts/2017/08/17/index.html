@@ -7,19 +7,19 @@
 
 <img class="floating-right" style="margin-left:20px;" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_150/v1502116091/post-icon_gg0nfc.png"/>
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/08/displaying-user-notifications-lightning-component-framework.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/developer-relations/2017/08/displaying-user-notifications-lightning-component-framework.html">Salesforce Developer blog</a> -</p>
 
 <p>In this blog post, we explore a Lightning event and a component that display user notifications: toasts and modals. We provide best practices and sample code for each of these components.</p>
 
 <h2>Toasts</h2>
 
-<p><a href="https://www.lightningdesignsystem.com/guidelines/messaging/components/toasts/" target="_blank">Toasts</a> are the simplest form of notification a developer can use to display a notification dynamically.</p>
+<p><a rel="noopener" href="https://www.lightningdesignsystem.com/guidelines/messaging/components/toasts/" target="_blank">Toasts</a> are the simplest form of notification a developer can use to display a notification dynamically.</p>
 
 <img class="floating-right" style="margin-left:20px;" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1502114407/toasts_xrw0n7.png" width="300" height="191" />
 
 <p>They are used to provide basic user feedback with a limited amount of text (if the text is too long, consider using a modal). Unless set to “sticky” mode, they're displayed for a limited duration and don't block user interactions.</p>
 
-<p>In Lightning Experience, Salesforce1, and Lightning communities, you aren't required to directly inject the toast component markup in your code. Instead, you can fire a <code>force:showToast</code> (<a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_force_showToast.htm" target="_blank">documentation</a>) application event. The <code>one.app</code> container handles this event and takes care of the markup, placement, and animation of the toast so that you can focus on the content itself.</p>
+<p>In Lightning Experience, Salesforce1, and Lightning communities, you aren't required to directly inject the toast component markup in your code. Instead, you can fire a <code>force:showToast</code> (<a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_force_showToast.htm" target="_blank">documentation</a>) application event. The <code>one.app</code> container handles this event and takes care of the markup, placement, and animation of the toast so that you can focus on the content itself.</p>
 
 <p>You simply fire the event from your component’s controller or helper:</p>
 
@@ -39,13 +39,13 @@ toastEvent.fire();
 <ul><li>Are displayed above all content at the top center of the screen</li>
 <li>Stack up to display up to three toasts</li>
 <li>Don’t support HTML at all (characters are escaped)</li>
-<li>Only support links when a message template is specified (check the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_force_showToast.htm" target="_blank">documentation</a> for more details)</li></ul>
+<li>Only support links when a message template is specified (check the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_force_showToast.htm" target="_blank">documentation</a> for more details)</li></ul>
 
-<p>Feel free to try it out with this <a href="https://gist.github.com/pozil/4a3fedf30836379dd6fc7c8668046f18" target="_blank">sample gist</a>.</p>
+<p>Feel free to try it out with this <a rel="noopener" href="https://gist.github.com/pozil/4a3fedf30836379dd6fc7c8668046f18" target="_blank">sample gist</a>.</p>
 
 <h2>Modals</h2>
 
-<a href="https://www.lightningdesignsystem.com/components/modals/" target="_blank">Modals</a> are a more advanced way of interacting with users. Unlike toasts, modals focus user interactions by applying an overlay over the screen. Modals are more versatile as they can display a long message, act as a confirmation dialog, capture data with a form, or display a loading message such as file upload progress.
+<a rel="noopener" href="https://www.lightningdesignsystem.com/components/modals/" target="_blank">Modals</a> are a more advanced way of interacting with users. Unlike toasts, modals focus user interactions by applying an overlay over the screen. Modals are more versatile as they can display a long message, act as a confirmation dialog, capture data with a form, or display a loading message such as file upload progress.
 
 <p>When using modals, consider these UX best practices:</p>
 
@@ -53,11 +53,11 @@ toastEvent.fire();
 <li>Don't use a modal to display a success message, use a toast instead.</li>
 <li>When displaying long content in a modal, add a vertical scroll bar to the modal’s body (the modal footer and its buttons must be kept visible).</li></ul>
 
-<p>Modals come up with several configuration options (optional header and footer, optional close icon, extra wide body, and so on). But these require more code as there’s no Base Lightning component available out of the box for now. That’s subject to change (<a href="http://investor.salesforce.com/about-us/investor/forward-looking-statements/" target="_blank">forward-looking statement</a>) in Winter ’18 according to our <a href="https://help.salesforce.com/articleView?id=lightning_components_roadmap.htm" target="_blank">Lightning component roadmap</a>.</p>
+<p>Modals come up with several configuration options (optional header and footer, optional close icon, extra wide body, and so on). But these require more code as there’s no Base Lightning component available out of the box for now. That’s subject to change (<a rel="noopener" href="https://investor.salesforce.com/about-us/investor/forward-looking-statements/" target="_blank">forward-looking statement</a>) in Winter ’18 according to our <a rel="noopener" href="https://help.salesforce.com/articleView?id=lightning_components_roadmap.htm" target="_blank">Lightning component roadmap</a>.</p>
 
 <img class="floating-right" style="margin-left:20px;" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_400/v1502116086/annotated-features_mfxf4g.png" width="400" height="264" />
 
-<p>As a convenience, I’ve built and open sourced such a Lightning modal component (<a href="https://appexchange.salesforce.com/listingDetail?listingId=a0N3A00000EOOB1UAP" target="_blank">AppExchange listing</a>, <a href="https://github.com/pozil/sfdc-ui-modal" target="_blank">GitHub repository</a>) that you can freely reuse in your projects. This means that you’re no longer required to rebuild the modal markup and logic each time you need one.</p>
+<p>As a convenience, I’ve built and open sourced such a Lightning modal component (<a rel="noopener" href="https://appexchange.salesforce.com/listingDetail?listingId=a0N3A00000EOOB1UAP" target="_blank">AppExchange listing</a>, <a rel="noopener" href="https://github.com/pozil/sfdc-ui-modal" target="_blank">GitHub repository</a>) that you can freely reuse in your projects. This means that you’re no longer required to rebuild the modal markup and logic each time you need one.</p>
 
 <p style="clear:both;">This component can be declared via the following markup:</p>
 
@@ -120,15 +120,15 @@ $A.createComponent(
 
 <p>You now have the tools and knowledge that enable you to display the right type of user notifications from your custom Lightning components.</p>
 
-<p>Remember to keep an eye out for the <a href="https://help.salesforce.com/articleView?id=lightning_components_roadmap.htm" target="_blank">Lightning component roadmap</a> as two user feedback components are coming up in Winter '18  (forward-looking statement): <code>lightning:modal</code> and <code>lightning:notifications</code>.</p>
+<p>Remember to keep an eye out for the <a rel="noopener" href="https://help.salesforce.com/articleView?id=lightning_components_roadmap.htm" target="_blank">Lightning component roadmap</a> as two user feedback components are coming up in Winter '18  (forward-looking statement): <code>lightning:modal</code> and <code>lightning:notifications</code>.</p>
 
 <h2>Resources</h2>
 
 <ul><li>Lightning <code>force:showToast</code> event
-<ul>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_force_showToast.htm" target="_blank">Documentation</a></li>
-<p>    <li><a href="https://gist.github.com/pozil/4a3fedf30836379dd6fc7c8668046f18" target="_blank">Sample code</a></li></ul></li></p>
+<ul>    <li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_force_showToast.htm" target="_blank">Documentation</a></li>
+<p>    <li><a rel="noopener" href="https://gist.github.com/pozil/4a3fedf30836379dd6fc7c8668046f18" target="_blank">Sample code</a></li></ul></li></p>
 <li>Lightning modal component
-<ul>    <li><a href="https://appexchange.salesforce.com/listingDetail?listingId=a0N3A00000EOOB1UAP" target="_blank">AppExchange listing</a></li>
-<p>    <li><a href="https://github.com/pozil/sfdc-ui-modal" target="_blank">Source and sample code</a></li></ul></li></ul></p>
+<ul>    <li><a rel="noopener" href="https://appexchange.salesforce.com/listingDetail?listingId=a0N3A00000EOOB1UAP" target="_blank">AppExchange listing</a></li>
+<p>    <li><a rel="noopener" href="https://github.com/pozil/sfdc-ui-modal" target="_blank">Source and sample code</a></li></ul></li></ul></p>
 
 </article>

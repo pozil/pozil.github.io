@@ -5,7 +5,7 @@
 	<h1>Lightning Inter-Component Communication Patterns</h1>
 </header>
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/04/lightning-inter-component-communication-patterns.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/developer-relations/2017/04/lightning-inter-component-communication-patterns.html">Salesforce Developer blog</a> -</p>
 
 <img class="floating-right" title="Lightning Inter-Component Communication Patterns" src="/posts/2017/04/04/post-logo.png" width="300" />
 
@@ -15,7 +15,7 @@
 
 <p>In line with best practices for security concerns, Lightning components are intentionally initially isolated from each other. By default, they’re safe from receiving or causing unwanted interference that can be exploited for malicious purposes. In practice, a Lightning component’s code cannot directly interact with its parent and vice versa. A parent component cannot manipulate its children or siblings as with standard JavaScript and the DOM. Inter-component communication must be specified by the developer.</p>
 
-<img class="floating-right" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1491242556/options_ub9c1z.png" width="300" height="172" />
+<img class="floating-right" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1491242556/options_ub9c1z.png" width="300" height="172" />
 <p>In LCF, inter-component communication is supported in several well-defined ways. One can only use the following developer-defined interfaces to specify what can be exchanged:</p>
 <ul>
  	<li><strong>Attributes</strong> or <strong>Methods</strong> to pass data down the component hierarchy</li>
@@ -52,7 +52,7 @@
 &lt;/aura:component&gt;
 </pre>
 
-<p>With the addition of a <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_aura_valueChange.htm" target="_blank">change handler</a>, the child component can now trigger the <code>onChildAttributeChange</code> controller function automatically when the value of <code>childAttribute</code> changes. This allows us to implement some custom logic such as:</p>
+<p>With the addition of a <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_aura_valueChange.htm" target="_blank">change handler</a>, the child component can now trigger the <code>onChildAttributeChange</code> controller function automatically when the value of <code>childAttribute</code> changes. This allows us to implement some custom logic such as:</p>
 
 <pre>({
     onChildAttributeChange : function (component, event, helper) {
@@ -65,7 +65,7 @@
 <p>We now have established a top-down communication chain between the parent and the child component. This can be summarized in these few steps:</p>
 
 <p class="text-center">
-	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_750/v1491242836/attribute-change_e70oir.png" width="750" height="372" />
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_750/v1491242836/attribute-change_e70oir.png" width="750" height="372" />
 </p>
 
 <ol>
@@ -78,7 +78,7 @@
 
 
 <h3>Methods</h3>
-<p>Based on frequent exchanges with the developer community, I have gathered that <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_method.htm" target="_blank">methods</a> tend to be overlooked in favor of attributes. However, I have found methods to be quite flexible, as they allow users to create and expose component APIs.</p>
+<p>Based on frequent exchanges with the developer community, I have gathered that <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_method.htm" target="_blank">methods</a> tend to be overlooked in favor of attributes. However, I have found methods to be quite flexible, as they allow users to create and expose component APIs.</p>
 
 <p>Let’s look at an example involving two components communicating with a method. Here we have a child component that exposes a <code>myMethod</code> method with two parameters (<code>param1</code> and <code>param2</code>).</p>
 
@@ -130,7 +130,7 @@
 <p>If we now step back and look at the big picture, here’s what happens:</p>
 
 <p class="text-center">
-	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_750/v1491243115/method_tuaizu.png" width="750" height="395" />
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_750/v1491243115/method_tuaizu.png" width="750" height="395" />
 </p>
 
 <ol>
@@ -145,7 +145,7 @@ Achieving all of this is not possible by just passing attributes from parent to 
 
 
 <h2>Passing data up and around the Lightning component hierarchy</h2>
-<p>The way to pass data up and around in the Lightning component hierarchy is to use events. There are two types of events that users can employ for that purpose: <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application events</a> and <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component events</a>.</p>
+<p>The way to pass data up and around in the Lightning component hierarchy is to use events. There are two types of events that users can employ for that purpose: <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application events</a> and <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component events</a>.</p>
 
 <p>There are some minor syntax differences between these two types of events, but we do not discuss them in this article for the sake of brevity. Instead, we focus on their propagation mechanisms, which in turn dictates their use cases.</p>
 
@@ -153,7 +153,7 @@ Achieving all of this is not possible by just passing attributes from parent to 
 <h3>Application Events</h3>
 <p>Application events are broadcast to all Lightning components that are registered as listeners for that specific event.</p>
 
-<img class="floating-right" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_150/v1491243181/application-event_hbnbk0.png" width="150" height="185" />
+<img class="floating-right" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_150/v1491243181/application-event_hbnbk0.png" width="150" height="185" />
 
 <p>If we look at the example described in the schema on the right, here’s what happens:</p>
 <ol>
@@ -173,7 +173,7 @@ Achieving all of this is not possible by just passing attributes from parent to 
 
 <p>Here is an example of such a behavior:</p>
 
-<img class="floating-right" src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1491243324/component-event_hywzsn.png" width="300" height="185" />
+<img class="floating-right" src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_300/v1491243324/component-event_hywzsn.png" width="300" height="185" />
 <ol>
  	<li>Component E fires a component event.</li>
  	<li>Event bubbles to E’s direct parent: component D.</li>
@@ -191,11 +191,11 @@ Achieving all of this is not possible by just passing attributes from parent to 
 <p>Consider using a component event for handling low-level UI interactions such as selections and form validation. You can then combine these with application events that handle “business” events. This integrates into a larger architecture via a central “dispatcher” component such as this:</p>
 
 <p class="text-center">
-	<img src="http://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_400/v1491243533/dispatcher_q4t3mz.png" width="400" height="346" />
+	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_400/v1491243533/dispatcher_q4t3mz.png" width="400" height="346" />
 </p>
 
 <h2>Closing words</h2>
-<p>In this article we covered Lightning inter-component communication options. You learned about passing data down the component hierarchy with attributes and methods. You also had an overview of the different event types with their use cases and limitations. You are now ready to build a larger Lightning project with a robust architecture that you can quickly deploy to production. If you have any questions, reach out to our community's <a href="http://salesforce.stackexchange.com/" target="_blank">Stack Exchange</a>.</p>
+<p>In this article we covered Lightning inter-component communication options. You learned about passing data down the component hierarchy with attributes and methods. You also had an overview of the different event types with their use cases and limitations. You are now ready to build a larger Lightning project with a robust architecture that you can quickly deploy to production. If you have any questions, reach out to our community's <a rel="noopener" href="https://salesforce.stackexchange.com/" target="_blank">Stack Exchange</a>.</p>
 
 
 <h2>Code samples</h2>
@@ -204,10 +204,10 @@ Achieving all of this is not possible by just passing attributes from parent to 
 <img class="floating-right" src="/posts/2017/04/04/github.png"/>
 
 <ul>
- 	<li><a href="https://gist.github.com/pozil/a3c329063871f255b8887cc185f07af0" target="_blank">Attribute and change handler</a></li>
- 	<li><a href="https://gist.github.com/pozil/05337d5a64af11a4ebe99c5f303b3ef2" target="_blank">Method</a></li>
- 	<li><a href="https://gist.github.com/pozil/70e101ae3e22dc4330474ea2ffb040bb" target="_blank">Component event</a></li>
- 	<li><a href="https://gist.github.com/pozil/36b93995d9d84463b46060d161129198" target="_blank">Application event</a></li>
+ 	<li><a rel="noopener" href="https://gist.github.com/pozil/a3c329063871f255b8887cc185f07af0" target="_blank">Attribute and change handler</a></li>
+ 	<li><a rel="noopener" href="https://gist.github.com/pozil/05337d5a64af11a4ebe99c5f303b3ef2" target="_blank">Method</a></li>
+ 	<li><a rel="noopener" href="https://gist.github.com/pozil/70e101ae3e22dc4330474ea2ffb040bb" target="_blank">Component event</a></li>
+ 	<li><a rel="noopener" href="https://gist.github.com/pozil/36b93995d9d84463b46060d161129198" target="_blank">Application event</a></li>
 </ul>
 
 </article>

@@ -5,11 +5,11 @@
 	<h1>An In-Depth Look at Lightning Component Events</h1>
 </header>
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/developer-relations/2017/08/depth-look-lightning-component-events.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/developer-relations/2017/08/depth-look-lightning-component-events.html">Salesforce Developer blog</a> -</p>
 
-<p> This post presents the specificities of Lightning <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component events</a> (in opposition to <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application events</a>). This event type is the most commonly used in the Lightning Component framework; yet, it’s also the most complex. Few Lightning developers know all of its “secrets.”</p>
+<p> This post presents the specificities of Lightning <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component.htm" target="_blank">component events</a> (in opposition to <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_application.htm" target="_blank">application events</a>). This event type is the most commonly used in the Lightning Component framework; yet, it’s also the most complex. Few Lightning developers know all of its “secrets.”</p>
 
-<p>This article is a follow up of the <a href="https://developer.salesforce.com/blogs/developer-relations/2017/04/lightning-inter-component-communication-patterns.html" target="_blank">Lightning Inter-Component Communication Patterns</a> post. If you have not read it yet, read it first as it covers the basics of firing and handling events.</p>
+<p>This article is a follow up of the <a rel="noopener" href="https://developer.salesforce.com/blogs/developer-relations/2017/04/lightning-inter-component-communication-patterns.html" target="_blank">Lightning Inter-Component Communication Patterns</a> post. If you have not read it yet, read it first as it covers the basics of firing and handling events.</p>
 
 <h2>DOM event propagation basics</h2>
 
@@ -21,7 +21,7 @@
 
 <p>The diagram illustrates the two event propagation phases that occur along the DOM tree after a user clicks a button in a form. Notice that the event propagation does not originate from the button itself.</p>
 
-<p>If you want to learn more on this subject, here’s a <a href="https://javascript.info/bubbling-and-capturing" target="_blank">great article</a> on DOM event propagation. But let’s get back to the Lightning Component framework for now.</p>
+<p>If you want to learn more on this subject, here’s a <a rel="noopener" href="https://javascript.info/bubbling-and-capturing" target="_blank">great article</a> on DOM event propagation. But let’s get back to the Lightning Component framework for now.</p>
 
 <h2>Component event propagation</h2>
 
@@ -46,7 +46,7 @@
 
 <p>There’s a major difference between component events and DOM events: the way they propagate to containers.</p>
 
-<p>To summarize, and as stated in the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component_bubbling.htm" target="_blank">component event documentation</a>:</p>
+<p>To summarize, and as stated in the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/events_component_bubbling.htm" target="_blank">component event documentation</a>:</p>
 
 
 <blockquote>By default, every parent in the containment hierarchy can’t handle an event during the capture and bubble phases. Instead, the event propagates to every owner in the containment hierarchy.”</blockquote>
@@ -150,12 +150,12 @@ handleCmpEvent : function(component, event, helper) {
 
 <p>You now know about the two event propagation phases: capture and bubble. You saw an overview of the subtleties of component events: event handling in container components and event propagation control functions (pausing, resuming, and stopping).</p>
 
-<p>How about experiencing all of what you’ve learned in the interactive <a href="https://github.com/pozil/sfdc-lightning-component-event-playground" target="_blank">Lightning Component Playground App</a>? Feel free to explore the different event functionalities and the source code.</p>
+<p>How about experiencing all of what you’ve learned in the interactive <a rel="noopener" href="https://github.com/pozil/sfdc-lightning-component-event-playground" target="_blank">Lightning Component Playground App</a>? Feel free to explore the different event functionalities and the source code.</p>
 
 <p>
 <img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1502872490/component-event-playground_sqv6t3.gif" width="850" height="481" />
 </p>
 
-<p>Learn more on the Lightning Component framework by practicing with the <a href="https://trailhead.salesforce.com/modules/lex_dev_lc_basics" target="_blank">Lightning Components Basics</a> Trailhead module.</p>
+<p>Learn more on the Lightning Component framework by practicing with the <a rel="noopener" href="https://trailhead.salesforce.com/modules/lex_dev_lc_basics" target="_blank">Lightning Components Basics</a> Trailhead module.</p>
 
 </article>

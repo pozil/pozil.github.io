@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en" ng-app="pozBlog" itemscope itemtype="http://schema.org/WebSite">
+<html lang="en" ng-app="pozBlog" itemscope itemtype="https://schema.org/WebSite">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +18,7 @@
 
 	<!-- Site header -->
 	<div class="container site-header" id="top">
-		<h1><a href="http://pozil.github.io" itemprop="url">The POZ blog</a></h1>
+		<h1><a href="https://pozil.github.io" itemprop="url">The POZ blog</a></h1>
 		<h2>Whenever you need to press <span class="glyphicon glyphicon-pause"></span> and think :)</h2>
 	</div>
 
@@ -46,14 +46,14 @@
 	<div class="container site-body">
 		<div class="row">
 
-			<div class="site-content" ng-class="appCtrl.isSidebarMinimized ? 'col-sm-12' : 'col-sm-9'" itemprop="mainEntity" itemscope itemtype="http://schema.org/Blog">
+			<div class="site-content" ng-class="appCtrl.isSidebarMinimized ? 'col-sm-12' : 'col-sm-9'" itemprop="mainEntity" itemscope itemtype="https://schema.org/Blog">
 				<span class="toggle-sidebar" ng-click="appCtrl.toggleSidebar()" ng-class="appCtrl.isSidebarMinimized ? 'minimized' : 'maximized'"></span>
 				<div ng-view autoscroll="true"></div>
 			</div>
 
 			<div class="sidebar" ng-class="appCtrl.isSidebarMinimized ? 'minimized' : 'col-sm-3'">
 				<img class="avatar" src="images/avatar.png" alt="Philippe Ozil"/>
-				<div class="sidebar-module" itemprop="author" itemscope itemtype="http://schema.org/Person">
+				<div class="sidebar-module" itemprop="author" itemscope itemtype="https://schema.org/Person">
 					<h4><span class="glyphicon glyphicon-user"></span> About me</h4>
 					<p>My name is <span itemprop="name">Philippe Ozil</span>, I am a <span itemprop="jobTitle">Senior Developer Evangelist</span> at <span itemprop="worksFor">Salesforce</span>.</p>
 					<p>Prior to that, I was Technical Evangelist and consultant for Bonitasoft an Open Source BPM software vendor.</p>
@@ -63,9 +63,9 @@
 				<div class="sidebar-module">
 					<h4><span class="glyphicon glyphicon-cloud"></span> Contact</h4>
 					<ol class="list-unstyled social">
-						<li><a href="https://github.com/pozil"><span class="fa fa-github"></span> GitHub</a></li>
-						<li><a href="https://twitter.com/PhilippeOzil"><span class="fa fa-twitter"></span> Twitter</a></li>
-						<li><a href="https://www.linkedin.com/in/PhilippeOzil"><span class="fa fa-linkedin"></span> LinkedIn</a></li>
+						<li><a rel="noopener" href="https://github.com/pozil"><span class="fa fa-github"></span> GitHub</a></li>
+						<li><a rel="noopener" href="https://twitter.com/PhilippeOzil"><span class="fa fa-twitter"></span> Twitter</a></li>
+						<li><a rel="noopener" href="https://www.linkedin.com/in/PhilippeOzil"><span class="fa fa-linkedin"></span> LinkedIn</a></li>
 					</ol>
 				</div>
 				<div class="sidebar-module">
@@ -87,7 +87,7 @@
 		<div class="row">
 			<div class="col-sm-4">
 				<p>Copyright © <span itemprop="copyrightYear">2018</span> -
-					<span itemprop="copyrightHolder" itemscope itemtype="http://schema.org/Person"><span itemprop="name">Philippe Ozil<span></span>
+					<span itemprop="copyrightHolder" itemscope itemtype="https://schema.org/Person"><span itemprop="name">Philippe Ozil<span></span>
 				</p>
 			</div>
 			<div class="col-sm-4 text-center">

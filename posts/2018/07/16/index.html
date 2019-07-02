@@ -6,7 +6,7 @@
 </header>
 
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2018/07/10-tips-for-implementing-an-efficient-lightning-lookup-component.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/07/10-tips-for-implementing-an-efficient-lightning-lookup-component.html">Salesforce Developer blog</a> -</p>
 
 
 <p>A Lightning lookup component is a text field with autocompletion and a dropdown. There are several different ways to create these for Lightning Experience, but a few best practices emerge.</p>
@@ -16,7 +16,7 @@
 	alt="A lookup component" width="443"/>
 </p>
 
-<p>In this blog post, I will present ten technical decisions and best practices that drove the implementation of a <a href="https://github.com/pozil/sfdc-ui-lookup" target="_blank">custom Lightning Lookup component</a> that I contributed. Even if you do not plan to build your own lookup component, you may learn valuable information that you can apply to other projects.</p>
+<p>In this blog post, I will present ten technical decisions and best practices that drove the implementation of a <a rel="noopener" href="https://github.com/pozil/sfdc-ui-lookup" target="_blank">custom Lightning Lookup component</a> that I contributed. Even if you do not plan to build your own lookup component, you may learn valuable information that you can apply to other projects.</p>
 
 <p>Here is an overview of the themes that we will cover:</p>
 
@@ -39,9 +39,9 @@
 
 <p>If you create a custom component you should use the Salesforce Lightning Design System (SLDS). It guarantees that your component will have the proper style, be responsive and be accessible.</p>
 
-<p>SLDS provides <a href="https://www.lightningdesignsystem.com/components/overview/" target="_blank">component blueprints</a> that allow you to start from a static HTML template that has the proper CSS classes applied to it. Creating a component is a matter of copying the blueprint and turning into something dynamic with some JS.</p>
+<p>SLDS provides <a rel="noopener" href="https://www.lightningdesignsystem.com/components/overview/" target="_blank">component blueprints</a> that allow you to start from a static HTML template that has the proper CSS classes applied to it. Creating a component is a matter of copying the blueprint and turning into something dynamic with some JS.</p>
 
-<p>One of the important bits to remember when copying blueprints is to maintain the <a href="https://developer.salesforce.com/blogs/2018/01/promote-equality-building-accessible-content.html" target="_blank">accessibility</a> of your component by generating dynamic unique IDs. This allows assistive technology such as screen readers to link labels with their corresponding fields. It helps disabled users to access and use your component.</p>
+<p>One of the important bits to remember when copying blueprints is to maintain the <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/01/promote-equality-building-accessible-content.html" target="_blank">accessibility</a> of your component by generating dynamic unique IDs. This allows assistive technology such as screen readers to link labels with their corresponding fields. It helps disabled users to access and use your component.</p>
 
 <p>You can easily achieve this by replacing the provided hard-coded IDs with expressions like this:</p>
 
@@ -53,7 +53,7 @@
 </pre>
 
 
-<p>In this sample code, we use an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/expr_data_binding.htm" target="_blank">unbound expression</a> combined with the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_ids.htm#!" target="_blank">globalId</a> keyword to generate unique IDs even if there are multiple instances of our component on the same page.</p>
+<p>In this sample code, we use an <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/expr_data_binding.htm" target="_blank">unbound expression</a> combined with the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_ids.htm#!" target="_blank">globalId</a> keyword to generate unique IDs even if there are multiple instances of our component on the same page.</p>
 
 
 <blockquote>The value of an unbound expression is never re-evaluated.</blockquote>
@@ -65,11 +65,11 @@
 
 <h2>Pick the optimal conditional rendering method</h2>
 
-<p>There are two main methods for conditional rendering and each has its advantages and drawbacks so you want to <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_conditional_markup.htm" target="_blank">use them in the right context</a>.</p>
+<p>There are two main methods for conditional rendering and each has its advantages and drawbacks so you want to <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_conditional_markup.htm" target="_blank">use them in the right context</a>.</p>
 
 <h3>Aura:if tag</h3>
 
-<p>You may dynamically render a section of a page or a component by enclosing it in an <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_if.htm" target="_blank">aura:if</a> tag. Although this syntax is easy to read, it has some performance implications. When hiding or displaying content with an <code>aura:if</code> tag, the Lightning component framework destroys and rebuilds the underlying DOM structure and these operations imply a UI rendering cost. This is probably an overkill if you are frequently hiding and displaying a portion of your UI.</p>
+<p>You may dynamically render a section of a page or a component by enclosing it in an <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/ref_tag_if.htm" target="_blank">aura:if</a> tag. Although this syntax is easy to read, it has some performance implications. When hiding or displaying content with an <code>aura:if</code> tag, the Lightning component framework destroys and rebuilds the underlying DOM structure and these operations imply a UI rendering cost. This is probably an overkill if you are frequently hiding and displaying a portion of your UI.</p>
 
 <p>For example, the use of <code>aura:if</code> is perfectly adapted for toggling between a single or multiple entry lookup layout because this configuration is unlikely to change:</p>
 
@@ -100,11 +100,11 @@
 </pre>
 
 
-<p>The alternative to expressions is to use JS to <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_show_hide_markup.htm" target="_blank">toggle a class</a> with the <code>$A.util.toggleClass(component,</code> <code>'class')</code> function. This is powerful but the downside of this approach is that you will have to duplicate this statement across your controller or helper code if there are multiple conditions that can toggle the class.</p>
+<p>The alternative to expressions is to use JS to <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_show_hide_markup.htm" target="_blank">toggle a class</a> with the <code>$A.util.toggleClass(component,</code> <code>'class')</code> function. This is powerful but the downside of this approach is that you will have to duplicate this statement across your controller or helper code if there are multiple conditions that can toggle the class.</p>
 
 <h2>Build something that scales</h2>
 
-<p>A poorly coded lookup component can have a severe performance impact on the server because of the number of search requests generated by the autocompletion. You may not notice it while you are still developing and testing your component in an isolated environment but when hundreds of users will generate thousands of search queries concurrently, it will be too late and you will reach the <a href="https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm" target="_blank">API call limits</a> for your org.</p>
+<p>A poorly coded lookup component can have a severe performance impact on the server because of the number of search requests generated by the autocompletion. You may not notice it while you are still developing and testing your component in an isolated environment but when hundreds of users will generate thousands of search queries concurrently, it will be too late and you will reach the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm" target="_blank">API call limits</a> for your org.</p>
 
 <p>Reaching this limit has serious consequences. First of all, requests from the lookup component will fail and report errors. Then most importantly, all API calls from all org users will also fail and you will have to wait for the limit to be reset (24 hours) before resuming normal operations.</p>
 
@@ -112,7 +112,7 @@
 
 <h3>Use storable actions</h3>
 
-<p>The first thing that needs to be done is to leverage the client-side cache so that you do not make unneeded server requests when searching for the same terms. Fortunately for us, this can easily be achieved by using <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_storable_actions.htm" target="_blank">storable actions</a>. All you need to do to benefit from this cache is to call <code>action.setStorable()</code> in your JS before <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">enqueuing your server-side action</a>.</p>
+<p>The first thing that needs to be done is to leverage the client-side cache so that you do not make unneeded server requests when searching for the same terms. Fortunately for us, this can easily be achieved by using <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_storable_actions.htm" target="_blank">storable actions</a>. All you need to do to benefit from this cache is to call <code>action.setStorable()</code> in your JS before <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">enqueuing your server-side action</a>.</p>
 
 <pre>
 // Get action instance
@@ -192,7 +192,7 @@ onSearchTermChange : function(component, searchTerm) {
 
 <h3>Use SOSL not SOQL</h3>
 
-<p>The first and most important thing that you need to do when implementing your search in Apex is to <a href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_sosl_intro.htm" target="_blank">use the right querying language for the task</a> that is SOSL  (Salesforce Object Search Language) in this case and not SOQL (Salesforce Object Query Language). That one letter difference means a lot because these languages run on different technical stacks.</p>
+<p>The first and most important thing that you need to do when implementing your search in Apex is to <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_sosl_intro.htm" target="_blank">use the right querying language for the task</a> that is SOSL  (Salesforce Object Search Language) in this case and not SOQL (Salesforce Object Query Language). That one letter difference means a lot because these languages run on different technical stacks.</p>
 
 <p>SOQL is great for searching on structured data like numbers, dates, checkboxes or picklist values. It can also search on text but its performance does not match the one of SOSL for that use case case.</p>
 
@@ -207,7 +207,7 @@ FIND :searchTerm IN ALL FIELDS RETURNING
 
 <h3>Limit the number of results</h3>
 
-<p>Regardless of the querying language you use, you should always include a <a href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_sosl_limit.htm" target="_blank">LIMIT</a> statement in your query. This caps the maximum number of results that can be returned by the server and boost the query's performance.</p>
+<p>Regardless of the querying language you use, you should always include a <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_sosl_limit.htm" target="_blank">LIMIT</a> statement in your query. This caps the maximum number of results that can be returned by the server and boost the query's performance.</p>
 
 <p>Another reason why you should include <code>LIMIT</code> in your query is that you will also have a constraint on the maximum number of lines that are displayed in the lookup dropdown. There is no need to fetch more data than what you can display.</p>
 
@@ -282,9 +282,9 @@ FIND :searchTerm IN ALL FIELDS RETURNING
 <li>Deliver a flexible and reusable component.</li></ol>
 
 
-<p>If you wish to learn more about these tips and tricks by looking at some source code or if you just want to use a lookup component, feel free to check out my <a href="https://github.com/pozil/sfdc-ui-lookup" target="_blank">Open Source contribution</a>.</p>
+<p>If you wish to learn more about these tips and tricks by looking at some source code or if you just want to use a lookup component, feel free to check out my <a rel="noopener" href="https://github.com/pozil/sfdc-ui-lookup" target="_blank">Open Source contribution</a>.</p>
 
-<p>For more learning on Trailhead, check out the <a href="https://trailhead.salesforce.com/en/modules/lex_dev_lc_vf_tips" target="_blank">Lightning Component Tips and Gotchas</a> module.</p>
+<p>For more learning on Trailhead, check out the <a rel="noopener" href="https://trailhead.salesforce.com/en/modules/lex_dev_lc_vf_tips" target="_blank">Lightning Component Tips and Gotchas</a> module.</p>
 
 <p class="text-center">
 	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1531165259/lookup-animation_bqwcoa.gif"

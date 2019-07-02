@@ -5,7 +5,7 @@
 	<h1>The Making of the Robotics Ridge at TrailheaDX</h1>
 </header>
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2018/05/the-making-of-the-robotics-ridge-at-trailheadx.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/05/the-making-of-the-robotics-ridge-at-trailheadx.html">Salesforce Developer blog</a> -</p>
 
 <p class="text-center">
 	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/v1526924456/evolution_gpnqjr.png"
@@ -33,7 +33,7 @@
 
 <h3>Arm</h3>
 
-<p>The ARM is a robotic arm mounted on a tripod. It is built by <a href="https://gearwurx.com/" target="_blank">GearWurx</a>, a small company based in Utah. It has six degrees of freedom (joints) and can carry up to ten pounds (4.5 kg). It rotates on its base at almost 315 degrees and has a reach of 7.2 feet (2.2 m) of diameter.</p>
+<p>The ARM is a robotic arm mounted on a tripod. It is built by <a rel="noopener" href="https://gearwurx.com/" target="_blank">GearWurx</a>, a small company based in Utah. It has six degrees of freedom (joints) and can carry up to ten pounds (4.5 kg). It rotates on its base at almost 315 degrees and has a reach of 7.2 feet (2.2 m) of diameter.</p>
 
 <p class="text-center">
 	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,h_700/v1526924457/arm_z5ygye.jpg"
@@ -49,7 +49,7 @@
 
 <h3>Linear Robot</h3>
 
-<p>The linear robot is a belt-driven conveyor system that we built just for TrailheaDX. It is controlled by a Raspberry Pi. The main body is built using v-slot aluminum beams from <a href="https://openbuilds.com/" target="_blank">OpenBuild</a>, and the basic pattern is modeled off of the OpenBuild Linear Actuator kit. The belt is driven by a NEMA 17 stepper motor that is controlled by a Pi-Plate Motor Plate attached to the Raspberry Pi.</p>
+<p>The linear robot is a belt-driven conveyor system that we built just for TrailheaDX. It is controlled by a Raspberry Pi. The main body is built using v-slot aluminum beams from <a rel="noopener" href="https://openbuilds.com/" target="_blank">OpenBuild</a>, and the basic pattern is modeled off of the OpenBuild Linear Actuator kit. The belt is driven by a NEMA 17 stepper motor that is controlled by a Pi-Plate Motor Plate attached to the Raspberry Pi.</p>
 
 <p class="text-center">
 	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_600/v1526924455/linear-actuator1_mkg0t6.jpg"
@@ -59,9 +59,9 @@
 
 <h3>YuMi</h3>
 
-<p>The last robot that operates on the supply chain is YuMi from our great customer <a href="http://new.abb.com/products/robotics/industrial-robots/yumi" target="_blank">ABB</a>. As you may have guessed its name stands for “you and me.” It is a dynamic cobot — a robot that is meant to safely operate along with a human.</p>
+<p>The last robot that operates on the supply chain is YuMi from our great customer <a rel="noopener" href="https://new.abb.com/products/robotics/industrial-robots/yumi" target="_blank">ABB</a>. As you may have guessed its name stands for “you and me.” It is a dynamic cobot — a robot that is meant to safely operate along with a human.</p>
 
-<p>YuMi is very different from our other robots. It is an industrial-grade robot that is fitted with collision sensors that makes it stop instantly if it hits anything. It has two arms with seven degrees of freedom in each arm and it is <em>extremely</em> accurate — to the point where it can even <a href="https://www.youtube.com/watch?v=KWmTX9QotGk" target="_blank">fold paper planes</a>!</p>
+<p>YuMi is very different from our other robots. It is an industrial-grade robot that is fitted with collision sensors that makes it stop instantly if it hits anything. It has two arms with seven degrees of freedom in each arm and it is <em>extremely</em> accurate — to the point where it can even <a rel="noopener" href="https://www.youtube.com/watch?v=KWmTX9QotGk" target="_blank">fold paper planes</a>!</p>
 
 <p>For the needs of our demo, we have augmented YuMi by adding two cameras on top of its “head.”</p>
 
@@ -80,7 +80,7 @@
 
 <p>Once the user requests a shipment, the mobile app fires a platform event.</p>
 
-<p>Platform Events are part of Salesforce’s enterprise messaging platform. The platform provides an event-driven push messaging architecture that enables apps to communicate inside and outside of Salesforce in near real-time. This facilitates integration with third-party applications. You can learn more about Platform Events on Trailhead with this <a href="https://trailhead.salesforce.com/modules/platform_events_basics" target="_blank">module</a> and this <a href="https://trailhead.salesforce.com/en/projects/workshop-platform-events" target="_blank">project</a>.</p>
+<p>Platform Events are part of Salesforce’s enterprise messaging platform. The platform provides an event-driven push messaging architecture that enables apps to communicate inside and outside of Salesforce in near real-time. This facilitates integration with third-party applications. You can learn more about Platform Events on Trailhead with this <a rel="noopener" href="https://trailhead.salesforce.com/modules/platform_events_basics" target="_blank">module</a> and this <a rel="noopener" href="https://trailhead.salesforce.com/en/projects/workshop-platform-events" target="_blank">project</a>.</p>
 
 <p>Upon receiving the platform event, the ARM rotates, places itself over the pickup zone, and captures a picture. It uploads the pictures to the Salesforce Platform via a custom REST API. The upload triggers a process built declaratively with Process Builder. The process runs Einstein Object Detection on the captured image. Einstein predicts what kind of items are on the table and where they are.</p>
 
@@ -97,7 +97,7 @@
 
 <p>After running quality assurance, the platform fires a final platform event with the test result. YuMi drops the payload with a specific gesture based on the test result.</p>
 
-<p>See the robots in action in <a href="https://youtu.be/Kn_JCuPryoA" target="_blank">this video</a>.</p>
+<p>See the robots in action in <a rel="noopener" href="https://youtu.be/Kn_JCuPryoA" target="_blank">this video</a>.</p>
 
 
 
@@ -129,7 +129,7 @@
 
 <h3>IoT Explorer</h3>
 
-<p>On top of these two tools that were developed with custom code, we also leveraged a declarative approach by using the IoT Explorer. Learn more about the IoT Explorer with this short <a href="https://trailhead.salesforce.com/projects/quick-start-iot-explorer" target="_blank">Trailhead project</a>.</p>
+<p>On top of these two tools that were developed with custom code, we also leveraged a declarative approach by using the IoT Explorer. Learn more about the IoT Explorer with this short <a rel="noopener" href="https://trailhead.salesforce.com/projects/quick-start-iot-explorer" target="_blank">Trailhead project</a>.</p>
 
 <p>We started by defining a context for our orchestration. The context defines the inputs that will affect our orchestration. In our case we had eight Platform Events for the different actions that the robots performed and the feedback they sent (e.g. ARM pickup requested, YuMi payload delivered). Each platform event contains an ID mapped to a feed record.</p>
 
@@ -176,13 +176,13 @@
 
 <p>Part of our demo relies on Einstein Object Detection to predict the type and position of the items that the ARM will pick up.</p>
 
-<p>While Einstein Image Classification is quick to train and requires limited efforts (See it for yourself in this <a href="https://trailhead.salesforce.com/projects/build-a-cat-rescue-app-that-recognizes-cat-breeds" target="_blank">Trailhead project</a>), Einstein Object Detection training is more time consuming.</p>
+<p>While Einstein Image Classification is quick to train and requires limited efforts (See it for yourself in this <a rel="noopener" href="https://trailhead.salesforce.com/projects/build-a-cat-rescue-app-that-recognizes-cat-breeds" target="_blank">Trailhead project</a>), Einstein Object Detection training is more time consuming.</p>
 
 <p>Einstein Image Classification and Einstein Object Detection are two artificial intelligence services that are part of Salesforce Einstein Vision. Einstein Image Classification predicts an image and classifies it into a specific category (i.e. Is it a mountain? Is it a beach?). Einstein Object Detection predicts where certain objects are on a picture (i.e. How many cars are on this picture and where are they?).</p>
 
 <p>Einstein Object Detection requires more sample data than Einstein Image Classification. We need to capture pictures of the objects from various angles to increase prediction reliability.</p>
 
-<p>Einstein Object Detection also requires a lot of manual operations as each object in pictures that compose the model must be manually tagged with a box. This process is rather long so using a dedicated tool greatly helps. There is a paid for partner app available on the <a href="https://appexchange.salesforce.com/" target="_blank">AppExchange</a> and you can also use tools that are not Salesforce specific (Although you would have to reformat the output to match the Einstein API format).</p>
+<p>Einstein Object Detection also requires a lot of manual operations as each object in pictures that compose the model must be manually tagged with a box. This process is rather long so using a dedicated tool greatly helps. There is a paid for partner app available on the <a rel="noopener" href="https://appexchange.salesforce.com/" target="_blank">AppExchange</a> and you can also use tools that are not Salesforce specific (Although you would have to reformat the output to match the Einstein API format).</p>
 
 <p>In the context of this project, we used a tool creatively named Image Labeler which I am developing. I started working on that as a side project a couple of months ago and it is still a work-in-progress (Functional but not secure) so it is not publicly available yet. I plan to contribute it as open source in the upcoming weeks. It is a Node.js/React app that runs on Heroku. It uses Cloudinary (An online image hosting service) to store pictures and PostgreSQL database to store object tags. Once images are uploaded and tagged, it generates a ZIP file that is compatible with Einstein Object Detection APIs.</p>
 
@@ -225,9 +225,9 @@
 
 <p>Learn more about the cool Salesforce Platform features used in the Robotics Ridge on Trailhead:</p>
 
-<ul><li><a href="https://trailhead.salesforce.com/en/projects/workshop-platform-events" target="_blank">Platform Events</a></li>
-<li><a href="https://trailhead.salesforce.com/projects/build-a-cat-rescue-app-that-recognizes-cat-breeds" target="_blank">Einstein Image Classification</a></li>
-<li><a href="https://trailhead.salesforce.com/projects/quick-start-iot-explorer" target="_blank">IoT Explorer</a></li>
-<li><a href="https://trailhead.salesforce.com/projects/quickstart-process-builder" target="_blank">Process Builder</a></li></ul>
+<ul><li><a rel="noopener" href="https://trailhead.salesforce.com/en/projects/workshop-platform-events" target="_blank">Platform Events</a></li>
+<li><a rel="noopener" href="https://trailhead.salesforce.com/projects/build-a-cat-rescue-app-that-recognizes-cat-breeds" target="_blank">Einstein Image Classification</a></li>
+<li><a rel="noopener" href="https://trailhead.salesforce.com/projects/quick-start-iot-explorer" target="_blank">IoT Explorer</a></li>
+<li><a rel="noopener" href="https://trailhead.salesforce.com/projects/quickstart-process-builder" target="_blank">Process Builder</a></li></ul>
 
 </article>

@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://pozil.github.io/sitemap.xml 
+Sitemap: https://pozil.github.io/sitemap.xml 

@@ -5,7 +5,7 @@
 	<h1>Error Handling Best Practices for Lightning and Apex</h1>
 </header>
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2017/09/error-handling-best-practices-lightning-apex.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2017/09/error-handling-best-practices-lightning-apex.html">Salesforce Developer blog</a> -</p>
 
 
 <p>Sending a request from a Lightning component to an Apex Controller and getting back a response is a path that has several potential failure points. Developers sometimes assume for the sake of simplicity that “things will work” and don’t always perform all the proper error checks and handling. In this blog post we look at best practices for handling server-side and client-side errors.</p>
@@ -33,7 +33,7 @@
 
 <h3>Quick refresher on Apex server-side controller</h3>
 
-<p>The Lightning Component framework communicates with Apex via server-side actions. These actions are declared as  <code>static</code> methods annotated with <code>@AuraEnabled</code> (<a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_apex.htm" target="_blank">documentation</a>).</p>
+<p>The Lightning Component framework communicates with Apex via server-side actions. These actions are declared as  <code>static</code> methods annotated with <code>@AuraEnabled</code> (<a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_apex.htm" target="_blank">documentation</a>).</p>
 
 <pre>
 public with sharing class SimpleServerSideController {
@@ -49,7 +49,7 @@ public with sharing class SimpleServerSideController {
 
 <h3>What to avoid</h3>
 
-<p>Processing a server request can trigger errors due to a variety of causes such as permission issues, invalid queries, or Apex limits being reached. These errors take the form of an <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_exception_definition.htm" target="_blank">Exception</a> being thrown in the Apex code.</p>
+<p>Processing a server request can trigger errors due to a variety of causes such as permission issues, invalid queries, or Apex limits being reached. These errors take the form of an <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_exception_definition.htm" target="_blank">Exception</a> being thrown in the Apex code.</p>
 
 <p>If you process a failing server request as is (see code below), a system exception is returned to the Lightning component. </p>
 
@@ -147,7 +147,7 @@ console.error(errorData.name +" (code "+ errorData.code +"): "+ errorData.messag
 
 <h3>Quick refresher on Lightning Server-Side Actions</h3>
 
-<p>The Lightning Component framework uses <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">Server-Side Actions</a> to perform requests on Apex controllers. This is done in five steps.</p>
+<p>The Lightning Component framework uses <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">Server-Side Actions</a> to perform requests on Apex controllers. This is done in five steps.</p>
 
 
 <pre>
@@ -243,7 +243,7 @@ handleErrors : function(errors) {
 
 <h3>Throwing and catching client-side errors</h3>
 
-<p>Client-side errors take the form of a JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank">Error</a> being thrown. An Error is very similar to Apex Exception: It’s a type built with a constructor, and it supports the same throw-catch syntax.</p>
+<p>Client-side errors take the form of a JavaScript <a rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank">Error</a> being thrown. An Error is very similar to Apex Exception: It’s a type built with a constructor, and it supports the same throw-catch syntax.</p>
 
 <pre>
 try {
@@ -317,7 +317,7 @@ try {
 	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_500/v1506070189/client-server-roundtrip-tips_hlzduw.png" alt="Client-server roundtrip tips" width="500" height="243" />
 </p>
 
-<p>How about trying those different options in an <a href="https://github.com/pozil/sfdc-error-playground" target="_blank">interactive playground</a> and studying some sample code?</p>
+<p>How about trying those different options in an <a rel="noopener" href="https://github.com/pozil/sfdc-error-playground" target="_blank">interactive playground</a> and studying some sample code?</p>
 
 <p class="text-center">
 	<img src="https://res.cloudinary.com/hzxejch6p/image/upload/c_scale,w_600/v1506072151/error-playground-animation_hna182.gif" alt="Error playground animation" width="600" height="281" />
@@ -325,11 +325,11 @@ try {
 
 <h2>Resources</h2>
 
-<ul><li><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_exception_definition.htm" target="_blank">Exceptions in Apex</a></li>
-<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">Calling a Server-Side Action</a></li>
-<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_apex_custom_errors.htm" target="_blank">Returning Errors from an Apex Server-Side Controller</a></li>
-<li><a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_throw_error.htm" target="_blank">Throwing and Handling Client-Side Errors</a></li>
-<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank">JavaScript Error Type</a></li></ul>
+<ul><li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_exception_definition.htm" target="_blank">Exceptions in Apex</a></li>
+<li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_actions_call.htm" target="_blank">Calling a Server-Side Action</a></li>
+<li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/controllers_server_apex_custom_errors.htm" target="_blank">Returning Errors from an Apex Server-Side Controller</a></li>
+<li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_throw_error.htm" target="_blank">Throwing and Handling Client-Side Errors</a></li>
+<li><a rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank">JavaScript Error Type</a></li></ul>
 
 
 </article>

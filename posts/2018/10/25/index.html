@@ -12,7 +12,7 @@
 	tr:nth-child(odd) {background-color: #f0f0f0;}
 </style>
 
-<p class="notice text-center">- Original article published on <a href="https://developer.salesforce.com/blogs/2018/10/building-real-time-lightning-apps-gets-even-simpler.html">Salesforce Developer blog</a> -</p>
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/10/building-real-time-lightning-apps-gets-even-simpler.html">Salesforce Developer blog</a> -</p>
 
 
 <p>Building modern apps that react to changes in real-time used to require some implementation effort, but the latest update to our streaming technologies greatly simplifies things. In this post we will go through a brief refresher on the Streaming API and we will introduce you to a new way of subscribing to streaming events using the <code>lightning:empApi</code> component. We'll give you an overview of this game changer plus some sample code.</p>
@@ -21,7 +21,7 @@
 
 <p>The Streaming API enables the streaming of near real-time events using push technology. This can be used to react to data changes or to broadcast messages across different systems for integration purposes.</p>
 
-<p>With the release of <a href="https://developer.salesforce.com/docs/atlas.en-us.216.0.change_data_capture.meta/change_data_capture/cdc_intro.htm" target="_blank">Change Data Capture</a> (CDC) in Developer Preview in Winter '19, the Streaming API now includes four types of events: PushTopic events, generic events, platform events and CDC events. Each of these event types have <a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/event_comparison.htm" target="_blank">their own characteristics</a> but they all rely on the same routing technology: CometD.</p>
+<p>With the release of <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.216.0.change_data_capture.meta/change_data_capture/cdc_intro.htm" target="_blank">Change Data Capture</a> (CDC) in Developer Preview in Winter '19, the Streaming API now includes four types of events: PushTopic events, generic events, platform events and CDC events. Each of these event types have <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/event_comparison.htm" target="_blank">their own characteristics</a> but they all rely on the same routing technology: CometD.</p>
 
 
 <p class="text-center">
@@ -79,7 +79,7 @@
 </tbody>
 </table>
 
-<p>Up till Winter '19, developers had to manually manage CometD connections in JS in order to subscribe to streaming events in Lightning. Now times are changing! What used to be a rather complex setup is now greatly simplified with <a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empApi</a>, a new Lightning component that streamlines the use of the Streaming API (pun intended).</p>
+<p>Up till Winter '19, developers had to manually manage CometD connections in JS in order to subscribe to streaming events in Lightning. Now times are changing! What used to be a rather complex setup is now greatly simplified with <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empApi</a>, a new Lightning component that streamlines the use of the Streaming API (pun intended).</p>
 
 <h2>A game changer</h2>
 
@@ -107,7 +107,7 @@
 
 <h2>Working with the lightning:empApi component</h2>
 
-<a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empApi</a> is a <a href="https://developer.salesforce.com/blogs/2018/08/implement-and-use-lightning-service-components.html" target="_blank">Lightning service component</a> and like other service components, it has no user interface of its own and exposes its functionalities via Aura methods.
+<a rel="noopener" href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empApi</a> is a <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/08/implement-and-use-lightning-service-components.html" target="_blank">Lightning service component</a> and like other service components, it has no user interface of its own and exposes its functionalities via Aura methods.
 
 <p>In order to use it, you just have to include it your Lightning component markup:</p>
 
@@ -127,7 +127,7 @@
 
 <p>Then get a reference to the service in your JS controller or helper and call the service's aura methods.</p>
 
-<p>As a best practice, I recommend setting up the debugging flag (if needed) and specifying an error handler in the <a href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_init_handler.htm" target="_blank">component initialization handler</a>, even if you plan to subscribe to events at later point in time.</p>
+<p>As a best practice, I recommend setting up the debugging flag (if needed) and specifying an error handler in the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/js_cb_init_handler.htm" target="_blank">component initialization handler</a>, even if you plan to subscribe to events at later point in time.</p>
 
 <pre>
 // Sets an empApi error handler on component initialization
@@ -191,14 +191,14 @@ empApi.unsubscribe(subscription, $A.getCallback(unsubscribed =&gt; {
 
 <h2>Full 'stream' ahead on Trailhead</h2>
 
-<p>Now that we have covered the basics of streaming events and the use of <code>lightning:empApi</code>, how about some hands-on exercises? We have updated the <a href="https://trailhead.salesforce.com/projects/workshop-platform-events" target="_blank">Build an Instant Notification</a> Trailhead project to use the new <code>lightning:empApi</code> component. Why don't you give it at try or even retry it? You'll notice how easy it is to use the Streaming API with platform events in less than an hour.</p>
+<p>Now that we have covered the basics of streaming events and the use of <code>lightning:empApi</code>, how about some hands-on exercises? We have updated the <a rel="noopener" href="https://trailhead.salesforce.com/projects/workshop-platform-events" target="_blank">Build an Instant Notification</a> Trailhead project to use the new <code>lightning:empApi</code> component. Why don't you give it at try or even retry it? You'll notice how easy it is to use the Streaming API with platform events in less than an hour.</p>
 
 <h2>Resources</h2>
 
-<ul><li><a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">Documentation: lightning:empApi Component</a></li>
-<li><a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm" target="_blank">Documentation: Streaming API Developer Guide</a></li>
-<li><a href="https://trailhead.salesforce.com/content/learn/projects/workshop-platform-events" target="_blank">Trailhead Project: Build an Instant Notification</a></li>
-<li><a href="https://trailhead.salesforce.com/sample-gallery" target="_blank">Sample Gallery: Sample Lightning apps using lightning:empApi</a></li>
-<li><a href="https://www.youtube.com/watch?v=C6Cp2P5Eb7Y" target="_blank">Video: Dreamforce '18 Developer Keynote</a></li></ul>
+<ul><li><a rel="noopener" href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">Documentation: lightning:empApi Component</a></li>
+<li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm" target="_blank">Documentation: Streaming API Developer Guide</a></li>
+<li><a rel="noopener" href="https://trailhead.salesforce.com/content/learn/projects/workshop-platform-events" target="_blank">Trailhead Project: Build an Instant Notification</a></li>
+<li><a rel="noopener" href="https://trailhead.salesforce.com/sample-gallery" target="_blank">Sample Gallery: Sample Lightning apps using lightning:empApi</a></li>
+<li><a rel="noopener" href="https://www.youtube.com/watch?v=C6Cp2P5Eb7Y" target="_blank">Video: Dreamforce '18 Developer Keynote</a></li></ul>
 
 </article>
