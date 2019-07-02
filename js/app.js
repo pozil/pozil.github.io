@@ -1,14 +1,14 @@
 'use strict';
 (function() {
 
-var appModule = angular.module('pozBlog', ['ui.bootstrap', 'ngRoute']);
+const appModule = angular.module('pozBlog', ['ui.bootstrap', 'ngRoute']);
 
-appModule.controller('AppController', ['$rootScope', '$location', '$window', '$anchorScroll', '$http',
-	function($rootScope, $location, $window, $anchorScroll, $http) {
+appModule.controller('AppController', ['$rootScope', '$location', '$anchorScroll', '$http',
+	function($rootScope, $location, $anchorScroll, $http) {
 
 	$rootScope.posts = [];
 
-	var ctrl = this;
+	const ctrl = this;
 	ctrl.isSidebarMinimized = false;
 
 	ctrl.isActiveView = function (viewLocation) {
@@ -33,7 +33,7 @@ appModule.controller('AppController', ['$rootScope', '$location', '$window', '$a
 appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '$filter', '$sce',
 	function($rootScope, $routeParams, $http, $filter, $sce) {
 		
-	var ctrl = this;
+	const ctrl = this;
 	ctrl.post = null;
 	ctrl.postIndex = null;
 	
@@ -45,20 +45,19 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 		// Get post header
 		ctrl.post = $filter('filter')($rootScope.posts, postId, true)[0];
 		// Get post content
-		var postPath = ctrl.post.date.replace(/-/g, '/');
+		let postPath = ctrl.post.date.replace(/-/g, '/');
 		postPath = 'posts/'+ postPath +'/';
 		$http.get(postPath +'index.html').then(function(response) {
-			var content = response.data;
+			const content = response.data;
 			ctrl.post.content = content.replace(/{{POST_PATH}}/g, postPath);
-			content = null;
 		});
 		// Get post index
 		ctrl.postIndex = getPostIndex();
 	}
 	
 	function getPostIndex() {
-		var postIndex = null;
-		for (var i=0; postIndex == null && i<$rootScope.posts.length; i++) {
+		let postIndex = null;
+		for (let i=0; postIndex == null && i<$rootScope.posts.length; i++) {
 			if ($rootScope.posts[i].date === ctrl.post.date)
 				postIndex = i;
 		}
@@ -67,7 +66,7 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 	
 	ctrl.getPreviousPostUrl = function() {
 		if (ctrl.hasPreviousPost()) {
-			var previousPost = $rootScope.posts[ctrl.postIndex -1];
+			const previousPost = $rootScope.posts[ctrl.postIndex -1];
 			return '#/post/'+ previousPost.date;	
 		}
 		return '';		
@@ -75,7 +74,7 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 	
 	ctrl.getNextPostUrl = function() {
 		if (ctrl.hasNextPost()) {
-			var nextPost = $rootScope.posts[ctrl.postIndex +1];
+			const nextPost = $rootScope.posts[ctrl.postIndex +1];
 			return '#/post/'+ nextPost.date;
 		}
 		return '';
@@ -96,7 +95,7 @@ appModule.controller('PostController', ['$rootScope', '$routeParams', '$http', '
 appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', '$sce', '$anchorScroll',
 	function($rootScope, $routeParams, $http, $sce, $anchorScroll) {
 		
-	var ctrl = this;
+	const ctrl = this;
 	ctrl.posts = [];
 	ctrl.pageIndex = angular.isDefined($routeParams.pageIndex) ? $routeParams.pageIndex : 1;
 	ctrl.totalCount = $rootScope.posts.length;
@@ -108,9 +107,9 @@ appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', 
 	ctrl.pageChanged = function() {
 		ctrl.posts = [];
 		$anchorScroll('top');
-		var startIndex = (ctrl.pageIndex-1) * 3;
-		var stopIndex = startIndex +3;
-		for (var postIndex = startIndex; postIndex < ctrl.totalCount && postIndex < stopIndex; postIndex++) {
+		const startIndex = (ctrl.pageIndex-1) * 3;
+		const stopIndex = startIndex +3;
+		for (let postIndex = startIndex; postIndex < ctrl.totalCount && postIndex < stopIndex; postIndex++) {
 			ctrl.posts.push(angular.copy($rootScope.posts[postIndex]));
 		}
 		angular.forEach(ctrl.posts, function(post) {
@@ -119,12 +118,11 @@ appModule.controller('PostsController', ['$rootScope', '$routeParams', '$http', 
 	};
 	
 	function loadPostContent(post) {
-		var postPath = post.date.replace(/-/g, '/');
+		let postPath = post.date.replace(/-/g, '/');
 		postPath = 'posts/'+ postPath +'/';
 		$http.get(postPath +'index.html').then(function(response) {
-			var content = response.data;
+			const content = response.data;
 			post.content = content.replace(/{{POST_PATH}}/g, postPath);
-			content = null;
 		});
 	}
 	
@@ -139,10 +137,10 @@ appModule.controller('ArchiveController', ['$rootScope', '$filter', function($ro
 	this.uniqueYears = [];
 	
 	function getUniqueYears() {
-		var uniqueYears = [];
-		var filter = $filter('filter');
+		const uniqueYears = [];
+		const filter = $filter('filter');
 		angular.forEach($rootScope.posts, function(post) {
-			var postYear = post.date.substring(0,4);
+			const postYear = post.date.substring(0,4);
 			if (filter(uniqueYears, postYear, true).length === 0)
 				uniqueYears.push(postYear);
 		});
@@ -170,6 +168,7 @@ appModule.directive('toggleableLink', function() {
 
 
 appModule.config(function($routeProvider, $locationProvider) {
+	$locationProvider.hashPrefix('');
 	$routeProvider
 	.when('/posts/:pageIndex?', {
 		templateUrl: 'views/posts.html'
