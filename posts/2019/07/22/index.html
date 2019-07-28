@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>A Refresher on the Four Streaming APIs and a Monitoring Tool</h1>
+</header>
+
+<style>
+	table {margin-bottom: 20px;}
+	th,td {padding: 3px; border: 1px solid #e0e0e0; text-align: center;}
+	th:first-child {text-align: right;}
+	thead, tr:nth-child(even) {background-color: #f0f0f0;}
+</style>
+
+<p>Whether you work on custom integrations or build near real-time apps, the Streaming APIs are there for you. We’ll give an overview of the four Streaming APIs, present what's new for the APIs in the Summer '19 Release, and provide you with a tool that lets you monitor those APIs.</p>
+
+<h2>The Four Streaming APIs</h2>
+
+<p>Did you know that there are multiple Streaming APIs? The original API was first introduced as “the” streaming API but it was only the first out of a family of four different APIs: Generic, PushTopic, Platform Events and Change Data Capture.</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190711135910/Screenshot-2019-06-25-at-14.37.10-e1562878809347.png"
+	alt="Four Streaming APIs" width="600"/>
+</p>
+
+<p>These four Streaming APIs are part of what we call the Enterprise Messaging Platform (EMP). The APIs were released in two batches over several years. Generic and PushTopic came as the “first generation,” then Platform Events and Change Data Capture came second. While the first generation of APIs is quite mature now, it is not evolving as much as the second one (more on that in the “What’s New” section of this post).</p>
+
+<h3>A Shared Model</h3>
+
+<p>All Streaming APIs are built on the same core technology: CometD. This technology relies on a messaging bus that offers a publish/subscribe mechanism for events (sometimes also referred to as messages).</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190711140044/Screenshot-2019-06-25-at-15.21.10-e1562878877465.png"
+	alt="PubSub model" width="600"/>
+</p>
+
+<p>The publish/subscribe model follows the following scenario:</p>
+
+<ol><li>Event consumers connect to the messaging bus and subscribe to specific channels (event types)</li>
+<li>Event producers connect to the bus and publish an event on a channel</li>
+<li>The bus broadcasts the event to all registered subscribers</li></ol>
+
+<p>This means that the message producer is fully decoupled from the consumers. This model allows to build event-driven architectures at scale. Typical use cases for this are system integrations and real-time apps.</p>
+
+<h3>Distinct Properties</h3>
+
+<p>These APIs are based on the same underlying technology but they have some distinct properties that make them suitable for specific use cases. Here’s an overview of the major differences — you can find a more detailed comparison in the <a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/event_comparison.htm" target="_blank">documentation</a>.</p>
+
+
+<table>
+	<thead>
+		<tr>
+			<td></td>
+			<th>PushTopic</th>
+			<th>Generic</th>
+			<th>Platform Events</th>
+			<th>Change Data Capture</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Data structure</th>
+			<td>Defined by target sObject retrieved via a SOQL query</td>
+			<td>Unstructured  (string)</td>
+			<td>Custom  typed fields</td>
+			<td>Defined by target sObject</td>
+		</tr>
+		<tr>
+			<th>Publication</th>
+			<td>Automated</td>
+			<td>REST  API</td>
+			<td>Declarative or Code</td>
+			<td>Automated</td>
+		</tr>
+		<tr>
+			<th>Subscription</th>
+			<td colspan="2">Code</td>
+			<td colspan="2">Declarative or Code</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>You’ll notice that APIs from the second generation (Platform Events and Change Data Capture) offer the most flexibility in terms of publication and subscription. Most notably, this new generation of APIs were introduced with powerful declarative capabilities and because of this, you should prioritize using them when possible. </p>
+
+<p>If you need even more arguments in order to be convinced, here’s a recap of the different publication and subscription options that are offered for Platform Events and Change Data Capture:</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190711141339/Screenshot-2019-06-25-at-15.01.36-e1562879651545.png"
+	alt="Publishers and subscribers for Platform Events and Change Data Capture" width="600"/>
+</p>
+
+<p>Whether you are a coder or not, there are plenty of opportunities for you to explore these Streaming APIs.</p>
+
+<h2>What’s New in Summer ‘19</h2>
+
+<p>Among the new features introduced in the Summer ‘19 Release, there are a few notable improvements for the Streaming APIs.</p>
+
+<h3><b>lightning-emp-api Lightning Web Component</b></h3>
+
+<p>When the Streaming APIs came out there was no client natively available for the browser at first. Subscribing to streaming events in custom UI components would require a significant amount of code. That changed with the introduction of the Aura <a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empAPI</a> component. This awesome component manages CometD connections for you (authentication, connection multiplexing, etc) and greatly reduces the volume of code you need to write. You can read more about it in <a href="https://developer.salesforce.com/blogs/2018/10/building-real-time-lightning-apps-gets-even-simpler.html" target="_blank">this post</a>.</p>
+
+<p>In Summer ’19, we now have an equivalent Lightning web component: the <a href="https://developer.salesforce.com/docs/component-library/bundle/lightning-emp-api/documentation" target="_blank">lightning-emp-api</a> component. This component offers the same native subscribe capabilities as its Aura counterpart but is even easier to use because it only needs a couple of lines of JavaScript and requires no markup at all.</p>
+
+<h3><b>Platform Events Updates</b></h3>
+
+<p>The most exciting update for Platform Events is the introduction of a configurable publish behavior.</p>
+
+<p>By nature, Platform Events are published outside of transaction context. In other words if you have some Apex code that publishes an event and does some processing afterward, the event is published immediately and is not waiting for the Apex execution to finish. This means that the Apex execution might fail and the database transaction rolled back but the event is already sent and there is no way to cancel it.</p>
+
+<p>With the introduction of the publish behavior settings you may now decide to delay the event publication after the Apex execution finishes.</p>
+
+<p>Check out the <a href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_messaging_platform_events_section.htm" target="_blank">release notes</a> for other Platform Event updates.</p>
+
+<h3><b>Change Data Capture Updates</b></h3>
+
+<p>There are two main updates to Change Data Capture (CDC): Apex trigger support and custom channels.</p>
+
+<p>Just like for Platform Events, you may now write Apex triggers for CDC events. This brings extra flexibility compared to traditional object triggers because CDC triggers are executed outside of the scope of the database transaction that modified the data in first place.</p>
+
+<p>The second remarkable update to CDC is the introduction of stream composition with custom channels. In a typical business scenario you would want to subscribe to multiple events like account, contact and order record changes. However, handling separate events in a coherent way is challenging because you likely need to write some code to aggregate them first. With custom channels, you may now regroup these events in a single custom event that you can handle. This means that you can easily process related changes in one go.</p>
+
+<p>Check out the <a href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_messaging_change_data_capture_section.htm?edition=&impact=" target="_blank">release notes</a> for additional CDC updates.</p>
+
+<h2>Tooling: The Streaming Monitor</h2>
+
+<p>Implementing apps with the Streaming APIs without proper tooling can be hard due to the transient nature of streaming events. Past events are not saved to the database so there is no built-in user interface to look at logs. Due to that, we often end up wasting time to write some discardable code that traces those events for debugging purposes.</p>
+
+<p>That is why I built and open sourced the Streaming Monitor, a tool that lets you monitor the four Streaming APIs and conveniently replay past events in a single click. Try it out on the <a href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FYEEWUA5" target="_blank">AppExchange</a> or get the code on <a href="https://github.com/pozil/streaming-monitor" target="_blank">GitHub</a>. It will save you some valuable time.</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190711141443/event-monitor-screenshot-e1562879710871.png"
+	alt="Streaming monitor screenshot" width="600"/>
+</p>
+
+<h2>Conclusion</h2>
+
+<p>This concludes our refresher on the four Streaming APIs. We’ve covered the different APIs, what they share and what are key differences. We’ve presented the latest updates and shared some tooling.</p>
+
+<p>You can continue your streaming journey by learning more on Trailhead or by checking out these additional resources.</p>
+
+<h2>Resources</h2>
+
+<ul><li>Documentation
+<ul>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm" target="_blank">Streaming API Developer Guide</a></li>
+<p>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture" target="_blank">Change Data Capture Developer Guide</a></li></p>
+<p>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/" target="_blank">Platform Events Developer Guide</a></li></p>
+<p>    <li><a href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_forcecom_development.htm" target="_blank">Summer ‘19 Release Notes</a></li></ul></li></p>
+<li>Trailhead
+<ul>    <li><a href="https://trailhead.salesforce.com/en/content/learn/modules/change-data-capture" target="_blank">Change Data Capture Basics</a></li>
+<p>    <li><a href="https://trailhead.salesforce.com/en/content/learn/modules/platform_events_basics" target="_blank">Platform Events Basics</a></li></p>
+<p>    <li><a href="https://trailhead.salesforce.com/en/content/learn/projects/workshop-platform-events" target="_blank">Build an Instant Notification App</a></li></ul></li></p>
+<li>Streaming Monitor
+<ul>    <li><a href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FYEEWUA5" target="_blank">AppExchange package</a></li>
+<p>    <li><a href="https://github.com/pozil/streaming-monitor" target="_blank">GitHub repository</a></li></ul></li></p>
+<li><a href="https://www.youtube.com/watch?v=iFBATeMo2Es&feature=youtu.be" target="_blank">TrailheaDX session recording</a></li></ul>
+
+</article>

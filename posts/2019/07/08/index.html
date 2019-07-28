@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Breaking Runtime Dependencies with Dependency Injection</h1>
+</header>
+
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2019/07/breaking-runtime-dependencies-with-dependency-injection.html">Salesforce Developer blog</a> -</p>
+
+<p>Whether you actively plan for it or not, dependency management is part of a developer’s everyday work. In this post we'll present dynamic dependency injection, a technique that allows you to break dependencies and swap service implementations at runtime. We'll start our journey by explaining how dependencies can become a problem, then we'll see how to reduce them and how to break them altogether.</p>
+
+<p>For the sake of simplicity, we'll only focus on Apex dependencies in this post, but keep in mind that there are two types of dependencies that you have to manage: dependencies in code (Apex, Aura Components, Lightning Web Components, etc) and dependencies between metadata (processes, flows, actions, etc).</p>
+
+<p>Dependency injection techniques can help for dependencies in code such as Apex, Aura Components, and with some kinds of metadata dependencies like processes or flows but it is not supported by all features. For example, dependency injection is not possible with Lightning web components where imports are static only.</p>
+
+<h2>When dependencies turn into liabilities</h2>
+
+<h3>Theory</h3>
+
+<p>Let's start with a simple and common scenario and pretend that you have a <code>Client</code> class that needs to use a <code>Service</code> class to perform some operations. The easiest way to implement this is to simply write this in <code>Client</code>:</p>
+
+<pre>
+// Instantiate the service
+Service s = new Service();
+// Use the service
+s.doSomething();
+</pre>
+
+
+<p>While this is perfectly valid code, it introduces a dependency between the <code>Client</code> and <code>Service</code> classes. In other words, <code>Client</code> becomes tightly coupled with <code>Service</code>:</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190705095335/direct-dependency-e1562345647394.png"
+	alt="Direct dependency" width="600"/>
+</p>
+
+<p>You can easily witness this dependency by trying to delete <code>Service</code>. You'll see that you can't because <code>Client</code> is using it.</p>
+
+<p>This tight coupling is generally not an issue for small projects but there are a number of factors that can turn it into a concern, such as:</p>
+
+<ul><li>growing code base</li>
+<li>different development teams working in parallel</li>
+<li>code shared by multiple apps or orgs</li>
+<li>unforeseen implementation changes</li>
+<li>need for configuration flexibility at runtime</li></ul>
+
+
+<p>Because of these different factors, you'll end up having a hard time to develop, test, package, deploy and maintain your code if you don't adopt a dependency management strategy. Your Apex code will end up forming a huge monolith that you can't tear apart.</p>
+
+<p>The good news is that most dependency management issues can be addressed by adopting enterprise design patterns such as <a href="https://trailhead.salesforce.com/en/content/learn/modules/apex_patterns_sl" target="_blank">Service Layer</a> and <a href="https://trailhead.salesforce.com/en/content/learn/modules/apex_patterns_dsl" target="_blank">Domain & Selector Layers</a> as start. However, if you are looking for some some extra runtime flexibility, you will have go further and dive into the world of dependency injection.</p>
+
+<h3>Practice</h3>
+
+<p>Let's take a practical example and suppose that we have a shipping service based on FedEx that generates a shipment tracking number. We are using the shipping service to send parcels with the following code:</p>
+
+<pre>
+public class OrderingService {
+
+    private FedExService shippingService = new FedExService();
+    
+    public void ship(Order order) {
+        // Do something...
+        
+        // Use the shipping to generate a tracking number
+        String trackingNumber = shippingService.generateTrackingNumber();
+        
+        // Do some other things...
+    }
+}
+</pre>
+
+
+<p>Now, let's suppose that we want to reuse  <code>FedExService</code> in another app or an in another org but we don't want to impact <code>OrderingService</code>. And, let's take it even a step further and suppose that a new business requirement dictates we need to support an alternate and optional shipping service such as DHL depending on the account's country.</p>
+
+<p>With that, we can only implement these business requirements if we break the dependency between the two services. We can't do that with the current implementation so we'll need to refactor our code to reduce dependencies.</p>
+
+<h2>Reducing dependencies with inversion of control</h2>
+
+<h3>Theory</h3>
+
+<p>The problem with a direct dependency scenario like the one we just saw is that the client using the service has direct access to the service implementation. In other words, it has control over it. The solution to break the dependency is to invert this control so that the client does not know about the service implementation details.</p>
+
+<p>We can achieve that with a <a href="https://en.wikipedia.org/wiki/Strategy_pattern" target="_blank">strategy design pattern</a>. The strategy pattern introduces an interface that defines the service and a strategy class that controls which service implementation is returned to the client. This removes all implementation class references from the client class.</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190705113455/control-inversion-e1562351740706.png"
+	alt="Strategy design pattern" width="600"/>
+</p>
+
+<h3>Practice</h3>
+
+<p>Let's apply inversion of control to our shipping service by implementing a strategy design pattern. We start by creating an <code>ShippingService</code> interface.</p>
+
+<pre>
+public interface ShippingService {
+    String generateTrackingNumber();
+}
+</pre>
+
+
+<p>Then we add the two service implementations (mocked here for the sake of simplicity):</p>
+
+<pre>
+public class DHLImpl implements ShippingService {
+    public String generateTrackingNumber() {
+        return 'DHL-XXXX';
+    }
+}
+
+public class FedExImpl implements ShippingService {
+    public String generateTrackingNumber() {
+        return 'FEX-XXXX';
+    }
+}
+</pre>
+
+
+<p>Finally, we implement a simple strategy: we only use FedEx to for orders shipped in the United States and we use DHL for the other countries.</p>
+
+<pre>
+public class ShippingStrategy {   
+    public static ShippingService getShippingService(Order order) {
+        // Use FedEx in the US or DHL otherwise
+        if (order.ShippingCountry == 'United States') {
+            return new FedExImpl();
+        }
+        else {
+            return new DHLImpl();
+        }
+    }
+}
+</pre>
+
+
+<p>With that, we have implemented inversion of control. We can use the shipping service without having a dependency between <code>OrderingService</code> and the shipping implementations:</p>
+
+<pre>
+public class OrderingService {
+    public void ship(Order order) {
+        // Do something...
+        
+        // Get the appropriate shipping service
+        // We only see the interface here, not the implementation class
+        ShippingService shipping = ShippingStrategy.getShippingService(order);
+        // Use the shipping service to generate a tracking number
+        String trackingNumber = shipping.generateTrackingNumber();
+        
+        // Do some other things...
+    }
+}
+</pre>
+
+
+<p>This approach reduces dependencies but we still have dependencies between <code>ShippingStrategy</code> and our two shipping implementation classes. Let's take it a step further and explore dependency injection to get rid of those dependencies altogether.</p>
+
+<h2>Breaking runtime dependencies with dependency injection</h2>
+
+<h3>Theory</h3>
+
+<p>Dependencies exist because the compiler needs to know which service implementation classes our client code uses. It needs that because it's looking for those classes and checking whether they compile. So the question is: how do we get rid of these compile-time checks?</p>
+
+<p>The answer to that question is to use dynamic class instantiation to bypass these checks. In other words, if we only load the service implementation classes at runtime, the compiler cannot establish the dependencies earlier.</p>
+
+<p>Just like we used a strategy pattern, we can rely on an injector class to dynamically load and return our implementation classes. The injector does not have a compile-time reference to a particular implementation class. In the end, the client only has a dependency to the Service interface and the the Injector class. As a consequence, the implementations can be shipped into one or more separate and optional packages.</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190705113757/dependency-injection-e1562351895313.png"
+	alt="Dependency injection" width="600"/>
+</p>
+
+<h3>Practice</h3>
+
+<p>Let's apply dependency injection to our shipping example. We start by writing a generic <code>Injector</code> class that uses <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_type.htm#apex_System_Type_methods" target="_blank">System.Type</a> to instantiate any Apex class from its class name:</p>
+
+<pre>
+public class Injector {   
+    public static Object instantiate(String className) {
+        // Load the Type corresponding to the class name
+        Type t = Type.forName(className);
+        // Create a new instance of the class
+        // and return it as an Object
+        return t.newInstance();
+    }
+}
+</pre>
+
+
+<p>Notice that we chose to keep <code>Injector</code> generic so we aren't directly returning a <code>ShippingService</code> instance but an <code>Object</code>. We'll cast the returned object as needed when we call our injector.</p>
+
+<p>Let’s now rewrite our account service class to use the injector and instantiate our shipping service implementations without introducing dependencies:</p>
+
+<pre>
+// Get the service implementation from a custom metadata type
+// ServiceImplementation.load() runs the SOQL query that retrieves the medatada
+Service_Implementation__mdt services = ServiceImplementation.load();
+
+// Inject the shipping service implementation
+// (services.shipping is either FedExImpl, DHLImpl or any other implementation)
+ShippingService shipping = (ShippingService) Injector.instantiate(services.shipping);
+
+// Use the shipping service to generate a tracking number
+String trackingNumber = shipping.generateTrackingNumber();
+</pre>
+
+
+<p>This is a basic example of dependency injection. Notice that we got rid of the hard-coded conditions by introducing a <a href="https://help.salesforce.com/articleView?id=custommetadatatypes_overview.htm" target="_blank">custom metadata type</a>. This allows admins to hot-swap service implementations at runtime with just clicks. This code can run with only one of the two the shipping services deployed (provided that you don’t try to instantiate the missing one of course).</p>
+
+<p>Check out this <a href="https://github.com/pozil/apex-dependency-injection" target="_blank">complete sample project</a> for an in-depth example of how to achieve that.</p>
+
+<h2>Summary</h2>
+
+<p>This concludes our dynamic dependency injection journey. We started by exploring what dependencies are and how they can be problematic. We've demonstrated how inversion of control helps to reduce those dependencies. We then used dependency injection to suppress those runtime dependencies. With that knowledge, you can now build flexible and modular apps that can be easily configured by admins.</p>
+
+<p>Here is a recap of the benefits and limitations of Apex dependency injection:</p>
+
+<b>Benefits</b>
+
+<ul><li>Allows to break dependencies and split code into on or more packages.</li>
+<li>Adds support for multiple optional implementations that can be hot-swapped at runtime without code modifications.</li>
+<li>Eases testing by facilitating the use of stubbing either with the <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_stub_api.htm" target="_blank">Stub API</a> or dependency injection.</li></ul>
+
+<b>Limitations</b>
+
+<ul><li>Brings an overhead in terms of architecture complexity. You can't easily locate implementations and map them with code that calls them.</li>
+<li>Increases execution time error risks. Because we use dynamic class instantiation to “cheat” the compiler by removing compile-time links, this implies that you can easily break your code and only notice failures at execution time.</li></ul>
+
+<p>With that in mind, you'll want to apply dependency injection on strategic dependencies that you need to break but don't overdo it.</p>
+
+<p>You can either implement dependency injection yourself starting from this <a href="https://github.com/pozil/apex-dependency-injection" target="_blank">sample code</a> based on the example discussed in this post or you can use a community-contributed library like <a href="https://github.com/afawcett/force-di#force-di" target="_blank">Force DI</a>. Finally, do remember that dependency injection applies to more than just Apex code.</p>
+
+
+</article>
