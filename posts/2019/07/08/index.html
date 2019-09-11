@@ -47,7 +47,7 @@ s.doSomething();
 
 <p>Because of these different factors, you'll end up having a hard time to develop, test, package, deploy and maintain your code if you don't adopt a dependency management strategy. Your Apex code will end up forming a huge monolith that you can't tear apart.</p>
 
-<p>The good news is that most dependency management issues can be addressed by adopting enterprise design patterns such as <a href="https://trailhead.salesforce.com/en/content/learn/modules/apex_patterns_sl" target="_blank">Service Layer</a> and <a href="https://trailhead.salesforce.com/en/content/learn/modules/apex_patterns_dsl" target="_blank">Domain & Selector Layers</a> as start. However, if you are looking for some some extra runtime flexibility, you will have go further and dive into the world of dependency injection.</p>
+<p>The good news is that most dependency management issues can be addressed by adopting enterprise design patterns such as <a rel="noopener" href="https://trailhead.salesforce.com/en/content/learn/modules/apex_patterns_sl" target="_blank">Service Layer</a> and <a rel="noopener" href="https://trailhead.salesforce.com/en/content/learn/modules/apex_patterns_dsl" target="_blank">Domain & Selector Layers</a> as start. However, if you are looking for some some extra runtime flexibility, you will have go further and dive into the world of dependency injection.</p>
 
 <h3>Practice</h3>
 
@@ -80,7 +80,7 @@ public class OrderingService {
 
 <p>The problem with a direct dependency scenario like the one we just saw is that the client using the service has direct access to the service implementation. In other words, it has control over it. The solution to break the dependency is to invert this control so that the client does not know about the service implementation details.</p>
 
-<p>We can achieve that with a <a href="https://en.wikipedia.org/wiki/Strategy_pattern" target="_blank">strategy design pattern</a>. The strategy pattern introduces an interface that defines the service and a strategy class that controls which service implementation is returned to the client. This removes all implementation class references from the client class.</p>
+<p>We can achieve that with a <a rel="noopener" href="https://en.wikipedia.org/wiki/Strategy_pattern" target="_blank">strategy design pattern</a>. The strategy pattern introduces an interface that defines the service and a strategy class that controls which service implementation is returned to the client. This removes all implementation class references from the client class.</p>
 
 <p class="text-center">
 	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190705113455/control-inversion-e1562351740706.png"
@@ -170,7 +170,7 @@ public class OrderingService {
 
 <h3>Practice</h3>
 
-<p>Let's apply dependency injection to our shipping example. We start by writing a generic <code>Injector</code> class that uses <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_type.htm#apex_System_Type_methods" target="_blank">System.Type</a> to instantiate any Apex class from its class name:</p>
+<p>Let's apply dependency injection to our shipping example. We start by writing a generic <code>Injector</code> class that uses <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_type.htm#apex_System_Type_methods" target="_blank">System.Type</a> to instantiate any Apex class from its class name:</p>
 
 <pre>
 public class Injector {   
@@ -203,9 +203,9 @@ String trackingNumber = shipping.generateTrackingNumber();
 </pre>
 
 
-<p>This is a basic example of dependency injection. Notice that we got rid of the hard-coded conditions by introducing a <a href="https://help.salesforce.com/articleView?id=custommetadatatypes_overview.htm" target="_blank">custom metadata type</a>. This allows admins to hot-swap service implementations at runtime with just clicks. This code can run with only one of the two the shipping services deployed (provided that you don’t try to instantiate the missing one of course).</p>
+<p>This is a basic example of dependency injection. Notice that we got rid of the hard-coded conditions by introducing a <a rel="noopener" href="https://help.salesforce.com/articleView?id=custommetadatatypes_overview.htm" target="_blank">custom metadata type</a>. This allows admins to hot-swap service implementations at runtime with just clicks. This code can run with only one of the two the shipping services deployed (provided that you don’t try to instantiate the missing one of course).</p>
 
-<p>Check out this <a href="https://github.com/pozil/apex-dependency-injection" target="_blank">complete sample project</a> for an in-depth example of how to achieve that.</p>
+<p>Check out this <a rel="noopener" href="https://github.com/pozil/apex-dependency-injection" target="_blank">complete sample project</a> for an in-depth example of how to achieve that.</p>
 
 <h2>Summary</h2>
 
@@ -217,7 +217,7 @@ String trackingNumber = shipping.generateTrackingNumber();
 
 <ul><li>Allows to break dependencies and split code into on or more packages.</li>
 <li>Adds support for multiple optional implementations that can be hot-swapped at runtime without code modifications.</li>
-<li>Eases testing by facilitating the use of stubbing either with the <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_stub_api.htm" target="_blank">Stub API</a> or dependency injection.</li></ul>
+<li>Eases testing by facilitating the use of stubbing either with the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_testing_stub_api.htm" target="_blank">Stub API</a> or dependency injection.</li></ul>
 
 <b>Limitations</b>
 
@@ -226,7 +226,7 @@ String trackingNumber = shipping.generateTrackingNumber();
 
 <p>With that in mind, you'll want to apply dependency injection on strategic dependencies that you need to break but don't overdo it.</p>
 
-<p>You can either implement dependency injection yourself starting from this <a href="https://github.com/pozil/apex-dependency-injection" target="_blank">sample code</a> based on the example discussed in this post or you can use a community-contributed library like <a href="https://github.com/afawcett/force-di#force-di" target="_blank">Force DI</a>. Finally, do remember that dependency injection applies to more than just Apex code.</p>
+<p>You can either implement dependency injection yourself starting from this <a rel="noopener" href="https://github.com/pozil/apex-dependency-injection" target="_blank">sample code</a> based on the example discussed in this post or you can use a community-contributed library like <a rel="noopener" href="https://github.com/afawcett/force-di#force-di" target="_blank">Force DI</a>. Finally, do remember that dependency injection applies to more than just Apex code.</p>
 
 
 </article>

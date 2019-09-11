@@ -44,7 +44,7 @@
 
 <h3>Distinct Properties</h3>
 
-<p>These APIs are based on the same underlying technology but they have some distinct properties that make them suitable for specific use cases. Here’s an overview of the major differences — you can find a more detailed comparison in the <a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/event_comparison.htm" target="_blank">documentation</a>.</p>
+<p>These APIs are based on the same underlying technology but they have some distinct properties that make them suitable for specific use cases. Here’s an overview of the major differences — you can find a more detailed comparison in the <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/event_comparison.htm" target="_blank">documentation</a>.</p>
 
 
 <table>
@@ -97,9 +97,9 @@
 
 <h3><b>lightning-emp-api Lightning Web Component</b></h3>
 
-<p>When the Streaming APIs came out there was no client natively available for the browser at first. Subscribing to streaming events in custom UI components would require a significant amount of code. That changed with the introduction of the Aura <a href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empAPI</a> component. This awesome component manages CometD connections for you (authentication, connection multiplexing, etc) and greatly reduces the volume of code you need to write. You can read more about it in <a href="https://developer.salesforce.com/blogs/2018/10/building-real-time-lightning-apps-gets-even-simpler.html" target="_blank">this post</a>.</p>
+<p>When the Streaming APIs came out there was no client natively available for the browser at first. Subscribing to streaming events in custom UI components would require a significant amount of code. That changed with the introduction of the Aura <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/bundle/lightning:empApi/documentation" target="_blank">lightning:empAPI</a> component. This awesome component manages CometD connections for you (authentication, connection multiplexing, etc) and greatly reduces the volume of code you need to write. You can read more about it in <a rel="noopener" href="https://developer.salesforce.com/blogs/2018/10/building-real-time-lightning-apps-gets-even-simpler.html" target="_blank">this post</a>.</p>
 
-<p>In Summer ’19, we now have an equivalent Lightning web component: the <a href="https://developer.salesforce.com/docs/component-library/bundle/lightning-emp-api/documentation" target="_blank">lightning-emp-api</a> component. This component offers the same native subscribe capabilities as its Aura counterpart but is even easier to use because it only needs a couple of lines of JavaScript and requires no markup at all.</p>
+<p>In Summer ’19, we now have an equivalent Lightning web component: the <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/bundle/lightning-emp-api/documentation" target="_blank">lightning-emp-api</a> component. This component offers the same native subscribe capabilities as its Aura counterpart but is even easier to use because it only needs a couple of lines of JavaScript and requires no markup at all.</p>
 
 <h3><b>Platform Events Updates</b></h3>
 
@@ -109,7 +109,7 @@
 
 <p>With the introduction of the publish behavior settings you may now decide to delay the event publication after the Apex execution finishes.</p>
 
-<p>Check out the <a href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_messaging_platform_events_section.htm" target="_blank">release notes</a> for other Platform Event updates.</p>
+<p>Check out the <a rel="noopener" href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_messaging_platform_events_section.htm" target="_blank">release notes</a> for other Platform Event updates.</p>
 
 <h3><b>Change Data Capture Updates</b></h3>
 
@@ -119,13 +119,13 @@
 
 <p>The second remarkable update to CDC is the introduction of stream composition with custom channels. In a typical business scenario you would want to subscribe to multiple events like account, contact and order record changes. However, handling separate events in a coherent way is challenging because you likely need to write some code to aggregate them first. With custom channels, you may now regroup these events in a single custom event that you can handle. This means that you can easily process related changes in one go.</p>
 
-<p>Check out the <a href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_messaging_change_data_capture_section.htm?edition=&impact=" target="_blank">release notes</a> for additional CDC updates.</p>
+<p>Check out the <a rel="noopener" href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_messaging_change_data_capture_section.htm?edition=&impact=" target="_blank">release notes</a> for additional CDC updates.</p>
 
 <h2>Tooling: The Streaming Monitor</h2>
 
 <p>Implementing apps with the Streaming APIs without proper tooling can be hard due to the transient nature of streaming events. Past events are not saved to the database so there is no built-in user interface to look at logs. Due to that, we often end up wasting time to write some discardable code that traces those events for debugging purposes.</p>
 
-<p>That is why I built and open sourced the Streaming Monitor, a tool that lets you monitor the four Streaming APIs and conveniently replay past events in a single click. Try it out on the <a href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FYEEWUA5" target="_blank">AppExchange</a> or get the code on <a href="https://github.com/pozil/streaming-monitor" target="_blank">GitHub</a>. It will save you some valuable time.</p>
+<p>That is why I built and open sourced the Streaming Monitor, a tool that lets you monitor the four Streaming APIs and conveniently replay past events in a single click. Try it out on the <a rel="noopener" href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FYEEWUA5" target="_blank">AppExchange</a> or get the code on <a rel="noopener" href="https://github.com/pozil/streaming-monitor" target="_blank">GitHub</a>. It will save you some valuable time.</p>
 
 <p class="text-center">
 	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20190711141443/event-monitor-screenshot-e1562879710871.png"
@@ -141,17 +141,17 @@
 <h2>Resources</h2>
 
 <ul><li>Documentation
-<ul>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm" target="_blank">Streaming API Developer Guide</a></li>
-<p>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture" target="_blank">Change Data Capture Developer Guide</a></li></p>
-<p>    <li><a href="https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/" target="_blank">Platform Events Developer Guide</a></li></p>
-<p>    <li><a href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_forcecom_development.htm" target="_blank">Summer ‘19 Release Notes</a></li></ul></li></p>
+<ul>    <li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm" target="_blank">Streaming API Developer Guide</a></li>
+<p>    <li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture" target="_blank">Change Data Capture Developer Guide</a></li></p>
+<p>    <li><a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/" target="_blank">Platform Events Developer Guide</a></li></p>
+<p>    <li><a rel="noopener" href="https://releasenotes.docs.salesforce.com/en-us/summer19/release-notes/rn_forcecom_development.htm" target="_blank">Summer ‘19 Release Notes</a></li></ul></li></p>
 <li>Trailhead
-<ul>    <li><a href="https://trailhead.salesforce.com/en/content/learn/modules/change-data-capture" target="_blank">Change Data Capture Basics</a></li>
-<p>    <li><a href="https://trailhead.salesforce.com/en/content/learn/modules/platform_events_basics" target="_blank">Platform Events Basics</a></li></p>
-<p>    <li><a href="https://trailhead.salesforce.com/en/content/learn/projects/workshop-platform-events" target="_blank">Build an Instant Notification App</a></li></ul></li></p>
+<ul>    <li><a rel="noopener" href="https://trailhead.salesforce.com/en/content/learn/modules/change-data-capture" target="_blank">Change Data Capture Basics</a></li>
+<p>    <li><a rel="noopener" href="https://trailhead.salesforce.com/en/content/learn/modules/platform_events_basics" target="_blank">Platform Events Basics</a></li></p>
+<p>    <li><a rel="noopener" href="https://trailhead.salesforce.com/en/content/learn/projects/workshop-platform-events" target="_blank">Build an Instant Notification App</a></li></ul></li></p>
 <li>Streaming Monitor
-<ul>    <li><a href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FYEEWUA5" target="_blank">AppExchange package</a></li>
-<p>    <li><a href="https://github.com/pozil/streaming-monitor" target="_blank">GitHub repository</a></li></ul></li></p>
-<li><a href="https://www.youtube.com/watch?v=iFBATeMo2Es&feature=youtu.be" target="_blank">TrailheaDX session recording</a></li></ul>
+<ul>    <li><a rel="noopener" href="https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000FYEEWUA5" target="_blank">AppExchange package</a></li>
+<p>    <li><a rel="noopener" href="https://github.com/pozil/streaming-monitor" target="_blank">GitHub repository</a></li></ul></li></p>
+<li><a rel="noopener" href="https://www.youtube.com/watch?v=iFBATeMo2Es&feature=youtu.be" target="_blank">TrailheaDX session recording</a></li></ul>
 
 </article>
