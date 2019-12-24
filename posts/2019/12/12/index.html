@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<article>
+
+<header>
+	<h1>Retrieving Picklist Values Without Using Apex</h1>
+</header>
+
+<p class="notice text-center">- Original article published on <a rel="noopener" href="https://developer.salesforce.com/blogs/2019/12/retrieving-picklist-values-without-using-apex.html">Salesforce Developer blog</a> -</p>
+
+
+<p>Did you know that Lightning Web Components lets you retrieve picklist values for any object field without writing a single line of Apex? In this blog post, you’ll learn how you can combine an App Builder custom property, the component runtime context and the User Interface API to retrieve picklist values. I’ll present a fully generic approach that doesn’t involve hardcoding data such as the record type ID, the object name or the field name.</p>
+
+<p>I’ll share the code of a <a rel="noopener" href="https://github.com/pozil/picklist-buttons" target="_blank">sample picklist buttons component</a> that uses that approach. This component is an alternative to the <a rel="noopener" href="https://help.salesforce.com/articleView?id=path_overview.htm&type=5" target="_blank">standard built-in Path feature</a>. It’s interesting to use it when you have picklists that hold values that do not represent a sequential order (unlike opportunity stages for example).</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20191211155519/runtime-e1576104941624.jpg"
+	alt="Picklist component screenshot" width="600"/>
+</p>
+
+<p>Let’s dive into the different tools and techniques that make this possible. First, we’ll start with Lightning App Builder custom properties, then we’ll explore the information that is provided in the page context. We’ll finish with the User Interface API.</p>
+
+<h2>Lightning App Builder component properties</h2>
+
+<p>The first feature that you’re going to leverage in order to avoid hardcoding data is a pair of <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.use_config_for_app_builder" target="_blank">Lightning App Builder component properties</a>. These allow admins to reuse the component at will by specifying properties declaratively when the component is deployed on a Lightning page.</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20191211155612/lightning-app-builder-e1576104981645.png"
+	alt="Picklist component in Lightning App Builder screenshot" width="600"/>
+</p>
+
+<p>To achieve this, you need to configure the component metadata file as the following:</p>
+
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata"&gt;
+  &lt;apiVersion&gt;46.0&lt;/apiVersion&gt;
+  &lt;isExposed&gt;true&lt;/isExposed&gt;
+  &lt;targets&gt;
+    &lt;target&gt;lightning__RecordPage&lt;/target&gt;
+  &lt;/targets&gt;
+  &lt;targetConfigs&gt;
+    &lt;targetConfig targets="lightning__RecordPage"&gt;
+      &lt;property name="qualifiedFieldName" type="String" label="Qualified Field Name" required="true"/&gt;
+      &lt;property name="label" type="String" label="Label" required="true"/&gt;
+    &lt;/targetConfig&gt;
+  &lt;/targetConfigs&gt;
+&lt;/LightningComponentBundle&gt;
+</pre>
+
+
+<p>You expose your component to the Lightning App Builder by setting the <code>isExposed</code> flag to <code>true</code>.</p>
+
+<p>You restrict the use of your component to record pages with a <code>lightning__RecordPage</code> target. This is required for the next step where you will retrieve object and record context information.</p>
+
+<p>Finally, you expose the <code>qualifiedFieldName</code> and <code>label</code> component properties to the Lightning App Builder. You’ll also have to declare the related properties with <code>@api qualifiedFieldName</code> and <code>@api label</code> in your component’s JavaScript. <code>qualifiedFieldName</code> holds the qualified picklist field name (Eg: Account.Rating).</p>
+
+<p>Note that there is no built-in input validation in the App Builder that checks if the provided value is a picklist field name or if the value has the right format. If the admin enters an incorrect value in the <em>Qualified Field Name</em> field (an unknown field name, an unqualified field name, a field name that is not a picklist, etc), there will be an error. In that case, your component needs to displays a user-friendly error message but one that won’t prevent the page from being saved.</p>
+
+<p>If you’d like to validate the user input, you can create a <a rel="noopener" href="https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_config_for_app_builder_dynamic_picklists.htm" target="_blank">dynamic picklist parameter in the App Builder</a> and use it as a <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/reference_configuration_tags" target="_blank">datasource</a> for your parameter. Use that to restrict user selection to picklist field names.</p>
+
+<h2>Component runtime context</h2>
+
+<p>Now that your component can be placed on record pages, you can benefit from some runtime context information. Among other things, you have access to the <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.use_object_context" target="_blank">object name</a> and the <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.use_record_context" target="_blank">record Id</a> with the following public properties:</p>
+
+<pre>
+@api recordId;
+@api objectApiName;
+</pre>
+
+
+<p>These properties will automatically receive a value when the component is displayed. You can then use those values in your UI API calls to retrieve additional object and record information.</p>
+
+<h2>User Interface API</h2>
+
+<p>The UI API is the last (and main) piece of the puzzle. A great advantage of using Lightning Web Components over Aura is that you have access to many more UI API resources with the <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/data_wire_service_about" target="_blank">wire service</a>. You gain access to valuable information with a minimal amount of code.</p>
+
+<p>You’ll need to use three UI API wire adapters to retrieve your picklist values:</p>
+
+<ul><li><a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.reference_wire_adapters_picklist_values" target="_blank">getPicklistValues</a> allows us to retrieve all picklist values for a given record type. The record type ID isn’t directly exposed in the component context so you’ll need another UI API call to fetch it.</li>
+<li><a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.reference_wire_adapters_record" target="_blank">getRecord</a> allows us to retrieve record data. You’ll use it to retrieve the current value of the picklist field and the record type ID.</li>
+<li><a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.reference_wire_adapters_object_info" target="_blank">getObjectInfo</a> allow us to retrieve the object information. You’ll need this along with <code>getRecord</code> because in some cases the record type ID is not specified in the record data. In that case, you’ll need to figure out the default record type ID.</li></ul>
+
+
+<p>You’ll need to chain these API calls as the following to retrieve the current picklist value in a <code>picklistValue</code> tracked property and the list of all picklist values in a <code>buttons</code> tracked property:</p>
+
+<p class="text-center">
+	<img src="https://d259t2jj6zp7qm.cloudfront.net/images/20191211155643/Screenshot-2019-09-17-at-18.01.47-e1576105027820.png"
+	alt="Schema giving an overview of API calls" width="600"/>
+</p>
+
+
+<h2>Retrieving the object info</h2>
+
+<p>The first wire adapter that you need to call is <code>getObjectInfo</code>. Calling this wire allows you to retrieve the default record type ID for that record. If the record does not have a record type specified, you can fall back to that default value for that object.</p>
+
+<pre>
+@wire(getObjectInfo, {
+  objectApiName: '$objectApiName'
+})
+getObjectInfo({ error, data }) {
+  if (data) {
+    this.defaultRecordTypeId = data.defaultRecordTypeId;
+    // Check if we need to override record type with default
+    if (this.hasRecordTypeId === false) {
+      this.recordTypeId = this.defaultRecordTypeId;
+    } 
+  } else if (error) {
+    // Handle error
+  }
+}
+</pre>
+
+
+<p>You pass it an <code>objectApiName</code> parameter with the value of the <code>objectApiName</code> property that you registered earlier. Note the specific syntax of the parameter value: a string with a <code>$</code> prefix. This is how you pass a reactive parameter value. What this means is that the wire is called each time the parameter value changes.</p>
+
+<p>You could ask yourself: is the value of <code>objectApiName</code> ever going to change? The answer to that question is yes, at least once. When the page is being rendered the property value isn’t set for a few milliseconds. You need to react to the value change (the property initialization) to call the wire with the right object name.</p>
+
+<h3>Retrieving the record</h3>
+
+<p>Once you have retrieved the object information, you can fetch the record data with the <code>getRecord</code> adapter. You pass it the record Id and the fields that you wish to retrieve. In your case, that’s just the picklist field name that you defined in the Lightning App Builder and that is stored in <code>qualifiedFieldName</code>. You extract and save two things from the wire data: the record type id in a <code>recordTypeId</code> property and the picklist field value in a <code>picklistValue</code> property.</p>
+
+<pre>
+@wire(getRecord, {
+  recordId: '$recordId',
+  fields: '$qualifiedFieldName'
+})
+getRecord({ error, data }) {
+  if (data) {
+    // Check if record data includes record type
+    if (data.recordTypeInfo) {
+      this.hasRecordTypeId = true;
+      this.recordTypeId = data.recordTypeInfo.recordTypeId;
+    } else { // Record type is missing from record data
+      this.hasRecordTypeId = false;
+      // Use default type if available (it could still be loading)
+      if (this.defaultRecordTypeId) {
+        this.recordTypeId = this.defaultRecordTypeId;
+      }
+    }
+    // Get current picklist value
+    const fieldName = this.getFieldName();
+    this.picklistValue = data.fields[fieldName].value;
+  } else if (error) {
+    // Handle error
+  }
+}
+</pre>
+
+
+
+<p>Note that we normally recommend to avoid using dynamic field names (like <code>qualifiedFieldName</code>) when <a rel="noopener" href="https://developer.salesforce.com/docs/component-library/documentation/lwc/lwc.data_wire_service_about" target="_blank">working with Salesforce data</a>. Instead, you should import static field reference so that we guarantee dependency integrity (for example we won’t let you delete a record field that is referenced in a component). We’ll make an exception for our use case since you're building a generic component. Just remember that this flexibility does imply that an admin can potentially delete or rename the picklist field and break the component. You've been warned!</p>
+
+<p>As mentioned earlier, it may happen that the record data returned by the wire does not include the record type ID. This happens when a record is created at a time when there are no record types defined. In that case, you may fall back on the default record type ID that you fetch from the <code>objectInfo</code> property.</p>
+
+<h3>Retrieving the picklist values</h3>
+
+<p>At this point, you now have access to the record type ID and you can call the last wire adapter: <code>getPicklistValues</code>. This gives us the list of all picklist values for your record type.</p>
+
+<pre>
+@wire(getPicklistValues, {
+  recordTypeId: '$recordTypeId',
+  fieldApiName: '$qualifiedFieldName'
+})
+getPicklistValues({ error, data }) {
+  if (data) {
+    // Map picklist values to buttons
+    this.buttons = data.values.map(plValue =&gt; {
+      return {
+        label: plValue.label,
+        value: plValue.value
+      };
+    });
+  } else if (error) {
+    // Handle error
+  }
+}
+</pre>
+
+
+<p>With that final wire call, you now have access to all picklist values. In the case of our picklist buttons component, all you have to do is to map these values to the <code>buttons</code> property in order to render them as buttons.</p>
+
+<h2>Summary</h2>
+
+<p>That’s a wrap! You’ve learned how to retrieve picklist values in Lightning web components without writing a single line of Apex thanks to the combined use of App Builder parameters, page context and the UI APIs.</p>
+
+<p>Another great advantage of not using Apex in this context is that you benefit from the Lightning Data Service when using the UI API. For example, if you change the picklist value in the record details component, you’ll see that your custom component is automatically updated with the new value.</p>
+
+<p>Feel free to explore the code presented in this post in this <a rel="noopener" href="https://github.com/pozil/picklist-buttons" target="_blank">sample picklist button component</a>.</p>
+
+</article>
